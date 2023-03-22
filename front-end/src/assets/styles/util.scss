@@ -1,0 +1,121 @@
+// MODAL
+.modal-blur.active {
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 996;
+  opacity: 1;
+  transition: all 0.3s;
+}
+
+.modal-blur {
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+// SECTION
+
+.section_img {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.section_content {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.section_content.active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: all 0.8s ease-in-out;
+  transition-delay: 100ms;
+}
+.section_img.active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: all 0.8s ease-in-out;
+  transition-delay: 100ms;
+}
+
+// TOOLTIP
+
+.admin_tooltip {
+  position: relative;
+  display: inline-block;
+}
+.admin_tooltip .wrapper {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  z-index: 999;
+  top: 112%;
+  left: 0;
+  right: 0;
+}
+.admin_tooltip .tooltiptext {
+  opacity: 0;
+  visibility: hidden;
+  background-color: rgb(144, 143, 143);
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px 5px;
+
+  font-size: 1rem;
+  transition: opacity 0.3s;
+}
+
+.admin_tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: -32%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgb(144, 143, 143) transparent;
+}
+
+.admin_tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.confirm-btn {
+  background-color: $confirm-btn;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.delete-btn {
+  background-color: $delete-btn;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.edit-btn {
+  background-color: $edit-btn;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.cancel-btn {
+  cursor: pointer;
+  background-color: $cancel-btn;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.error {
+  font-weight: 700;
+  color: $error-color;
+}

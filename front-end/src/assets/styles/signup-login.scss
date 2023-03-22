@@ -1,0 +1,60 @@
+.ant-input::placeholder {
+  color: $black-color;
+  opacity: 0.5;
+  font-weight: 500;
+}
+
+.form_btn {
+  background-color: $jlb-color !important;
+  width: 150px;
+  border-radius: 4px;
+  margin-left: auto;
+  transition: background-color 0.3s;
+}
+
+.form_btn:hover {
+  background-color: darken($jlb-color, 5%) !important;
+  transition: background-color 0.3s;
+}
+.login,
+.signup {
+  background-color: $white-color;
+  min-height: 100vh;
+}
+
+.user_form {
+  .ant-form-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .ant-checkbox-wrapper {
+    align-items: center;
+
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: $primary-color !important;
+      border: none !important;
+    }
+
+    .ant-checkbox-checked:after {
+      border: none !important;
+    }
+
+    span:last-child {
+      padding: 10px;
+      margin-left: 10px;
+    }
+
+    .ant-checkbox-inner {
+      padding: 10px;
+    }
+
+    .ant-checkbox-inner::after {
+      width: 8px;
+      height: 14px;
+    }
+  }
+
+  .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+    border-color: $primary-color;
+  }
+}

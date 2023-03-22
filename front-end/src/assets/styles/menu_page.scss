@@ -1,0 +1,56 @@
+.menu_list-wrapper {
+  background-color: $primary-color;
+
+  .menu_list {
+    .menu_item.active {
+      background-color: $white-color;
+
+      .menu_item-link {
+        color: $primary-color;
+      }
+    }
+    .menu_item {
+      .menu_item-link {
+        color: white;
+        font-weight: 600;
+        padding: 1.4rem;
+        font-size: 1.4rem;
+        display: inline-block;
+        transition: all 0.3s;
+        @apply font-Signika;
+      }
+      .menu_item-link:hover {
+        background-color: $white-color;
+        color: $primary-color;
+        transition: all 0.3s;
+      }
+    }
+  }
+}
+
+.menu_item-wrapper {
+  .item_list {
+    .item {
+      .item_img-wrapper {
+        cursor: pointer;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+          rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+      }
+      .item_name {
+        font-weight: 500;
+      }
+      .item_price {
+        opacity: 0.6;
+      }
+      .item_btn {
+        background-color: #f19029;
+        color: $white-color;
+        transition: all 0.3s;
+      }
+      .item_btn:hover {
+        background-color: darken(#f19029, 5%) !important;
+        transition: all 0.3s;
+      }
+    }
+  }
+}

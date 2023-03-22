@@ -1,0 +1,29 @@
+@import-normalize;
+@import "./variable";
+@tailwind base;
+
+@layer base {
+  body {
+    @apply font-notosans;
+  }
+}
+html {
+  font-size: 62.5%;
+}
+.App {
+  min-height: 101vh;
+  background-color: $white-color;
+}
+
+@import "./animation.scss";
+@import "./header.scss";
+@import "./footer.scss";
+@import "./signup-login.scss";
+@import "./homepage.scss";
+@import "./section.scss";
+@import "./util.scss";
+@import "./menu_page.scss";
+@import "./product_page.scss";
+@import "./admin.scss";
+@import "./uploadfile.scss";
+@import "./bill_history.scss";

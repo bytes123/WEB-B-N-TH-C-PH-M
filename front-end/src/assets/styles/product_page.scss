@@ -1,0 +1,25 @@
+.product_title-big {
+  font-size: 3rem;
+  font-weight: 700;
+  color: $header-selected-color;
+}
+
+.product_img-single {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.product_size-box {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 28px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.product_size-box.active {
+  color: $header-active-color;
+  border-color: $header-active-color;
+}
