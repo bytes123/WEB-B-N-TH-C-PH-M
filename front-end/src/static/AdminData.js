@@ -161,6 +161,7 @@ const userListData = [
     user_name: "bytes123",
     user_password: "aaaaa",
     user_address: "Vĩnh Long",
+    user_isAdmin: 1,
     user_created_date: "27/09/2022",
   },
 ];
@@ -248,6 +249,7 @@ const userTemplateData = {
   user_name: "",
   user_password: "",
   user_address: "",
+  user_isAdmin: "",
   user_created_date: "",
 };
 
@@ -264,8 +266,10 @@ const userDataCheck = [
   "user_image",
   "user_fullname",
   "user_name",
+  "user_email",
   "user_password",
   "user_address",
+  "user_isAdmin",
   "user_created_date",
 ];
 

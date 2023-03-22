@@ -11,6 +11,9 @@ import useAdminController from "../../utils/hooks/Admin/useAdminController";
 import { Input } from "antd";
 import { FaExchangeAlt } from "react-icons/fa";
 import { Table } from "antd";
+import { alpha, styled } from "@mui/material/styles";
+import { pink } from "@mui/material/colors";
+import Switch from "@mui/material/Switch";
 
 export default function MainUser() {
   const [
@@ -24,6 +27,20 @@ export default function MainUser() {
     handleOpenDelete,
     handleCloseDelete,
   ] = useAdminController(userTemplateData);
+
+  const userData = React.useMemo(() => userListData);
+
+  const GreenSwitch = styled(Switch)(({ theme }) => ({
+    "& .MuiSwitch-switchBase.Mui-checked": {
+      color: pink[600],
+      "&:hover": {
+        backgroundColor: alpha(pink[600], theme.palette.action.hoverOpacity),
+      },
+    },
+    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+      backgroundColor: pink[600],
+    },
+  }));
 
   const columns = [
     {
@@ -131,6 +148,14 @@ export default function MainUser() {
         ),
     },
     {
+      title: "Quyền Admin",
+      dataIndex: "user_isAdmin",
+      key: "user_isAdmin",
+      render: (data, arr, index) => (
+        <GreenSwitch label="Admin" defaultChecked={data.user_isAdmin} />
+      ),
+    },
+    {
       title: "Ngày tạo tài khoản",
       dataIndex: "user_created_date",
       key: "user_created_date",
@@ -189,9 +214,6 @@ export default function MainUser() {
       ),
     },
   ];
-
-  const userData = React.useMemo(() => userListData);
-
   return (
     <div className="main_user mx-2">
       {isDelete ? (
