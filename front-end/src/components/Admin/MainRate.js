@@ -31,77 +31,27 @@ export default function MainRate() {
       title: "Tên người đánh giá",
       dataIndex: "rate_user",
       key: "rate_user",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.rate_user ? rootData.rate_user : data}
-            name="rate_user"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Nội dung đánh giá",
       dataIndex: "rate_content",
       key: "rate_content",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.rate_content ? rootData.rate_content : data}
-            name="rate_content"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
 
     {
       title: "Số sao đánh giá",
       dataIndex: "rate_star",
       key: "rate_star",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.rate_star ? rootData.rate_star : data}
-            name="rate_star"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
 
     {
       title: "Ngày đánh giá",
       dataIndex: "rate_created_date",
       key: "rate_created_date",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={
-              rootData.rate_created_date ? rootData.rate_created_date : data
-            }
-            name="rate_created_date"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
 
     {
@@ -110,34 +60,16 @@ export default function MainRate() {
       key: "action",
       render: (data, arr, index) => (
         <div className="flex">
-          {!isEdit ? (
-            <>
-              <button
-                className="edit-btn mr-5"
-                name="edit-btn"
-                onClick={() => handleOpenEdit(arr, index)}
-              >
-                Duyệt
-              </button>
-              <button
-                className="delete-btn"
-                onClick={() => handleOpenDelete(arr)}
-              >
-                Xóa
-              </button>
-            </>
-          ) : index == rootData.row_index ? (
-            <div className="flex">
-              <button className="confirm-btn mr-5" onClick={confirmEdit}>
-                Hoàn tất
-              </button>
-              <button className="cancel-btn" onClick={handleCloseEdit}>
-                Hủy bỏ
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
+          <button
+            className="edit-btn mr-5"
+            name="edit-btn"
+            onClick={() => handleOpenEdit(arr, index)}
+          >
+            Duyệt
+          </button>
+          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
+            Xóa
+          </button>
         </div>
       ),
     },

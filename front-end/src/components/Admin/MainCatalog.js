@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import { Table } from "antd";
@@ -10,21 +10,46 @@ import {
   catalogDataCheck,
 } from "../../static/AdminData";
 import { Input } from "antd";
+import AU from "../Admin/AU";
+import useCondition from "../../utils/hooks/Admin/useCondition";
+import validateCatalog from "../../utils/validates/validateCatalog";
 
 export default function MainCatalog() {
   const [
     rootData,
     isDelete,
     isEdit,
+    isOpen,
     handleChangeInput,
     handleOpenEdit,
     handleCloseEdit,
     confirmEdit,
     handleOpenDelete,
     handleCloseDelete,
+    handleOpenAdd,
+    handleCloseAdd,
   ] = useAdminController(catalogTemplateData);
 
   const catalogData = React.useMemo(() => catalogListData);
+
+  const catalogForm = [
+    {
+      label: "Tên danh mục",
+      type: "text",
+      name: "catalog_name",
+    },
+  ];
+  const catalogInputData = {
+    catalog_name: "",
+  };
+  const addData = (values) => {
+    console.log(values);
+  };
+  const { values, handleChangeValues, submit, errors } = useCondition(
+    catalogInputData,
+    addData,
+    validateCatalog
+  );
 
   const columns = [
     {
@@ -36,19 +61,7 @@ export default function MainCatalog() {
       title: "Tên danh mục",
       dataIndex: "catalog_name",
       key: "catalog_name",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.catalog_name ? rootData.catalog_name : data}
-            name="catalog_name"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
 
     {
@@ -57,34 +70,16 @@ export default function MainCatalog() {
       key: "action",
       render: (data, arr, index) => (
         <div className="flex">
-          {!isEdit ? (
-            <>
-              <button
-                className="edit-btn mr-5"
-                name="edit-btn"
-                onClick={() => handleOpenEdit(arr, index)}
-              >
-                Sửa
-              </button>
-              <button
-                className="delete-btn"
-                onClick={() => handleOpenDelete(arr)}
-              >
-                Xóa
-              </button>
-            </>
-          ) : index == rootData.row_index ? (
-            <div className="flex">
-              <button className="confirm-btn mr-5" onClick={confirmEdit}>
-                Hoàn tất
-              </button>
-              <button className="cancel-btn" onClick={handleCloseEdit}>
-                Hủy bỏ
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
+          <button
+            className="edit-btn mr-5"
+            name="edit-btn"
+            onClick={() => handleOpenEdit(arr, index)}
+          >
+            Sửa
+          </button>
+          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
+            Xóa
+          </button>
         </div>
       ),
     },
@@ -103,30 +98,92 @@ export default function MainCatalog() {
         ""
       )}
       <h1 className="text-4xl font-bold m-5">Quản lý danh mục</h1>
-      <Section span={24}>
-        <div className="wrapper p-8 ">
-          <h3 className="text-2xl font-bold">Thêm danh mục</h3>
-          <p className="admin_catalog-add-content m-5">
+
+      {isOpen && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn cancel-btn p-4 text-right "
+              onClick={handleCloseAdd}
+            >
+              Trở về
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8 ">
+              <h3 className="text-2xl font-bold">Thêm danh mục</h3>
+              <AU
+                list={catalogForm}
+                dataInput={values}
+                handleChangeDataInput={handleChangeValues}
+                errors={errors}
+                onSubmit={submit}
+                label="Thêm"
+                className={"confirm-btn"}
+              />
+              {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách danh mục
           </p>
           <div className="catalog_upload-wrapper">
             <UploadFileExcel dataCheck={catalogDataCheck} />
-          </div>
-        </div>
-      </Section>
-      <Section span={24}>
-        <div className="wrapper p-8">
-          <h3 className="text-2xl font-bold mb-5">Danh sách danh mục</h3>
-          <div className="table-wrapper">
-            <Table
-              bordered={true}
-              columns={columns}
-              dataSource={catalogData}
-              className="text-sm"
-            />
-          </div>
-        </div>
-      </Section>
+          </div> */}
+            </div>
+          </Section>
+        </>
+      )}
+
+      {isEdit && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn cancel-btn p-4 text-right "
+              onClick={handleCloseEdit}
+            >
+              Trở về
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8 ">
+              <h3 className="text-2xl font-bold">Sửa danh mục</h3>
+              <AU
+                list={catalogForm}
+                dataInput={values}
+                handleChangeDataInput={handleChangeValues}
+                errors={errors}
+                onSubmit={submit}
+                label="Sửa"
+                className={"edit-btn"}
+              />
+            </div>
+          </Section>
+        </>
+      )}
+
+      {!isOpen && !isEdit && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn confirm-btn p-4 mr-5 text-right "
+              onClick={handleOpenAdd}
+            >
+              Thêm danh mục
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8">
+              <h3 className="text-2xl font-bold mb-5">Danh sách danh mục</h3>
+              <div className="table-wrapper">
+                <Table
+                  bordered={true}
+                  columns={columns}
+                  dataSource={catalogData}
+                  className="text-sm"
+                />
+              </div>
+            </div>
+          </Section>
+        </>
+      )}
     </div>
   );
 }

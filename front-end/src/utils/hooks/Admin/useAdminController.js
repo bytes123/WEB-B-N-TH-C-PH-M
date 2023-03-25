@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Input } from "antd";
 export default function useAdminComment({ propData }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
 
   const dataCheck = ["catalog_name"];
 
   const [rootData, setRootData] = useState(propData);
+
+  const handleOpenAdd = () => {
+    setIsOpen(true);
+  };
+
+  const handleCloseAdd = () => {
+    setIsOpen(false);
+  };
 
   const handleChangeInput = (e) => {
     setRootData({
@@ -46,11 +55,14 @@ export default function useAdminComment({ propData }) {
     rootData,
     isDelete,
     isEdit,
+    isOpen,
     handleChangeInput,
     handleOpenEdit,
     handleCloseEdit,
     confirmEdit,
     handleOpenDelete,
     handleCloseDelete,
+    handleOpenAdd,
+    handleCloseAdd,
   ];
 }

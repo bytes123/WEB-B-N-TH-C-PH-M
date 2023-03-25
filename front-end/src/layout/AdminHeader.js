@@ -42,7 +42,13 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
           </div>
           {/* POPUP CHAT */}
 
-          <Popup className={`${isAdminChatActive ? "block" : "hidden"}`}>
+          <Popup
+            className={`${
+              isAdminChatActive
+                ? "block fixed right-5 top-[60px] w-[300px] min-h-[500px]"
+                : "hidden"
+            }`}
+          >
             <div className="message-wrapper p-8">
               <div className="message-top flex items-center justify-between">
                 <h2 className="text-3xl">Messages</h2>
@@ -94,7 +100,11 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
           {/* POPUP NOTIFICATION */}
 
           <Popup
-            className={`${isAdminNotificationActive ? "block" : "hidden"}`}
+            className={`${
+              isAdminNotificationActive
+                ? "block fixed right-5 top-[60px] w-[300px] min-h-[500px]"
+                : "hidden"
+            }`}
           >
             <div className="nottification-wrapper p-8">
               <div className="notfication-top flex items-center justify-between">

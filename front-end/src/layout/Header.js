@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Layout, Menu, Row, Col } from "antd";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import Modal from "../utils/components/Modal";
@@ -15,6 +14,7 @@ import SubMenuMobile from "../components/Header/SubMenuMobile";
 import useMobileSubMenu from "../utils/hooks/useMobileSubMenu";
 import HeaderBarIcon from "../components/Header/HeaderBarIcon";
 import HeaderUser from "../components/Header/HeaderUser";
+import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 
 const { Header: AntdHeader } = Layout;
 
@@ -63,11 +63,26 @@ export default function Header() {
     <div className="header bg-white">
       {/*  // HEADER */}
       <AntdHeader className="z-[999]  md:w-full pc flex items-center justify-between header-bg-color  header md:h-50">
-        <StarBucksIcon
-          className="cursor-pointer"
+        <HeaderBarIcon active={isBarActive} onClick={handleMobileBar} />
+        <img
+          src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
+          className="cursor-pointer w-[140px]"
           onClick={() => navigate("/")}
         />
-        <HeaderBarIcon active={isBarActive} onClick={handleMobileBar} />
+        <div className="header_section floex">
+          <div className="header_wishlist relative">
+            <Link to="wishlist" className="">
+              <div className="absolute">as</div>
+              <AiOutlineHeart className="text-5xl mx-2 opacity-70" />
+            </Link>
+          </div>
+          <div className="header_cart">
+            <Link to="cart" className="relative">
+              <AiOutlineShoppingCart className="text-5xl mx-2 opacity-70" />
+            </Link>
+          </div>
+        </div>
+
         <Menu className={desktopMenuClass}>
           {DesktopMenu.map(
             (item) =>

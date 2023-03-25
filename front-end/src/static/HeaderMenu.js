@@ -99,7 +99,7 @@ const MobileMenu = [
   },
   {
     key: "menu",
-    link: path.menu + "/coffe",
+    link: path.menu + "/banh-ngot",
     value: "Thực đơn",
     // children: [
     //   {

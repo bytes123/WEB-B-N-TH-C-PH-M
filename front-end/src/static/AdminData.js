@@ -64,12 +64,12 @@ const sideBarList = [
         icon: <MdOutlineRateReview />,
         text: "Quản lý đánh giá",
       },
-      {
-        key: 6,
-        link: "quan-ly-nhan-vien",
-        icon: <HiOutlineUserGroup />,
-        text: "Quản lý nhân viên",
-      },
+      // {
+      //   key: 6,
+      //   link: "quan-ly-nhan-vien",
+      //   icon: <HiOutlineUserGroup />,
+      //   text: "Quản lý nhân viên",
+      // },
       {
         key: 7,
         link: "quan-ly-thong-ke",

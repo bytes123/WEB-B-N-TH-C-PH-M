@@ -15,6 +15,26 @@ html {
   background-color: $white-color;
 }
 
+a:hover {
+  text-decoration: none;
+  color: #333;
+}
+
+.circle-section {
+  border-radius: 100%;
+}
+.error-input {
+  border: 2px solid red !important;
+}
+
+.error-text {
+  margin-left: 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: red;
+  line-height: 100%;
+  margin-top: 0.4rem;
+}
 @import "./animation.scss";
 @import "./header.scss";
 @import "./footer.scss";
@@ -27,3 +47,4 @@ html {
 @import "./admin.scss";
 @import "./uploadfile.scss";
 @import "./bill_history.scss";
+@import "./menu_item.scss";

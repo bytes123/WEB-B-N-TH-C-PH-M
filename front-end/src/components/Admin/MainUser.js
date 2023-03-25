@@ -52,100 +52,33 @@ export default function MainUser() {
       title: "Ảnh đại diện",
       dataIndex: "user_image",
       key: "user_image",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <>
-            <img className="w-[80px]" src={data} alt="" />
-          </>
-        ) : rootData.row_index == index ? (
-          <div className="relative w-[80px] ">
-            <div className="change-icon absolute left-0 right-0 top-0 bottom-0 flex items-center justify-center">
-              <FaExchangeAlt className="text-4xl" />
-            </div>
-
-            <input
-              type="file"
-              name="file"
-              className="opacity-0 absolute left-0 right-0 top-0 bottom-0 z-10 cursor-pointer"
-            />
-
-            <img className="opacity-50" src={rootData.user_image} alt="" />
-          </div>
-        ) : (
-          <img className="w-[80px]" src={data} alt="" />
-        ),
+      render: (data, arr, index) => (
+        <img className="w-[80px]" src={data} alt="" />
+      ),
     },
     {
       title: "Tên chủ tài khoản",
       dataIndex: "user_fullname",
       key: "user_fullname",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.user_fullname ? rootData.user_fullname : data}
-            name="user_fullname"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Tài khoản",
       dataIndex: "user_name",
       key: "user_name",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.user_name ? rootData.user_name : data}
-            name="user_name"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Mật khẩu",
       dataIndex: "user_password",
       key: "user_password",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.user_password ? rootData.user_password : data}
-            name="user_password"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Địa chỉ",
       dataIndex: "user_address",
       key: "user_address",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={rootData.user_address ? rootData.user_address : data}
-            name="user_address"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Quyền Admin",
@@ -159,21 +92,7 @@ export default function MainUser() {
       title: "Ngày tạo tài khoản",
       dataIndex: "user_created_date",
       key: "user_created_date",
-      render: (data, arr, index) =>
-        !isEdit ? (
-          <p>{data}</p>
-        ) : index == rootData.row_index ? (
-          <Input
-            type="string"
-            value={
-              rootData.user_created_date ? rootData.user_created_date : data
-            }
-            name="user_created_date"
-            onChange={handleChangeInput}
-          />
-        ) : (
-          <p>{data}</p>
-        ),
+      render: (data, arr, index) => <p>{data}</p>,
     },
 
     {
@@ -182,34 +101,16 @@ export default function MainUser() {
       key: "action",
       render: (data, arr, index) => (
         <div className="flex">
-          {!isEdit ? (
-            <>
-              <button
-                className="edit-btn mr-5"
-                name="edit-btn"
-                onClick={() => handleOpenEdit(arr, index)}
-              >
-                Sửa
-              </button>
-              <button
-                className="delete-btn"
-                onClick={() => handleOpenDelete(arr)}
-              >
-                Xóa
-              </button>
-            </>
-          ) : index == rootData.row_index ? (
-            <div className="flex">
-              <button className="confirm-btn mr-5" onClick={confirmEdit}>
-                Hoàn tất
-              </button>
-              <button className="cancel-btn" onClick={handleCloseEdit}>
-                Hủy bỏ
-              </button>
-            </div>
-          ) : (
-            ""
-          )}
+          <button
+            className="edit-btn mr-5"
+            name="edit-btn"
+            onClick={() => handleOpenEdit(arr, index)}
+          >
+            Sửa
+          </button>
+          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
+            Xóa
+          </button>
         </div>
       ),
     },

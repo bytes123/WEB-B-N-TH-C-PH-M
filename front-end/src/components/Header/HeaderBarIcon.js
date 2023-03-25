@@ -9,7 +9,7 @@ export default function HeaderBarIcon({ active, onClick }) {
     >
       <FaBars
         onClick={onClick}
-        className="header_bar-icon block cursor-pointer text-xl header_bar-color md:hidden"
+        className="header_bar-icon block cursor-pointer text-3xl opacity-70 header_bar-color md:hidden"
       />
       <GrClose
         onClick={onClick}
