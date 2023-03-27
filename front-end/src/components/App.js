@@ -7,7 +7,7 @@ import {
   MainRate,
   MainBill,
   MainUser,
-  MainEmployee,
+  MainBrand,
   MainStatistic,
 } from "../static/AdminData";
 
@@ -81,10 +81,10 @@ const App = () => {
           }
         />
         <Route
-          path="admin/quan-ly-nhan-vien"
+          path="admin/quan-ly-nhan-hang"
           element={
             <AdminPage>
-              <MainEmployee />
+              <MainBrand />
             </AdminPage>
           }
         />

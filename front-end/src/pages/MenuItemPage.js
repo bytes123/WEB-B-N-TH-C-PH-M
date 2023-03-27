@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuList from "../components/Home/MenuList";
 import BannerHighLand from "../components/Banner/BannerHighLand";
@@ -10,9 +10,12 @@ import { nanoid } from "nanoid";
 import PaginatedItems from "../utils/components/PaginatedItems";
 import usePagination from "../utils/hooks/usePagination";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import MainLoading from "../utils/components/MainLoading";
 
 export default function MenuItemPage() {
   const { menuid } = useParams();
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const searchMenu = [
     {
@@ -88,29 +91,43 @@ export default function MenuItemPage() {
     },
   ]);
 
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+    }
+    setTimeout(() => {
+      setIsLoading(false);
+
+      document.body.style.overflow = "auto";
+    }, 3000);
+  }, []);
+
   const [currentItems, pageCount, handlePageClick] = usePagination(items, 2);
 
   return (
-    <div className="menu_item-wrapper">
-      <BannerHighLand />
-      <MenuList />
+    <>
+      <MainLoading isLoading={isLoading} />
+      <div className="menu_item-wrapper">
+        <BannerHighLand />
+        <MenuList />
 
-      <SearchSection
-        isOpenSearch={isOpenSearch}
-        activeIndex={activeIndex}
-        data={searchMenu}
-        onSwitch={handleSwitchSearch}
-        activeValueIndex={activeValueIndex}
-        onActiveValueIndex={handleActiveValueIndex}
-      />
-      <ItemList currentItems={currentItems} />
-      <PaginatedItems
-        previousLabel={<BsArrowLeft />}
-        nextLabel={<BsArrowRight />}
-        items={items}
-        handlePageClick={handlePageClick}
-        pageCount={pageCount}
-      />
-    </div>
+        <SearchSection
+          isOpenSearch={isOpenSearch}
+          activeIndex={activeIndex}
+          data={searchMenu}
+          onSwitch={handleSwitchSearch}
+          activeValueIndex={activeValueIndex}
+          onActiveValueIndex={handleActiveValueIndex}
+        />
+        <ItemList currentItems={currentItems} />
+        <PaginatedItems
+          previousLabel={<BsArrowLeft />}
+          nextLabel={<BsArrowRight />}
+          items={items}
+          handlePageClick={handlePageClick}
+          pageCount={pageCount}
+        />
+      </div>
+    </>
   );
 }

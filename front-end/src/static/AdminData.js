@@ -4,7 +4,7 @@ import MainProduct from "../components/Admin/MainProduct";
 import MainCatalog from "../components/Admin/MainCatalog";
 import MainUser from "../components/Admin/MainUser";
 import MainRate from "../components/Admin/MainRate";
-import MainEmployee from "../components/Admin/MainEmployee";
+import MainBrand from "../components/Admin/MainBrand";
 import MainStatistic from "../components/Admin/MainStatistic";
 import MainBill from "../components/Admin/MainBill";
 import { AiOutlineShoppingCart, AiOutlineUsergroupAdd } from "react-icons/ai";
@@ -12,7 +12,7 @@ import { FiShoppingBag, FiUsers } from "react-icons/fi";
 import { FcStatistics } from "react-icons/fc";
 import { MdOutlineRateReview } from "react-icons/md";
 import { BiCategoryAlt } from "react-icons/bi";
-import { HiOutlineUserGroup } from "react-icons/hi";
+import { TbBrandAirtable } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { RiBillLine } from "react-icons/ri";
@@ -64,12 +64,12 @@ const sideBarList = [
         icon: <MdOutlineRateReview />,
         text: "Quản lý đánh giá",
       },
-      // {
-      //   key: 6,
-      //   link: "quan-ly-nhan-vien",
-      //   icon: <HiOutlineUserGroup />,
-      //   text: "Quản lý nhân viên",
-      // },
+      {
+        key: 6,
+        link: "quan-ly-nhan-hang",
+        icon: <TbBrandAirtable />,
+        text: "Quản lý nhãn hàng",
+      },
       {
         key: 7,
         link: "quan-ly-thong-ke",
@@ -129,26 +129,14 @@ const catalogListData = [
   },
 ];
 
-const employeeListData = [
+const brandListData = [
   {
-    employee_id: 1,
-    employee_image:
-      "https://shoppymultidash.netlify.app/static/media/avatar.ad026443bbabdf64ce71.jpg",
-    employee_name: "Tân",
-    employee_age: "29",
-    employee_hometown: "Vĩnh Long",
-    employee_position: "Shipper",
-    employee_salary: "3900000",
-  },
-  {
-    employee_id: 2,
-    employee_image:
-      "https://shoppymultidash.netlify.app/static/media/avatar.ad026443bbabdf64ce71.jpg",
-    employee_name: "Minh",
-    employee_age: "18",
-    employee_hometown: "Vĩnh Long",
-    employee_position: "Nhân viên phục vụ",
-    employee_salary: "3900000",
+    brand_id: 1,
+    brand_name: "NestFood",
+    brand_phone_number: "0705008419",
+    brand_email: "nest@gmail.com",
+    brand_address: "Hà cổ",
+    brand_created_date: "27/09/2002",
   },
 ];
 
@@ -216,26 +204,23 @@ const catalogTemplateData = {
   catalog_name: "",
 };
 
-const employeeTemplateData = {
-  employee_image: "",
-  employee_name: "",
-  employee_age: "",
-  employee_hometown: "",
-  employee_position: "",
-  employee_salary: "",
+const brandTemplateData = {
+  brand_name: "",
+  brand_phone_number: "",
+  brand_email: "",
+  brand_address: "",
+  brand_created_date: "",
 };
 
-const employeeDataCheck = [
-  " employee_image",
-  " employee_name",
-  " employee_age",
-  " employee_hometown",
-  " employee_position",
-  " employee_salary",
+const brandDataCheck = [
+  " brand_name",
+  " brand_phone_number",
+  " brand_email",
+  " brand_address",
+  " brand_created_date",
 ];
 
 const productTemplateData = {
-  product_id: "",
   product_image: "",
   product_name: "",
   product_catalog: "",
@@ -243,7 +228,6 @@ const productTemplateData = {
 };
 
 const userTemplateData = {
-  user_id: "",
   user_image: "",
   user_fullname: "",
   user_name: "",
@@ -280,7 +264,7 @@ export {
   MainCatalog,
   MainRate,
   MainUser,
-  MainEmployee,
+  MainBrand,
   MainBill,
   MainStatistic,
   commomBoxList,
@@ -288,14 +272,14 @@ export {
   billListData,
   productListData,
   catalogListData,
-  employeeListData,
+  brandListData,
   rateListData,
   userListData,
   rateTemplateData,
   catalogDataCheck,
   catalogTemplateData,
-  employeeTemplateData,
-  employeeDataCheck,
+  brandTemplateData,
+  brandDataCheck,
   productTemplateData,
   productDataCheck,
   userDataCheck,

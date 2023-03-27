@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
@@ -14,20 +14,12 @@ import { Table } from "antd";
 import { alpha, styled } from "@mui/material/styles";
 import { pink } from "@mui/material/colors";
 import Switch from "@mui/material/Switch";
+import AU from "../Admin/AU";
+import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
+import validateUser from "../../utils/validates/validateUser";
+import { userForm } from "../../static/Admin/Forms";
 
 export default function MainUser() {
-  const [
-    rootData,
-    isDelete,
-    isEdit,
-    handleChangeInput,
-    handleOpenEdit,
-    handleCloseEdit,
-    confirmEdit,
-    handleOpenDelete,
-    handleCloseDelete,
-  ] = useAdminController(userTemplateData);
-
   const userData = React.useMemo(() => userListData);
 
   const GreenSwitch = styled(Switch)(({ theme }) => ({
@@ -41,6 +33,34 @@ export default function MainUser() {
       backgroundColor: pink[600],
     },
   }));
+
+  const addData = () => {};
+  const {
+    values,
+    handleChangeValue,
+    handleSetValue,
+    submit,
+    errors,
+    clearErrors,
+    clearValues,
+  } = useValidateForm(userTemplateData, addData, validateUser);
+
+  const {
+    isDelete,
+    isEdit,
+    isAdd,
+    handleOpenEdit,
+    handleCloseEdit,
+    handleOpenDelete,
+    handleCloseDelete,
+    handleOpenAdd,
+    handleCloseAdd,
+  } = useAdminController(
+    handleChangeValue,
+    handleSetValue,
+    clearErrors,
+    clearValues
+  );
 
   const columns = [
     {
@@ -85,7 +105,7 @@ export default function MainUser() {
       dataIndex: "user_isAdmin",
       key: "user_isAdmin",
       render: (data, arr, index) => (
-        <GreenSwitch label="Admin" defaultChecked={data.user_isAdmin} />
+        <GreenSwitch label="Admin" disabled defaultChecked={data} />
       ),
     },
     {
@@ -115,6 +135,7 @@ export default function MainUser() {
       ),
     },
   ];
+
   return (
     <div className="main_user mx-2">
       {isDelete ? (
@@ -128,30 +149,92 @@ export default function MainUser() {
         ""
       )}
       <h1 className="text-4xl font-bold m-5">Quản lý tài khoản</h1>
-      <Section span={24}>
-        <div className="wrapper p-8 ">
-          <h3 className="text-2xl font-bold">Thêm tài khoản</h3>
-          <p className="admin_catalog-add-content m-5">
+
+      {isAdd && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn cancel-btn p-4 text-right "
+              onClick={handleCloseAdd}
+            >
+              Trở về
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8 ">
+              <h3 className="text-2xl font-bold">Thêm tài khoản</h3>
+              <AU
+                list={userForm}
+                dataInput={values}
+                handleChangeDataInput={handleChangeValue}
+                errors={errors}
+                onSubmit={submit}
+                label="Thêm"
+                className={"confirm-btn"}
+              />
+              {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách tài khoản
           </p>
           <div className="catalog_upload-wrapper">
-            <UploadFileExcel dataCheck={userDataCheck} />
-          </div>
-        </div>
-      </Section>
-      <Section span={24}>
-        <div className="wrapper p-8">
-          <h3 className="text-2xl font-bold mb-5">Danh sách tài khoản</h3>
-          <div className="table-wrapper">
-            <Table
-              bordered={true}
-              columns={columns}
-              dataSource={userData}
-              className="text-sm"
-            />
-          </div>
-        </div>
-      </Section>
+            <UploadFileExcel dataCheck={catalogDataCheck} />
+          </div> */}
+            </div>
+          </Section>
+        </>
+      )}
+
+      {isEdit && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn cancel-btn p-4 text-right "
+              onClick={handleCloseEdit}
+            >
+              Trở về
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8 ">
+              <h3 className="text-2xl font-bold">Sửa tài khoản</h3>
+              <AU
+                list={userForm}
+                dataInput={values}
+                handleChangeDataInput={handleChangeValue}
+                errors={errors}
+                onSubmit={submit}
+                label="Sửa"
+                className={"edit-btn"}
+              />
+            </div>
+          </Section>
+        </>
+      )}
+
+      {!isAdd && !isEdit && (
+        <>
+          <Section span={24} className="p-4">
+            <button
+              className="form-btn confirm-btn p-4 mr-5 text-right "
+              onClick={handleOpenAdd}
+            >
+              Thêm tài khoản
+            </button>
+          </Section>
+          <Section span={24}>
+            <div className="wrapper p-8 ">
+              <h3 className="text-2xl font-bold mb-5">Danh sách tài khoản</h3>
+              <div className="table-wrapper">
+                <Table
+                  bordered={true}
+                  columns={columns}
+                  dataSource={userData}
+                  className="text-sm"
+                />
+              </div>
+            </div>
+          </Section>
+        </>
+      )}
     </div>
   );
 }

@@ -62,23 +62,27 @@ export default function Header() {
   return (
     <div className="header bg-white">
       {/*  // HEADER */}
-      <AntdHeader className="z-[999]  md:w-full pc flex items-center justify-between header-bg-color  header md:h-50">
+      <AntdHeader className="z-[999]  md:w-full pc flex items-center justify-between header-bg-color  header md:h-100">
         <HeaderBarIcon active={isBarActive} onClick={handleMobileBar} />
-        <img
-          src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
-          className="cursor-pointer w-[140px]"
-          onClick={() => navigate("/")}
-        />
-        <div className="header_section floex">
-          <div className="header_wishlist relative">
-            <Link to="wishlist" className="">
-              <div className="absolute">as</div>
+        <div className="header_image-wrapper">
+          <img
+            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
+            className="cursor-pointer w-[140px]"
+            onClick={() => navigate("/")}
+          />
+        </div>
+
+        <div className="header_section flex block md:hidden">
+          <div className="header_wishlist mr-3">
+            <Link to="wishlist" className="relative">
               <AiOutlineHeart className="text-5xl mx-2 opacity-70" />
+              <span className="quanity-wishlist-card">0</span>
             </Link>
           </div>
           <div className="header_cart">
             <Link to="cart" className="relative">
               <AiOutlineShoppingCart className="text-5xl mx-2 opacity-70" />
+              <span className="quanity-wishlist-card">0</span>
             </Link>
           </div>
         </div>

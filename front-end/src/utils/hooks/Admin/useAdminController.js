@@ -1,37 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "antd";
-export default function useAdminComment({ propData }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function useAdminController(
+  handleChangeValue,
+  handleSetValue,
+  clearErrors,
+  clearValues
+) {
+  const [isAdd, setIsAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
 
   const dataCheck = ["catalog_name"];
 
-  const [rootData, setRootData] = useState(propData);
-
   const handleOpenAdd = () => {
-    setIsOpen(true);
+    setIsAdd(true);
   };
 
   const handleCloseAdd = () => {
-    setIsOpen(false);
+    setIsAdd(false);
   };
 
   const handleChangeInput = (e) => {
-    setRootData({
-      ...rootData,
-      [e.target.name]: e.target.value,
-    });
+    handleChangeValue(e);
   };
 
   const handleOpenEdit = (data, index) => {
     setIsEdit(true);
 
-    setRootData({
-      row_index: index,
-      ...data,
-    });
-    console.log(data);
+    handleSetValue(data, index);
   };
 
   const handleCloseEdit = (data, index) => {
@@ -44,18 +40,23 @@ export default function useAdminComment({ propData }) {
 
   const confirmEdit = () => {
     handleCloseEdit(false);
-    setRootData(propData);
   };
 
   const handleOpenDelete = (data) => {
     setIsDelete(true);
   };
 
-  return [
-    rootData,
+  useEffect(() => {
+    if (!isEdit && !isAdd) {
+      clearErrors();
+      clearValues();
+    }
+  }, [isEdit, isAdd]);
+
+  return {
     isDelete,
     isEdit,
-    isOpen,
+    isAdd,
     handleChangeInput,
     handleOpenEdit,
     handleCloseEdit,
@@ -64,5 +65,5 @@ export default function useAdminComment({ propData }) {
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
-  ];
+  };
 }

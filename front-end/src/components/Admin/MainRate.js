@@ -4,20 +4,11 @@ import Section from "../../utils/components/Section";
 import { Table } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
 import { Input } from "antd";
-import { rateTemplateData, rateListData } from "../../static/AdminData";
+import { rateListData } from "../../static/AdminData";
 
 export default function MainRate() {
-  const [
-    rootData,
-    isDelete,
-    isEdit,
-    handleChangeInput,
-    handleOpenEdit,
-    handleCloseEdit,
-    confirmEdit,
-    handleOpenDelete,
-    handleCloseDelete,
-  ] = useAdminController(rateTemplateData);
+  const { isDelete, handleOpenEdit, handleOpenDelete, handleCloseDelete } =
+    useAdminController();
 
   const rateData = React.useMemo(() => rateListData);
 

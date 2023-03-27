@@ -9,46 +9,41 @@ import {
   catalogListData,
   catalogDataCheck,
 } from "../../static/AdminData";
-import { Input } from "antd";
 import AU from "../Admin/AU";
-import useCondition from "../../utils/hooks/Admin/useCondition";
+import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
 import validateCatalog from "../../utils/validates/validateCatalog";
-
+import { catalogForm } from "../../static/Admin/Forms";
 export default function MainCatalog() {
-  const [
-    rootData,
+  const catalogData = React.useMemo(() => catalogListData);
+
+  const addData = (values) => {
+    console.log(values);
+  };
+  const {
+    values,
+    handleChangeValue,
+    handleSetValue,
+    submit,
+    errors,
+    clearErrors,
+    clearValues,
+  } = useValidateForm(catalogTemplateData, addData, validateCatalog);
+
+  const {
     isDelete,
     isEdit,
-    isOpen,
-    handleChangeInput,
+    isAdd,
     handleOpenEdit,
     handleCloseEdit,
-    confirmEdit,
     handleOpenDelete,
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
-  ] = useAdminController(catalogTemplateData);
-
-  const catalogData = React.useMemo(() => catalogListData);
-
-  const catalogForm = [
-    {
-      label: "Tên danh mục",
-      type: "text",
-      name: "catalog_name",
-    },
-  ];
-  const catalogInputData = {
-    catalog_name: "",
-  };
-  const addData = (values) => {
-    console.log(values);
-  };
-  const { values, handleChangeValues, submit, errors } = useCondition(
-    catalogInputData,
-    addData,
-    validateCatalog
+  } = useAdminController(
+    handleChangeValue,
+    handleSetValue,
+    clearErrors,
+    clearValues
   );
 
   const columns = [
@@ -99,7 +94,7 @@ export default function MainCatalog() {
       )}
       <h1 className="text-4xl font-bold m-5">Quản lý danh mục</h1>
 
-      {isOpen && (
+      {isAdd && (
         <>
           <Section span={24} className="p-4">
             <button
@@ -115,7 +110,7 @@ export default function MainCatalog() {
               <AU
                 list={catalogForm}
                 dataInput={values}
-                handleChangeDataInput={handleChangeValues}
+                handleChangeDataInput={handleChangeValue}
                 errors={errors}
                 onSubmit={submit}
                 label="Thêm"
@@ -148,7 +143,7 @@ export default function MainCatalog() {
               <AU
                 list={catalogForm}
                 dataInput={values}
-                handleChangeDataInput={handleChangeValues}
+                handleChangeDataInput={handleChangeValue}
                 errors={errors}
                 onSubmit={submit}
                 label="Sửa"
@@ -159,7 +154,7 @@ export default function MainCatalog() {
         </>
       )}
 
-      {!isOpen && !isEdit && (
+      {!isAdd && !isEdit && (
         <>
           <Section span={24} className="p-4">
             <button
