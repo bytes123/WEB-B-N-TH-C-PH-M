@@ -3,8 +3,8 @@ import { Input } from "antd";
 export default function useAdminController(
   handleChangeValue,
   handleSetValue,
-  clearErrors,
-  clearValues
+  clearErrors = () => {},
+  clearValues = () => {}
 ) {
   const [isAdd, setIsAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -25,8 +25,8 @@ export default function useAdminController(
   };
 
   const handleOpenEdit = (data, index) => {
+    console.log(data);
     setIsEdit(true);
-
     handleSetValue(data, index);
   };
 
@@ -44,6 +44,10 @@ export default function useAdminController(
 
   const handleOpenDelete = (data) => {
     setIsDelete(true);
+  };
+
+  const handleConfirmRate = (arr) => {
+    console.log(arr);
   };
 
   useEffect(() => {
@@ -65,5 +69,6 @@ export default function useAdminController(
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
+    handleConfirmRate,
   };
 }

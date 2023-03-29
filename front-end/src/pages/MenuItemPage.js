@@ -92,14 +92,14 @@ export default function MenuItemPage() {
   ]);
 
   useEffect(() => {
-    if (isLoading) {
-      document.body.style.overflow = "hidden";
-    }
-    setTimeout(() => {
+    document.body.style.overflow = "hidden";
+    const waitLoading = setTimeout(() => {
       setIsLoading(false);
 
       document.body.style.overflow = "auto";
     }, 3000);
+
+    return () => clearTimeout(waitLoading);
   }, []);
 
   const [currentItems, pageCount, handlePageClick] = usePagination(items, 2);

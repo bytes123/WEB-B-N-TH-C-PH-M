@@ -5,17 +5,17 @@ import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import { Table } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
 import {
-  productTemplateData,
-  productListData,
+  detailProductTemplateData,
+  detailProductListData,
   productDataCheck,
 } from "../../static/AdminData";
 import AU from "./AU";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
-import validateProduct from "../../utils/validates/validateProduct";
-import { productForm } from "../../static/Admin/Forms";
+import validateDetailProduct from "../../utils/validates/validateDetailProduct";
+import { detailProductForm } from "../../static/Admin/Forms";
 
-export default function MainProduct() {
-  const productData = React.useMemo(() => productListData);
+export default function MainDetailProduct() {
+  const productData = React.useMemo(() => detailProductListData);
 
   const columns = [
     {
@@ -24,15 +24,35 @@ export default function MainProduct() {
       render: (data, arr, index) => index + 1,
     },
     {
+      title: "Hình ảnh",
+      dataIndex: "detail_product_image",
+      key: "detail_product_image",
+      render: (data, arr, index) => (
+        <img className="w-[80px]" src={data} alt="" />
+      ),
+    },
+    {
       title: "Tên",
       dataIndex: "product_name",
       key: "product_name",
       render: (data, arr, index) => <p>{data}</p>,
     },
     {
-      title: "Danh mục",
-      dataIndex: "catalog_name",
-      key: "catalog_name",
+      title: "Giá sản phẩm",
+      dataIndex: "detail_product_price",
+      key: "detail_product_price",
+      render: (data, arr, index) => <p>{data}</p>,
+    },
+    {
+      title: "Trọng lượng",
+      dataIndex: "detail_product_size",
+      key: "detail_product_size",
+      render: (data, arr, index) => <p>{data}</p>,
+    },
+    {
+      title: "Số lượng",
+      dataIndex: "detail_product_storage",
+      key: "detail_product_storage",
       render: (data, arr, index) => <p>{data}</p>,
     },
 
@@ -64,13 +84,13 @@ export default function MainProduct() {
   const {
     values,
     handleChangeValue,
-    handleSetValue,
     handleSelect,
+    handleSetValue,
     submit,
     errors,
     clearErrors,
     clearValues,
-  } = useValidateForm(addData, validateProduct);
+  } = useValidateForm(addData, validateDetailProduct);
 
   const {
     isDelete,
@@ -101,7 +121,7 @@ export default function MainProduct() {
       ) : (
         ""
       )}
-      <h1 className="text-4xl font-bold m-5">Quản lý sản phẩm</h1>
+      <h1 className="text-4xl font-bold m-5">Quản lý loại sản phẩm</h1>
 
       {isAdd && (
         <>
@@ -115,9 +135,9 @@ export default function MainProduct() {
           </Section>
           <Section span={24}>
             <div className="wrapper p-8 ">
-              <h3 className="text-2xl font-bold">Thêm sản phẩm</h3>
+              <h3 className="text-2xl font-bold">Thêm loại sản phẩm</h3>
               <AU
-                list={productForm}
+                list={detailProductForm}
                 data={values}
                 handleChangeData={handleChangeValue}
                 handleSelect={handleSelect}
@@ -149,9 +169,9 @@ export default function MainProduct() {
           </Section>
           <Section span={24}>
             <div className="wrapper p-8 ">
-              <h3 className="text-2xl font-bold">Sửa sản phẩm</h3>
+              <h3 className="text-2xl font-bold">Sửa loại sản phẩm</h3>
               <AU
-                list={productForm}
+                list={detailProductForm}
                 data={values}
                 handleChangeData={handleChangeValue}
                 handleSelect={handleSelect}

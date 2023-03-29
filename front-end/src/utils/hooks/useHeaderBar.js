@@ -9,6 +9,8 @@ export default function useHeaderBar() {
     isBarActive
       ? (document.body.style = "padding-right: 15.2px;overflow: hidden")
       : (document.body.style = "overflow: unset");
+
+    return () => (document.body.style.overflow = "auto");
   }, [isBarActive]);
 
   useEffect(() => {

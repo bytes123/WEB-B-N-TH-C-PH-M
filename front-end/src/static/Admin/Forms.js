@@ -31,16 +31,61 @@ const catalogForm = [
   },
 ];
 
-const productForm = [
+const detailProductForm = [
   {
-    label: "Hình hãng",
+    label: "Hình loại sản phẩm",
     type: "file",
-    name: "product_image",
+    name: "detail_product_image",
   },
+  {
+    label: "Tên sản phẩm",
+    type: "list",
+    value_name: "product_id",
+    label_name: "product_name",
+    list: [
+      {
+        value: 1,
+        label: "Cà chua",
+      },
+      {
+        value: 2,
+        label: "Dưa leo",
+      },
+    ],
+  },
+  {
+    label: "Trọng lượng",
+    type: "text",
+    name: "detail_product_size",
+  },
+  {
+    label: "Số lượng",
+    type: "text",
+    name: "detail_product_storage",
+  },
+];
+
+const productForm = [
   {
     label: "Tên sản phẩm",
     type: "text",
     name: "product_name",
+  },
+  {
+    label: "Danh mục",
+    type: "list",
+    value_name: "catalog_id",
+    label_name: "catalog_name",
+    list: [
+      {
+        value: 1,
+        label: "Thực phẩm",
+      },
+      {
+        value: 2,
+        label: "Bánh",
+      },
+    ],
   },
 ];
 
@@ -67,4 +112,4 @@ const brandForm = [
   },
 ];
 
-export { userForm, catalogForm, productForm, brandForm };
+export { userForm, catalogForm, productForm, detailProductForm, brandForm };

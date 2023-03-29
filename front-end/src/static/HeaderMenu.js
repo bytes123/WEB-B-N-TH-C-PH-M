@@ -13,11 +13,6 @@ const DesktopMenu = [
     value: "Giới thiệu",
   },
   {
-    key: "history",
-    link: path.history,
-    value: "Lịch sử đơn hàng",
-  },
-  {
     key: "menu",
     link: path.menu + "/banh-ngot",
     value: "Thực đơn",
@@ -91,11 +86,6 @@ const MobileMenu = [
     key: "introduce",
     link: path.introduce,
     value: "Giới thiệu",
-  },
-  {
-    key: "history",
-    link: path.history,
-    value: "Lịch sử đặt mua",
   },
   {
     key: "menu",

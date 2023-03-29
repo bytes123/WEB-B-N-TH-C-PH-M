@@ -1,5 +1,6 @@
 import MainDashBoard from "../components/Admin/MainDashBoard";
 import MainSideBar from "../components/Admin/MainSideBar";
+import MainDetailProduct from "../components/Admin/MainDetailProduct";
 import MainProduct from "../components/Admin/MainProduct";
 import MainCatalog from "../components/Admin/MainCatalog";
 import MainUser from "../components/Admin/MainUser";
@@ -8,7 +9,7 @@ import MainBrand from "../components/Admin/MainBrand";
 import MainStatistic from "../components/Admin/MainStatistic";
 import MainBill from "../components/Admin/MainBill";
 import { AiOutlineShoppingCart, AiOutlineUsergroupAdd } from "react-icons/ai";
-import { FiShoppingBag, FiUsers } from "react-icons/fi";
+import { FiShoppingBag, FiUsers, FiPackage } from "react-icons/fi";
 import { FcStatistics } from "react-icons/fc";
 import { MdOutlineRateReview } from "react-icons/md";
 import { BiCategoryAlt } from "react-icons/bi";
@@ -16,6 +17,7 @@ import { TbBrandAirtable } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import { FcMoneyTransfer } from "react-icons/fc";
 import { RiBillLine } from "react-icons/ri";
+
 const sideBarList = [
   {
     key: 1,
@@ -48,30 +50,37 @@ const sideBarList = [
       },
       {
         key: 3,
+        link: "quan-ly-loai-san-pham",
+        icon: <FiPackage />,
+        text: "Quản lý loại sản phẩm",
+      },
+
+      {
+        key: 4,
         link: "quan-ly-don-hang",
         icon: <RiBillLine />,
         text: "Quản lý đơn hàng",
       },
       {
-        key: 4,
+        key: 5,
         link: "quan-ly-nguoi-dung",
         icon: <AiOutlineUsergroupAdd />,
         text: "Quản lý tài khoản",
       },
       {
-        key: 5,
+        key: 6,
         link: "quan-ly-danh-gia",
         icon: <MdOutlineRateReview />,
         text: "Quản lý đánh giá",
       },
       {
-        key: 6,
+        key: 7,
         link: "quan-ly-nhan-hang",
         icon: <TbBrandAirtable />,
         text: "Quản lý nhãn hàng",
       },
       {
-        key: 7,
+        key: 8,
         link: "quan-ly-thong-ke",
         icon: <FcStatistics />,
         text: "Quản lý thống kê",
@@ -102,19 +111,38 @@ const billListData = [
 const productListData = [
   {
     product_id: 1,
-    product_image:
-      "https://shoppymultidash.netlify.app/static/media/product6.3260a3b510aa12fc136b.jpg",
+
     product_name: "Cà chua",
-    product_catalog: "Trà",
-    product_price: "350000",
+    catalog_id: 1,
+    catalog_name: "Thực phẩm",
   },
   {
     product_id: 2,
-    product_image:
+
+    product_name: "Pepsi",
+    catalog_id: 2,
+    catalog_name: "Nước ngọt",
+  },
+];
+
+const detailProductListData = [
+  {
+    detail_product_id: 1,
+    detail_product_image:
+      "https://shoppymultidash.netlify.app/static/media/product6.3260a3b510aa12fc136b.jpg",
+    product_name: "Cà chua",
+    detail_product_size: "50g",
+    detail_product_storage: "34",
+    detail_product_price: "350000",
+  },
+  {
+    detail_product_id: 2,
+    detail_product_image:
       "https://shoppymultidash.netlify.app/static/media/product6.3260a3b510aa12fc136b.jpg",
     product_name: "Pháo",
-    product_catalog: "Trà",
-    product_price: "350000",
+    detail_product_size: "30g",
+    detail_product_storage: "22",
+    detail_product_price: "350000",
   },
 ];
 
@@ -220,11 +248,16 @@ const brandDataCheck = [
   " brand_created_date",
 ];
 
+const detailProductTemplateData = {
+  detail_product_image: "",
+  product_id: "",
+  detail_product_size: "",
+  detail_product_price: "",
+};
+
 const productTemplateData = {
-  product_image: "",
   product_name: "",
-  product_catalog: "",
-  product_price: "",
+  catalog_name: "",
 };
 
 const userTemplateData = {
@@ -260,6 +293,7 @@ const userDataCheck = [
 export {
   MainDashBoard,
   MainSideBar,
+  MainDetailProduct,
   MainProduct,
   MainCatalog,
   MainRate,
@@ -271,6 +305,7 @@ export {
   sideBarList,
   billListData,
   productListData,
+  detailProductListData,
   catalogListData,
   brandListData,
   rateListData,
@@ -281,6 +316,7 @@ export {
   brandTemplateData,
   brandDataCheck,
   productTemplateData,
+  detailProductTemplateData,
   productDataCheck,
   userDataCheck,
   userTemplateData,

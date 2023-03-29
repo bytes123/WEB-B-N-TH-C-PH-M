@@ -40,6 +40,10 @@ const rulesLogin = {
 const userSignUp = {
   lastname: "",
   firstname: "",
+  city: "",
+  district: "",
+  ward: "",
+  address: "",
   email: "",
   password: "",
   subscribe: false,

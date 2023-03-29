@@ -5,28 +5,22 @@ import {
   rulesSignUp as rules,
   userSignUp as defaultUser,
 } from "../../static/UserForm";
+import useSignUp from "../../utils/hooks/useSignUp";
+import AddressForm from "../../utils/components/AddressForm";
 
 export default function SignUpForm() {
   const [form] = Form.useForm();
 
-  const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
-  const [user, setUser] = useState(defaultUser);
-
-  const handleSubmit = (user) => {
-    delete user.confirm;
-    setUser(user);
-  };
-
-  const handleFocusPlaceHolder = (name) => {
-    setPlaceHolder({
-      ...placeHolder,
-      [name]: "",
-    });
-  };
-
-  const handleBlurPlaceHolder = () => {
-    setPlaceHolder(defaultPlaceHolder);
-  };
+  const {
+    placeHolder,
+    user,
+    handleSubmit,
+    handleFocusPlaceHolder,
+    handleBlurPlaceHolder,
+    handleAddress,
+    errors,
+    clearErrors,
+  } = useSignUp();
 
   return (
     <div className="user_form">
@@ -58,6 +52,13 @@ export default function SignUpForm() {
               className="font-medium"
             />
           </Form.Item>
+
+          <AddressForm
+            errors={errors}
+            handleAddress={handleAddress}
+            values={user}
+            onClearErrors={clearErrors}
+          />
           <h3 className="text-lg font-bold mb-5">Bảo mật tài khoản</h3>
           <Form.Item name="email" rules={rules.email}>
             <Input

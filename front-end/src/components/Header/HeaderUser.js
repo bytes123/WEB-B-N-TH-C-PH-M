@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function HeaderUser() {
+export default function HeaderUser({ onPopup }) {
   return (
-    <div className="ml-auto">
+    <div className="relative bottom-1 block " onClick={onPopup}>
       <div className="avatar cursor-pointer">
         <img
           className="w-[40px] rounded-full"

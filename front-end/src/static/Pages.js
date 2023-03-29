@@ -8,6 +8,10 @@ import ProductPage from "../pages/ProductPage";
 import MenuItemPage from "../pages/MenuItemPage";
 import HistoryPage from "../pages/HistoryPage";
 import AdminPage from "../pages/AdminPage";
+import WishLishPage from "../pages/WishLishPage";
+import CartPage from "../pages/CartPage";
+import ProfilePage from "../pages/ProfilePage";
+import ChangePasswordPage from "../pages/ChangePasswordPage";
 
 export {
   HomePage,
@@ -20,4 +24,8 @@ export {
   MenuItemPage,
   HistoryPage,
   AdminPage,
+  WishLishPage,
+  CartPage,
+  ProfilePage,
+  ChangePasswordPage,
 };

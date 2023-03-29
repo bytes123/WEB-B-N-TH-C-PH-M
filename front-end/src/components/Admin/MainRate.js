@@ -5,9 +5,10 @@ import { Table } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
 import { Input } from "antd";
 import { rateListData } from "../../static/AdminData";
+import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
 
 export default function MainRate() {
-  const { isDelete, handleOpenEdit, handleOpenDelete, handleCloseDelete } =
+  const { isDelete, handleOpenDelete, handleCloseDelete, handleConfirmRate } =
     useAdminController();
 
   const rateData = React.useMemo(() => rateListData);
@@ -54,7 +55,7 @@ export default function MainRate() {
           <button
             className="edit-btn mr-5"
             name="edit-btn"
-            onClick={() => handleOpenEdit(arr, index)}
+            onClick={() => handleConfirmRate(arr, index)}
           >
             Duyệt
           </button>

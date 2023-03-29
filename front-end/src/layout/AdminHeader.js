@@ -17,7 +17,7 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
     handleCloseAdminNotification,
   ] = useAdminNotification();
   return (
-    <div className="admin_header-wrapper sticky top-0 z-10  px-8 pt-6">
+    <div className="admin_header-wrapper sticky top-0 z-50  px-8 pt-6">
       <div
         className={`admin_header  flex ${
           !isBarActive ? "justify-between " : "justify-end"

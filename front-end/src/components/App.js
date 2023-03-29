@@ -2,6 +2,7 @@ import { Layout } from "antd";
 import { Routes, Route } from "react-router-dom";
 import {
   MainDashBoard,
+  MainDetailProduct,
   MainProduct,
   MainCatalog,
   MainRate,
@@ -23,6 +24,10 @@ import {
   MenuItemPage,
   HistoryPage,
   AdminPage,
+  WishLishPage,
+  CartPage,
+  ProfilePage,
+  ChangePasswordPage,
 } from "../static/Pages";
 import "./../assets/styles/App.scss";
 import Header from "../layout/Header";
@@ -53,6 +58,14 @@ const App = () => {
           element={
             <AdminPage>
               <MainProduct />
+            </AdminPage>
+          }
+        />
+        <Route
+          path="admin/quan-ly-loai-san-pham"
+          element={
+            <AdminPage>
+              <MainDetailProduct />
             </AdminPage>
           }
         />
@@ -122,6 +135,50 @@ const App = () => {
             <Layout className="h-full bg-white">
               <Header />
               <MenuPage />
+              <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="yeu-thich"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <WishLishPage />
+              <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="gio-hang"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <CartPage />
+              <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="thong-tin-ca-nhan"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <ProfilePage />
+              <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="doi-mat-khau"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <ChangePasswordPage />
               <Footer />
             </Layout>
           }

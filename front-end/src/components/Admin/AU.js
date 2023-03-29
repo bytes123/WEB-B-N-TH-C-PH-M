@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import Input from "../../utils/components/Input";
 import { FiUpload } from "react-icons/fi";
 import useUploadImage from "../../utils/hooks/Admin/useUploadImage";
+import Select from "react-select";
 
 export default function AU({
-  dataInput,
-  handleChangeDataInput,
+  data,
+  handleChangeData,
   list,
   errors,
   onSubmit,
   label,
   className,
+  handleSelect,
 }) {
   const { imagePreview, setSelectedFile } = useUploadImage();
 
@@ -18,7 +20,7 @@ export default function AU({
     <form className="form p-4 " onSubmit={onSubmit}>
       {list.map((item) =>
         item.type == "file" ? (
-          <div className="form-image mb-3 ">
+          <div className="form-image mb-3 " key={item.name}>
             <label className="form-label ">{item.label}</label>
             <div className="relative flex items-center justify-center w-[250px] h-[250px] ">
               <div className="absolute ">
@@ -28,30 +30,59 @@ export default function AU({
               <input
                 type="file"
                 onChange={(e) => {
-                  handleChangeDataInput(e);
+                  handleChangeData(e);
                   setSelectedFile(e.target.files[0]);
                 }}
                 name={item.name}
-                className=" absolute  cursor-pointer opacity-0 w-full h-full z-20"
+                className=" absolute  cursor-pointer opacity-0 w-full h-full z-10"
               />
 
               <div>
                 <img
                   className="opacity-70 h-full"
-                  src={imagePreview ?? dataInput[item.name]}
+                  src={imagePreview ?? data[item.name]}
                   alt=""
                 />
               </div>
             </div>
           </div>
+        ) : item.type == "list" ? (
+          <div className="form-list mb-5" key={item.name}>
+            <div className="form-label">{item.label}</div>
+            <Select
+              className={
+                errors[item.value_name]
+                  ? "error-input rounded-xl border-2"
+                  : " "
+              }
+              onChange={(data) => handleSelect(data.value, item.value_name)}
+              defaultValue={
+                data && {
+                  value: data[item.value_name],
+                  label: data[item.label_name],
+                }
+              }
+              options={item.list.map((item) => {
+                return {
+                  value: item.value,
+                  label: item.label,
+                };
+              })}
+            />
+            {errors[item.value_name] ? (
+              <p className="error-text">{errors[item.value_name]}</p>
+            ) : (
+              ""
+            )}
+          </div>
         ) : (
-          <div className="form-group mb-3">
+          <div className="form-group mb-3" key={item.name}>
             <label className="form-label ">{item.label}</label>
             <Input
               type={item.type}
               name={item.name}
-              value={dataInput[item.name]}
-              onChangeDataInput={handleChangeDataInput}
+              value={data[item.name]}
+              onChangeDataInput={handleChangeData}
               className={
                 errors[item.name]
                   ? "error-input"

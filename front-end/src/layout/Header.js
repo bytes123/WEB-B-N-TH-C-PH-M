@@ -15,16 +15,20 @@ import useMobileSubMenu from "../utils/hooks/useMobileSubMenu";
 import HeaderBarIcon from "../components/Header/HeaderBarIcon";
 import HeaderUser from "../components/Header/HeaderUser";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
-
+import usePopup from "../utils/hooks/usePopup";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import Popup from "../utils/components/Popup";
+import ProfileController from "../components/Header/ProfileController";
 const { Header: AntdHeader } = Layout;
-
 const desktopMenuClass =
-  "hidden md:flex flex-nowrap w-full h-full caret-transparent px-3 text-[14px] font-bold flex items-center header-color header-bg-color";
+  "hidden lg:flex flex-wrap w-full h-full caret-transparent px-3 text-[14px] font-bold flex items-center header-color header-bg-color";
 
 const mobileMenuClass =
   "w-full caret-transparent px-3 text-[16px] font-bold  header-color header-bg-color";
 
 export default function Header() {
+  const [isPopupActive, handlePopup, handleClosePopup] = usePopup();
+
   let navigate = useNavigate();
   const location = useLocation();
 
@@ -72,21 +76,6 @@ export default function Header() {
           />
         </div>
 
-        <div className="header_section flex block md:hidden">
-          <div className="header_wishlist mr-3">
-            <Link to="wishlist" className="relative">
-              <AiOutlineHeart className="text-5xl mx-2 opacity-70" />
-              <span className="quanity-wishlist-card">0</span>
-            </Link>
-          </div>
-          <div className="header_cart">
-            <Link to="cart" className="relative">
-              <AiOutlineShoppingCart className="text-5xl mx-2 opacity-70" />
-              <span className="quanity-wishlist-card">0</span>
-            </Link>
-          </div>
-        </div>
-
         <Menu className={desktopMenuClass}>
           {DesktopMenu.map(
             (item) =>
@@ -105,8 +94,40 @@ export default function Header() {
                 </Menu.Item>
               )
           )}
-          <HeaderUser />
         </Menu>
+
+        <div className="wrapper flex items-center ">
+          <div className="header_section flex mr-5  block lg:hidden">
+            <div className="header_wishlist mr-3">
+              <Link to="/yeu-thich" className="relative">
+                <AiOutlineHeart className="text-5xl mx-2 opacity-70" />
+                <span className="quanity-wishlist-card">0</span>
+              </Link>
+            </div>
+            <div className="header_cart">
+              <Link to="/gio-hang" className="relative">
+                <AiOutlineShoppingCart className="text-5xl mx-2 opacity-70" />
+                <span className="quanity-wishlist-card">0</span>
+              </Link>
+            </div>
+          </div>
+          <HeaderUser onPopup={handlePopup} />
+
+          {/* POPUP PROFILE */}
+          <Popup
+            className={`${
+              isPopupActive
+                ? "block rounded-lg fixed right-5 top-[60px] w-[300px] p-3 "
+                : "hidden"
+            }`}
+          >
+            <div className="popup-wrapper">
+              <ProfileController>
+                <HeaderUser />
+              </ProfileController>
+            </div>
+          </Popup>
+        </div>
       </AntdHeader>
       {/*  // MOBILE BAR HEADER */}
       <HeaderBar active={isBarActive}>

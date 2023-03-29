@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-export default function useCondition(inputData, callback, validate) {
-  const [values, setValues] = useState(inputData);
+export default function useCondition(callback, validate) {
+  const [values, setValues] = useState({});
+  const [sendValues, setSendValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -15,12 +16,35 @@ export default function useCondition(inputData, callback, validate) {
         ...values,
         [e.target.name]: e.target.files[0],
       });
+      setSendValues({
+        ...sendValues,
+        [e.target.name]: e.target.files[0],
+      });
     } else {
       setValues({
         ...values,
         [e.target.name]: e.target.value,
       });
+      setSendValues({
+        ...sendValues,
+        [e.target.name]: e.target.value,
+      });
     }
+  };
+
+  const handleSelect = (value, name) => {
+    setValues({
+      ...values,
+      [name]: value,
+    });
+    setSendValues({
+      ...sendValues,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
   };
 
   const handleSetValue = (data, index) => {
@@ -35,33 +59,35 @@ export default function useCondition(inputData, callback, validate) {
   };
 
   const clearValues = () => {
-    setValues(inputData);
+    setValues({});
+    setSendValues({});
   };
 
   const submit = (e) => {
     e.preventDefault();
-    setErrors(validate(values));
+    setErrors(validate(sendValues));
     setIsSubmitting(true);
-    console.log(values);
   };
 
-  // useEffect(() => {
-  //   console.log(values);
-  // }, [values]);
+  useEffect(() => {
+    console.log(sendValues);
+  }, [sendValues]);
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
-      callback(values);
+      callback(sendValues);
     }
   }, [errors]);
 
   return {
     values,
+    sendValues,
     handleChangeValue,
     submit,
     errors,
     clearErrors,
     clearValues,
     handleSetValue,
+    handleSelect,
   };
 }
