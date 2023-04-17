@@ -85,6 +85,12 @@ const sideBarList = [
         icon: <FcStatistics />,
         text: "Quản lý thống kê",
       },
+      {
+        key: 8,
+        link: "quan-ly-tin-nhan",
+        icon: <FcStatistics />,
+        text: "Quản lý tin nhắn",
+      },
     ],
   },
 ];
@@ -266,7 +272,6 @@ const userTemplateData = {
   user_name: "",
   user_password: "",
   user_address: "",
-  user_isAdmin: "",
   user_created_date: "",
 };
 

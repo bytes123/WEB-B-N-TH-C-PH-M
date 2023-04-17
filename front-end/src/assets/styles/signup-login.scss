@@ -58,3 +58,29 @@
     border-color: $primary-color;
   }
 }
+
+.custom-file-upload {
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  padding: 6px;
+  cursor: pointer;
+  background: linear-gradient(270deg, #3fa1a9, #79f1a4);
+  margin-bottom: 25px;
+}
+
+.img-wrap {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.img-upload:hover:before {
+  opacity: 1;
+}
+img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}

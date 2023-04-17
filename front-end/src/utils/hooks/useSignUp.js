@@ -5,29 +5,30 @@ import {
   userSignUp as defaultUser,
 } from "../../static/UserForm";
 
-export default function useSignUp() {
+export default function useSignUp(callback) {
   const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
   const [user, setUser] = useState(defaultUser);
   const [errors, setErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
 
   const handleSubmit = (data) => {
-    delete user.confirm;
     setUser({
       ...user,
-      data,
+      ...data,
     });
 
-    if (!user.ward) {
-      errors.ward = "Vui lòng chọn phường/xã";
+    if (!user.user_ward) {
+      errors.user_ward = "Vui lòng chọn phường/xã";
     }
 
-    if (!user.district) {
-      errors.district = "Vui lòng chọn quận/huyện";
+    if (!user.user_district) {
+      errors.user_district = "Vui lòng chọn quận/huyện";
     }
 
     if (!user.address) {
       errors.address = "Vui lòng nhập địa chỉ";
     }
+    setIsSubmit(true);
   };
 
   const clearErrors = () => {
@@ -54,8 +55,11 @@ export default function useSignUp() {
   };
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    if (Object.keys(errors).length === 0 && isSubmit) {
+      callback(user);
+    }
+    setIsSubmit(false);
+  }, [isSubmit]);
 
   return {
     placeHolder,

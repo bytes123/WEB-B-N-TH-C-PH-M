@@ -39,7 +39,11 @@ export default function AddressForm({
             className="checkout_province-selected address-selected"
             onClick={(e) => handleOpenCityList(e)}
           >
-            <p>{values.city && values.city.name ? values.city.name : ""}</p>
+            <p>
+              {values.user_city && values.user_city.name
+                ? values.user_city.name
+                : ""}
+            </p>
             <ArrowDropDownIcon />
           </div>
           <div
@@ -76,21 +80,21 @@ export default function AddressForm({
         >
           <div
             className={
-              errors.district
+              errors.user_district
                 ? "checkout_district-selected address-selected error-input"
                 : "checkout_district-selected address-selected"
             }
             onClick={(e) => handleOpenDistrictList(e)}
           >
             <p>
-              {values.district && values.district.name
-                ? values.district.name
+              {values.user_district && values.user_district.name
+                ? values.user_district.name
                 : "Chọn Quận / huyện"}
             </p>
             <ArrowDropDownIcon />
           </div>
-          {errors.district ? (
-            <p className="error-text">{errors.district}</p>
+          {errors.user_district ? (
+            <p className="error-text">{errors.user_district}</p>
           ) : (
             ""
           )}
@@ -127,20 +131,24 @@ export default function AddressForm({
         <div className="checkout_profile-ward address-item col-6" ref={refWard}>
           <div
             className={
-              errors.ward
+              errors.user_ward
                 ? "checkout_ward-selected address-selected error-input"
                 : "checkout_ward-selected address-selected"
             }
             onClick={(e) => handleOpenWardList(e)}
           >
             <p>
-              {values.ward && values.ward.name
-                ? values.ward.name
+              {values.user_ward && values.user_ward.name
+                ? values.user_ward.name
                 : "Chọn Phường / Xã"}
             </p>
             <ArrowDropDownIcon />
           </div>
-          {errors.ward ? <p className="error-text">{errors.ward}</p> : ""}
+          {errors.user_ward ? (
+            <p className="error-text">{errors.user_ward}</p>
+          ) : (
+            ""
+          )}
           <div
             className={
               isSubWardList ? "checkout_ship-sub active" : "checkout_ship-sub"

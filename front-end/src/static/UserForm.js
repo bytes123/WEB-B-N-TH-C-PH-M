@@ -1,9 +1,11 @@
 let defaultPlaceHolder = {
-  lastname: "* Họ",
-  firstname: "* Tên",
+  avatar: "Ảnh đại diện",
+  user_name: "* Tài khoản",
+  fullname: "* Họ và tên",
   email: "* Địa chỉ Email",
   password: "* Mật khẩu",
   confirmpassword: "* Nhập lại mật khẩu",
+  phone_number: "* Nhập số điện thoại",
 };
 
 const validateConfirmPassword = ({ getFieldValue }) => ({
@@ -16,8 +18,8 @@ const validateConfirmPassword = ({ getFieldValue }) => ({
 });
 
 const rulesSignUp = {
-  lastname: [{ required: true, message: "Vui lòng nhập họ của bạn!" }],
-  firstname: [{ required: true, message: "Vui lòng nhập tên của bạn!" }],
+  user_name: [{ required: true, message: "Vui lòng nhập tài khoản của bạn!" }],
+  fullname: [{ required: true, message: "Vui lòng nhập tên của bạn!" }],
   email: [{ required: true, message: "Vui lòng nhập Email của bạn!" }],
   password: [
     { required: true, message: "Vui lòng nhập mật khẩu!" },
@@ -27,10 +29,11 @@ const rulesSignUp = {
     { required: true, message: "Vui lòng nhập lại mật khẩu!" },
     validateConfirmPassword,
   ],
+  phone_number: [{ required: true, message: "Vui lòng nhập số điện thoại!" }],
 };
 
 const rulesLogin = {
-  email: [{ required: true, message: "Vui lòng nhập Email của bạn!" }],
+  user_name: [{ required: true, message: "Vui lòng nhập tài khoản của bạn!" }],
   password: [
     { required: true, message: "Vui lòng nhập mật khẩu!" },
     { min: 6, message: "Vui lòng nhập mật khẩu ít nhất 6 ký tự!" },
@@ -38,19 +41,15 @@ const rulesLogin = {
 };
 
 const userSignUp = {
-  lastname: "",
-  firstname: "",
-  city: "",
-  district: "",
-  ward: "",
+  user_name: "",
+  fullname: "",
   address: "",
   email: "",
   password: "",
-  subscribe: false,
 };
 
 const userLogin = {
-  email: "",
+  user_name: "",
   password: "",
   save: false,
 };

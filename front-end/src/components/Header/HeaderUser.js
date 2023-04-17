@@ -1,12 +1,16 @@
 import React from "react";
 
-export default function HeaderUser({ onPopup }) {
+export default function HeaderUser({ onPopup, className, user }) {
   return (
     <div className="relative bottom-1 block " onClick={onPopup}>
       <div className="avatar cursor-pointer">
         <img
-          className="w-[40px] rounded-full"
-          src="https://shoppymultidash.netlify.app/static/media/avatar.ad026443bbabdf64ce71.jpg"
+          className={`rounded-full ${className}`}
+          src={
+            user?.avatar
+              ? `http://localhost:8000/resources/avatar/${user.avatar}`
+              : "http://localhost:8000/resources/avatar/default.jpg"
+          }
           alt=""
         />
       </div>

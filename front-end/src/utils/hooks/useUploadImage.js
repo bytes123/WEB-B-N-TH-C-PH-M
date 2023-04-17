@@ -17,5 +17,5 @@ export default function useUploadImage() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
-  return { imagePreview, setSelectedFile };
+  return { imagePreview, selectedFile, setSelectedFile };
 }

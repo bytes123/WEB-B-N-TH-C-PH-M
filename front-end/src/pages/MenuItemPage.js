@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuList from "../components/Home/MenuList";
 import BannerHighLand from "../components/Banner/BannerHighLand";
-import SearchSection from "../components/Product/SearchSection";
+import ClassifySection from "../components/Product/ClassifySection";
 import ItemList from "../components/Product/ItemList";
 import { BiGridAlt, BiSort } from "react-icons/bi";
-import useSearchByValue from "../utils/hooks/Search/useSearchByValue";
 import { nanoid } from "nanoid";
 import PaginatedItems from "../utils/components/PaginatedItems";
 import usePagination from "../utils/hooks/usePagination";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import MainLoading from "../utils/components/MainLoading";
+import useClassifySection from "../utils/hooks/useClassifySection";
+import { ProductData } from "../static/Data";
+import ClassifyItemSection from "../components/Product/ClassifyItemSection";
 
 export default function MenuItemPage() {
   const { menuid } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const searchMenu = [
+  const classifyMenu = [
     {
       key: 1,
       icon: <BiGridAlt className="mx-1" />,
@@ -54,15 +56,12 @@ export default function MenuItemPage() {
     },
   ];
 
-  const [
-    isOpenSearch,
-    handleOpenSearch,
-    handleCloseSearch,
-    handleSwitchSearch,
+  const {
+    handleSwitch,
     activeIndex,
     activeValueIndex,
     handleActiveValueIndex,
-  ] = useSearchByValue();
+  } = useClassifySection();
 
   const [items, setItems] = useState([
     {
@@ -109,24 +108,32 @@ export default function MenuItemPage() {
       <MainLoading isLoading={isLoading} />
       <div className="menu_item-wrapper">
         <BannerHighLand />
-        <MenuList />
+        <MenuList data={ProductData} />
 
-        <SearchSection
-          isOpenSearch={isOpenSearch}
-          activeIndex={activeIndex}
-          data={searchMenu}
-          onSwitch={handleSwitchSearch}
-          activeValueIndex={activeValueIndex}
-          onActiveValueIndex={handleActiveValueIndex}
-        />
-        <ItemList currentItems={currentItems} />
-        <PaginatedItems
-          previousLabel={<BsArrowLeft />}
-          nextLabel={<BsArrowRight />}
-          items={items}
-          handlePageClick={handlePageClick}
-          pageCount={pageCount}
-        />
+        <div className="lg:grid lg:grid-cols-4 lg:px-10">
+          <div className="lg:col-span-3">
+            <ClassifySection
+              activeIndex={activeIndex}
+              data={classifyMenu}
+              onSwitch={handleSwitch}
+              activeValueIndex={activeValueIndex}
+              onActiveValueIndex={handleActiveValueIndex}
+            />
+            <div className="container mx-auto py-10">
+              <ItemList currentItems={currentItems} />
+
+              <PaginatedItems
+                previousLabel={<BsArrowLeft />}
+                nextLabel={<BsArrowRight />}
+                items={items}
+                handlePageClick={handlePageClick}
+                pageCount={pageCount}
+              />
+              <ClassifyItemSection className={" lg:hidden block"} />
+            </div>
+          </div>
+          <ClassifyItemSection className={"py-10 lg:block hidden"} />
+        </div>
       </div>
     </>
   );

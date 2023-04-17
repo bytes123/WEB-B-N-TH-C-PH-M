@@ -13,8 +13,13 @@ const userForm = [
   },
   {
     label: "Mật khẩu",
-    type: "text",
+    type: "password",
     name: "user_password",
+  },
+  {
+    label: "Họ tên",
+    type: "text",
+    name: "user_fullname",
   },
   {
     label: "Địa chỉ",

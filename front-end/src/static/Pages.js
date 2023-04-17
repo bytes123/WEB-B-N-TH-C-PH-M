@@ -12,6 +12,7 @@ import WishLishPage from "../pages/WishLishPage";
 import CartPage from "../pages/CartPage";
 import ProfilePage from "../pages/ProfilePage";
 import ChangePasswordPage from "../pages/ChangePasswordPage";
+import SuccessAuth from "../pages/SuccessAuth";
 
 export {
   HomePage,
@@ -28,4 +29,5 @@ export {
   CartPage,
   ProfilePage,
   ChangePasswordPage,
+  SuccessAuth,
 };

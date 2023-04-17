@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Input from "../../utils/components/Input";
 import { FiUpload } from "react-icons/fi";
-import useUploadImage from "../../utils/hooks/Admin/useUploadImage";
+import useUploadImage from "../../utils/hooks/useUploadImage";
 import Select from "react-select";
 
 export default function AU({
@@ -39,7 +39,7 @@ export default function AU({
 
               <div>
                 <img
-                  className="opacity-70 h-full"
+                  className="opacity-70 h-[200px] w-[200px]"
                   src={imagePreview ?? data[item.name]}
                   alt=""
                 />

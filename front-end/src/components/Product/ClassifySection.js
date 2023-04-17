@@ -3,10 +3,9 @@ import { BiChevronDown } from "react-icons/bi";
 import PopUp from "../../utils/components/Popup";
 import { AiOutlineCheck } from "react-icons/ai";
 
-export default function SearchSection({
+export default function ClassifySection({
   data,
   onSwitch,
-  isOpenSearch,
   activeIndex,
   activeValueIndex,
   onActiveValueIndex,

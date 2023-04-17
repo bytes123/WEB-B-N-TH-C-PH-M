@@ -1,5 +1,9 @@
 import React from "react";
 
 export default function ProfilePage() {
-  return <div>ProfilePage</div>;
+  return (
+    <div className="container mx-auto">
+      <div className="profile"></div>
+    </div>
+  );
 }

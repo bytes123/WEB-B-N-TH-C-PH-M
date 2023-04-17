@@ -28,10 +28,13 @@ import {
   CartPage,
   ProfilePage,
   ChangePasswordPage,
+  SuccessAuth,
 } from "../static/Pages";
 import "./../assets/styles/App.scss";
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
+import UserChatPage from "../pages/UserChatPage";
+import AdminChatPage from "./Admin/AdminChatPage";
 
 const App = () => {
   return (
@@ -93,6 +96,16 @@ const App = () => {
             </AdminPage>
           }
         />
+
+        <Route
+          path="admin/quan-ly-tin-nhan"
+          element={
+            <AdminPage>
+              <AdminChatPage />
+            </AdminPage>
+          }
+        />
+
         <Route
           path="admin/quan-ly-nhan-hang"
           element={
@@ -136,6 +149,16 @@ const App = () => {
               <Header />
               <MenuPage />
               <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="tin-nhan"
+          element={
+            <Layout className="h-full bg-white">
+              <Header className="relative" />
+              <UserChatPage />
             </Layout>
           }
         />
@@ -201,6 +224,17 @@ const App = () => {
             <Layout className="h-full bg-white">
               <Header />
               <ProductPage />
+              <Footer />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="xac-thuc-tai-khoan/:auth_token"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <SuccessAuth />
               <Footer />
             </Layout>
           }

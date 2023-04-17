@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 
-export default function useSearchByValue() {
-  const [isOpenSearch, setIsOpenSearch] = useState(false);
+export default function useClassifySection() {
+  const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState();
   const [activeValueIndex, setActiveValueIndex] = useState(0);
 
-  const handleOpenSearch = () => {
-    setIsOpenSearch(true);
+  const handleOpen = () => {
+    setIsOpen(true);
   };
 
-  const handleCloseSearch = () => {
-    setIsOpenSearch(false);
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
-  const handleSwitchSearch = (index) => {
+  const handleSwitch = (index) => {
     if (index == activeIndex) {
-      handleCloseSearch();
+      handleClose();
       setActiveIndex(null);
     } else {
       setActiveIndex(index);
@@ -26,13 +26,13 @@ export default function useSearchByValue() {
     setActiveValueIndex(index);
   };
 
-  return [
-    isOpenSearch,
-    handleOpenSearch,
-    handleCloseSearch,
-    handleSwitchSearch,
+  return {
+    isOpen,
+    handleOpen,
+    handleClose,
+    handleSwitch,
     activeIndex,
     activeValueIndex,
     handleActiveValueIndex,
-  ];
+  };
 }

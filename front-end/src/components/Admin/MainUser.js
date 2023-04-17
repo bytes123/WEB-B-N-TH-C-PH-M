@@ -34,7 +34,11 @@ export default function MainUser() {
     },
   }));
 
-  const addData = () => {};
+  const addData = (values) => {
+    values.user_type = "admin";
+    console.log(values);
+  };
+
   const {
     values,
     handleChangeValue,
@@ -43,7 +47,7 @@ export default function MainUser() {
     errors,
     clearErrors,
     clearValues,
-  } = useValidateForm(userTemplateData, addData, validateUser);
+  } = useValidateForm(addData, validateUser);
 
   const {
     isDelete,
@@ -165,8 +169,8 @@ export default function MainUser() {
               <h3 className="text-2xl font-bold">Thêm tài khoản</h3>
               <AU
                 list={userForm}
-                dataInput={values}
-                handleChangeDataInput={handleChangeValue}
+                data={values}
+                handleChangeData={handleChangeValue}
                 errors={errors}
                 onSubmit={submit}
                 label="Thêm"
@@ -198,8 +202,8 @@ export default function MainUser() {
               <h3 className="text-2xl font-bold">Sửa tài khoản</h3>
               <AU
                 list={userForm}
-                dataInput={values}
-                handleChangeDataInput={handleChangeValue}
+                data={values}
+                handleChangeData={handleChangeValue}
                 errors={errors}
                 onSubmit={submit}
                 label="Sửa"

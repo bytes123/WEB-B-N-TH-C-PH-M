@@ -10,21 +10,35 @@ import {
   GoogleLoginButton,
 } from "react-social-login-buttons";
 import { LoginSocialFacebook } from "reactjs-social-login";
+import Cookies from "js-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  loginRequest,
+  getError,
+  getLoginStatus,
+  resetLoginStatus,
+} from "../../features/user/userSlice";
 
 export default function LoginForm() {
   const [form] = Form.useForm();
 
+  let error = useSelector(getError);
+
+  const dispatch = useDispatch();
   const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
   const [user, setUser] = useState(defaultUser);
-
-  const handleSubmit = (user) => {
-    delete user.confirm;
-    setUser(user);
-  };
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   useEffect(() => {
-    console.log(user);
-  }, [user]);
+    if (Cookies.get("isAuthenticating")) {
+      setIsAuthenticating(true);
+    }
+  }, []);
+
+  const handleSubmit = async (values) => {
+    setUser(user);
+    await dispatch(loginRequest(values)).unwrap();
+  };
 
   const handleFocusPlaceHolder = (name) => {
     setPlaceHolder({
@@ -36,6 +50,10 @@ export default function LoginForm() {
   const handleBlurPlaceHolder = () => {
     setPlaceHolder(defaultPlaceHolder);
   };
+
+  useEffect(() => {
+    console.log(error);
+  }, [error]);
 
   return (
     <div className="user_form">
@@ -50,6 +68,13 @@ export default function LoginForm() {
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
         }}
       >
+        {isAuthenticating ? (
+          <div className="authenticating mb-5 font-bold">
+            Vui lòng xác nhận tài khoản đã đăng ký qua mail
+          </div>
+        ) : (
+          ""
+        )}
         <div className="login_fb-btn">
           <GoogleLoginButton
             text="Đăng nhập bằng Google"
@@ -70,11 +95,11 @@ export default function LoginForm() {
         </div>
         <p className="text-center py-4">Hoặc</p>
         <Form form={form} onFinish={handleSubmit} initialValues={defaultUser}>
-          <Form.Item name="email" rules={rules.email}>
+          <Form.Item name="user_name" rules={rules.user_name}>
             <Input
-              onFocus={() => handleFocusPlaceHolder("email")}
+              onFocus={() => handleFocusPlaceHolder("user_name")}
               onBlur={handleBlurPlaceHolder}
-              placeholder={placeHolder.email}
+              placeholder={placeHolder.user_name}
               className="font-medium"
             />
           </Form.Item>
@@ -86,6 +111,15 @@ export default function LoginForm() {
               className="font-medium"
             />
           </Form.Item>
+          {error == "USER_NOT_CONFIRMED" ? (
+            <p className="error mb-5">
+              Vui lòng xác thực tài khoản qua mail đã đăng ký
+            </p>
+          ) : error == "FAILED_LOGIN" ? (
+            <p className="error mb-5">Tài khoản hoặc mật khẩu không hợp lệ !</p>
+          ) : (
+            ""
+          )}
           <Form.Item>
             <Button
               type="primary"

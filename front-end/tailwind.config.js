@@ -15,6 +15,7 @@ module.exports = {
       fontFamily: {
         notosans: ['"Noto Sans"', "Helvetica", "sans-serif"],
         Signika: ['"Signika"', "Noto Sans", "sans-serif"],
+        quicksand: ["Quicksand", "sans-serif"],
       },
     },
   },

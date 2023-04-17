@@ -11,7 +11,7 @@ export default function PaginatedItems({
     <>
       <ReactPaginate
         breakLabel="..."
-        className="flex items-center justify-center mb-10 container mx-auto"
+        className="flex mt-10 items-center justify-center mb-10 container mx-auto"
         pageClassName="mx-2 rounded-full w-[40px] h-[40px]  bg-slate-200 font-bold text-slate-500"
         previousClassName="mx-2 rounded-full w-[40px] h-[40px] flex  bg-slate-200 font-bold text-slate-500"
         nextClassName="mx-2 rounded-full w-[40px] h-[40px] flex  bg-slate-200 font-bold text-slate-500"
@@ -19,7 +19,7 @@ export default function PaginatedItems({
         previousLinkClassName="w-full h-full flex items-center justify-center paginated-btn rounded-full"
         nextLinkClassName="w-full h-full flex items-center justify-center paginated-btn rounded-full"
         activeClassName="bg-green-600"
-        activeLinkClassName="text-white"
+        activeLinkClassName="bg-green-600 text-white"
         disabledLinkClassName="disabled"
         previousLabel={previousLabel}
         nextLabel={nextLabel}

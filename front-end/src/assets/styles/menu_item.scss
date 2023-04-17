@@ -1,9 +1,15 @@
 .item_list-wrapper {
+  .item:hover {
+    transform: translateY(-4px);
+    transition: transform 0.3s;
+  }
   .item {
     padding: 2.6rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     position: relative;
+    transform: translateY(0px);
+    transition: transform 0.3s;
 
     .item_catalog-label {
       font-size: 1.2rem;
@@ -22,24 +28,6 @@
       position: absolute;
       left: 0;
       top: 0;
-    }
-
-    .item_star-rate {
-      background-image: url("https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/rating-stars.png");
-      background-position: 0 -12px;
-      background-repeat: repeat-x;
-      height: 12px;
-      width: 60px;
-      transition: all 0.5s ease-out 0s;
-      -webkit-transition: all 0.5s ease-out 0s;
-      display: inline-block;
-    }
-
-    .item_star-rating {
-      background-image: url("https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/rating-stars.png");
-      height: 12px;
-      background-repeat: repeat-x;
-      background-position: 0 0;
     }
 
     .item_price {

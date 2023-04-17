@@ -7,9 +7,86 @@ import {
 } from "../../static/UserForm";
 import useSignUp from "../../utils/hooks/useSignUp";
 import AddressForm from "../../utils/components/AddressForm";
+import { values } from "lodash";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
+import {
+  signUpRequest,
+  getErrors,
+  getSignUpStatus,
+  resetSignUpStatus,
+} from "../../features/authen/authenSlice";
+import { useDispatch, useSelector } from "react-redux";
+import Avatar from "../Utils/Avatar";
+import useUploadImage from "../../utils/hooks/useUploadImage";
 
 export default function SignUpForm() {
   const [form] = Form.useForm();
+
+  let newrules = useSelector(getErrors);
+  let status = useSelector(getSignUpStatus);
+  const [error, setError] = useState(newrules);
+  let location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const {
+    selectedFile,
+    imagePreview = "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
+    setSelectedFile,
+  } = useUploadImage();
+  const [imgData, setImgData] = useState({
+    file: null,
+    name: "",
+    imagePreviewUrl: "",
+  });
+
+  const handleChangeAvatar = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  useEffect(() => {
+    setImgData({
+      ...imgData,
+      file: selectedFile,
+      imagePreviewUrl: imagePreview,
+    });
+  }, [imagePreview]);
+
+  const signUpSubmit = async (values) => {
+    values.avatar = imgData.file;
+    dispatch(signUpRequest(values)).unwrap();
+    setError(newrules);
+  };
+
+  const handleUserNameChange = () => {
+    if ((error && error.user_name) || (error && error.email)) {
+      setError({});
+    }
+  };
+
+  useEffect(() => {
+    console.log(newrules);
+    setError(newrules);
+  }, [newrules]);
+
+  useEffect(() => {
+    if (status == "succeeded") {
+      const handleAuthentication = async () => {
+        var inThirtySeconds = new Date(new Date().getTime() + 0.5 * 60 * 1000);
+        await Cookies.set("isAuthenticating", true, {
+          expires: inThirtySeconds,
+          path: "/dang-nhap",
+        });
+        navigate("/dang-nhap");
+      };
+
+      handleAuthentication();
+    }
+
+    return () => dispatch(resetSignUpStatus());
+  }, [status]);
 
   const {
     placeHolder,
@@ -20,35 +97,52 @@ export default function SignUpForm() {
     handleAddress,
     errors,
     clearErrors,
-  } = useSignUp();
+  } = useSignUp(signUpSubmit);
 
   return (
-    <div className="user_form">
-      <h3 className="text-2xl text-center mx-auto w-[400px] font-bold my-16">
+    <div className="user_form mt-5">
+      {/* <h3 className="text-2xl text-center mx-auto w-[400px] font-bold my-4">
         Tạo tài khoản
-      </h3>
+      </h3> */}
       <Card
         style={{
-          width: "420px",
+          width: "500px",
           margin: "0 auto",
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
         }}
       >
-        <h3 className="text-lg font-bold mb-5">Thông tin cá nhân</h3>
+        <h3 className="text-lg font-bold mb-2">Thông tin tài khoản</h3>
         <Form form={form} onFinish={handleSubmit} initialValues={defaultUser}>
-          <Form.Item name="lastname" rules={rules.lastname}>
+          <Form.Item className="mt-5">
+            <Avatar imgData={imgData} handleChangeAvatar={handleChangeAvatar} />
+          </Form.Item>
+          <Form.Item
+            name="user_name"
+            rules={rules.user_name}
+            validateStatus={error && error.user_name && "error"}
+            help={error && error.user_name}
+          >
             <Input
-              onFocus={() => handleFocusPlaceHolder("lastname")}
+              onChange={handleUserNameChange}
+              onFocus={() => handleFocusPlaceHolder("user_name")}
               onBlur={handleBlurPlaceHolder}
-              placeholder={placeHolder.lastname}
+              placeholder={placeHolder.user_name}
               className="font-medium"
             />
           </Form.Item>
-          <Form.Item name="firstname" rules={rules.firstname}>
+          <Form.Item name="fullname" rules={rules.fullname}>
             <Input
-              onFocus={() => handleFocusPlaceHolder("firstname")}
+              onFocus={() => handleFocusPlaceHolder("fullname")}
               onBlur={handleBlurPlaceHolder}
-              placeholder={placeHolder.firstname}
+              placeholder={placeHolder.fullname}
+              className="font-medium"
+            />
+          </Form.Item>
+          <Form.Item name="phone_number" rules={rules.phone_number}>
+            <Input
+              onFocus={() => handleFocusPlaceHolder("phone_number")}
+              onBlur={handleBlurPlaceHolder}
+              placeholder={placeHolder.phone_number}
               className="font-medium"
             />
           </Form.Item>
@@ -59,9 +153,15 @@ export default function SignUpForm() {
             values={user}
             onClearErrors={clearErrors}
           />
-          <h3 className="text-lg font-bold mb-5">Bảo mật tài khoản</h3>
-          <Form.Item name="email" rules={rules.email}>
+          <h3 className="text-lg font-bold mb-2">Bảo mật tài khoản</h3>
+          <Form.Item
+            validateStatus={error && error.email && "error"}
+            name="email"
+            help={error && error.email && error.email}
+            rules={rules.email}
+          >
             <Input
+              onChange={handleUserNameChange}
               onFocus={() => handleFocusPlaceHolder("email")}
               onBlur={handleBlurPlaceHolder}
               placeholder={placeHolder.email}
@@ -77,7 +177,7 @@ export default function SignUpForm() {
             />
           </Form.Item>
           <Form.Item
-            name="confirm"
+            name="confirmpassword"
             dependencies={["password"]}
             rules={rules.confirmpassword}
           >
@@ -88,14 +188,14 @@ export default function SignUpForm() {
               className="font-medium"
             />
           </Form.Item>
-          <Form.Item name="subscribe" valuePropName="checked">
+          {/* <Form.Item name="subscribe" valuePropName="checked">
             <Checkbox size="large">Tôi muốn nhận mail từ Tan's Coffe</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item>
             <Button
               type="primary"
               htmlType="submit"
-              className="form_btn py-6 text-lg flex items-center justify-center"
+              className="form_btn py-6 text-2xl flex items-center justify-center"
             >
               Tạo tài khoản
             </Button>

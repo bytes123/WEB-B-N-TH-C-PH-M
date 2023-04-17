@@ -50,7 +50,7 @@ export default function useAddressForm(handleAddress, values, onClearErrors) {
   };
 
   const handleOpenWardList = (e) => {
-    if (values.district && values.district.wards) {
+    if (values.user_district && values.user_district.wards) {
       setIsSubWardList(!isSubWardList);
       document.addEventListener("click", (ev) => {
         if (refWard.current && !refWard.current.contains(ev.target)) {
@@ -63,42 +63,43 @@ export default function useAddressForm(handleAddress, values, onClearErrors) {
   };
 
   const handleActiveCity = (cityItem) => {
-    handleAddress("city", cityItem);
+    handleAddress("user_city", cityItem);
     onClearErrors();
     setIsSubCityList(false);
   };
 
   const handleActiveDistrict = (districtItem) => {
-    handleAddress("district", districtItem);
+    handleAddress("user_district", districtItem);
     onClearErrors();
     setIsSubDistrictList(false);
   };
 
   const handleActiveWard = (wardItem) => {
-    handleAddress("ward", wardItem);
+    handleAddress("user_ward", wardItem);
     onClearErrors();
     setIsSubWardList(false);
   };
 
   useEffect(() => {
-    handleAddress("district", "");
+    handleAddress("user_district", "");
   }, [values.city]);
 
   useEffect(() => {
-    handleAddress("ward", "");
+    handleAddress("user_ward", "");
   }, [values.district]);
 
   useEffect(() => {
-    if (values.city && values.city.districts) {
-      setDistrictList(values.city.districts);
+    console.log(values);
+    if (values.user_city && values.user_city.districts) {
+      setDistrictList(values.user_city.districts);
     }
-  }, [values.city]);
+  }, [values.user_city]);
 
   useEffect(() => {
-    if (values.district && values.district.wards) {
-      setWardList(values.district.wards);
+    if (values.user_district && values.user_district.wards) {
+      setWardList(values.user_district.wards);
     }
-  }, [values.district]);
+  }, [values.user_district]);
 
   useEffect(() => {
     if (activeDistrict && activeDistrict.wards) {
@@ -108,7 +109,7 @@ export default function useAddressForm(handleAddress, values, onClearErrors) {
 
   useEffect(() => {
     if (cityList && cityList[49]) {
-      handleAddress("city", cityList[49]);
+      handleAddress("user_city", cityList[49]);
     }
   }, [cityList]);
 
