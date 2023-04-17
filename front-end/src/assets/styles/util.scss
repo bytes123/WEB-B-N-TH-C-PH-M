@@ -168,7 +168,16 @@
   background-repeat: repeat-x;
   background-position: 0 0;
 }
+.border-active {
+  border: 2px solid #3bb77e;
+}
+.text-active {
+  color: #3bb77e;
+}
 
+.background-active {
+  background-color: #3bb77e;
+}
 .text-brand {
   color: #3bb77e;
 }

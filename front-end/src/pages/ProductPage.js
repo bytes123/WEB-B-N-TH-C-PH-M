@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Size from "../components/Product/Size";
 import StarpointSection from "../components/Utils/StarpointSection";
-import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
+
 import useInputNumber from "../utils/hooks/useInputNumber";
 import usePickSection from "../utils/hooks/usePickSection";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -12,6 +12,7 @@ import ItemList from "../components/Product/ItemList";
 import { nanoid } from "nanoid";
 
 import ClassifyItemSection from "../components/Product/ClassifyItemSection";
+import Quantity from "../utils/components/Quantity";
 
 export default function ProductPage() {
   const { menuid, productid } = useParams();
@@ -114,25 +115,12 @@ export default function ProductPage() {
               </ul>
             </div>
             <div className="product_section mt-10 flex">
-              <div className="product_quantity-select flex items-center rounded-md  border-active">
-                <input
-                  type="number"
-                  className="outline-none text-center border-none w-[50px] rounded-md p-5 font-mono text-3xl"
-                  step={false}
-                  value={inputNumberValue}
-                  onChange={handleChangeInputNumber}
-                />
-                <div className="up-down h-100 text-active d-flex flex-col justify-center cursor-pointer">
-                  <MdKeyboardArrowUp
-                    onClick={handleUpInputNumber}
-                    className="h-100 text-3xl"
-                  />
-                  <MdKeyboardArrowDown
-                    onClick={handleDownInputNumber}
-                    className="h-100 text-3xl"
-                  />
-                </div>
-              </div>
+              <Quantity
+                value={inputNumberValue}
+                handleChangeInputNumber={handleChangeInputNumber}
+                handleUpInputNumber={handleUpInputNumber}
+                handleDownInputNumber={handleDownInputNumber}
+              />
               <div className="cart_wrapper-add ml-5">
                 <button className="text-2xl p-5 h-100 font-bold rounded-md text-white background-active">
                   Thêm vào giỏ

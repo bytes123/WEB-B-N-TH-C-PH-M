@@ -209,7 +209,12 @@ export default function ChatForm({
                     onChange={handleMsg}
                     value={currentMsg}
                   />
-                  <button onClick={handleEmojiPickerToggle}>😀</button>
+                  <button
+                    onClick={handleEmojiPickerToggle}
+                    className="text-3xl"
+                  >
+                    😀
+                  </button>
 
                   <button className="p-5" onClick={handleSendMsg}>
                     <RiSendPlaneFill className=" text-4xl text-slate-200" />

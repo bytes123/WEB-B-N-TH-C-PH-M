@@ -16,17 +16,11 @@ const socket = io.connect("http://localhost:3001");
 
 export default function UserChatPage() {
   const dispatch = useDispatch();
-  const [user, setUser] = React.useState();
+  const [user, setUser] = React.useState(loginedUser?.user_name);
   const [activeItem, setActiveItem] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   let fetch_chat_list = useSelector(getChatList);
-
-  useEffect(() => {
-    if (loginedUser) {
-      setUser(loginedUser.user_name);
-    }
-  }, [loginedUser]);
 
   useEffect(() => {
     socket.emit("join_room", "socket-web-app");
