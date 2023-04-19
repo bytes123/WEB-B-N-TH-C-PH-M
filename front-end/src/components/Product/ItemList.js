@@ -13,7 +13,7 @@ export default function ItemList({ currentItems, isHiddenBtn, className }) {
       <ul className="item_list grid lg:grid-cols-5 grid-cols-2 gap-10">
         {currentItems.map((item) => (
           <li className="item">
-            <Link to={item.key}>
+            <Link to={`/thuc-don/${item.catalog_name}/${item.key}`}>
               <div className="label pink">
                 <p>Hot</p>
               </div>
@@ -25,7 +25,10 @@ export default function ItemList({ currentItems, isHiddenBtn, className }) {
               </div>
               <div className="item_information mt-4">
                 <p className="item_catalog-label">{item.catalog_name}</p>
-                <Link className="item_name mt-4" to={item.key}>
+                <Link
+                  className="item_name mt-4"
+                  to={`/thuc-don/${item.catalog_name}/${item.key}`}
+                >
                   {item.product_name}
                 </Link>
                 <StarpointSection starpoint={item.product_starpoint} />

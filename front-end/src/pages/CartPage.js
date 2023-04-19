@@ -1,7 +1,11 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
-import Table from "../utils/components/Table";
+import Table from "../components/Cart/Table";
 import useCart from "../utils/hooks/useCart";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { RxUpdate } from "react-icons/rx";
+import { FiLogOut } from "react-icons/fi";
+
 export default function CartPage() {
   const {
     values,
@@ -48,7 +52,7 @@ export default function CartPage() {
   return (
     <div className="cart_page ">
       <div className="grid grid-cols-3">
-        <div className="p-8 mt-20  col-span-2">
+        <div className="p-8 mt-20  lg:col-span-2 col-span-3">
           <div className="heading flex mb-20 font-quicksand justify-between">
             <div>
               <h1 className="mb-5  font-semibold text-6xl">Giỏ hàng của bạn</h1>
@@ -63,6 +67,16 @@ export default function CartPage() {
               </button>
             </div>
           </div>
+          <div className="flex mb-10 justify-between">
+            <button className="background-active font-bold flex items-center text-2xl text-white py-4 px-8 rounded-xl">
+              <IoMdArrowRoundBack className="mr-3 text-3xl" />
+              Tiếp tục mua
+            </button>
+            <button className="background-active items-center flex font-bold text-2xl text-white py-4 px-8 rounded-xl">
+              <RxUpdate className="text-white text-3xl mr-3" />
+              Cập nhật giỏ hàng
+            </button>
+          </div>
           <Table
             heading={cartHeading}
             list={values}
@@ -73,6 +87,40 @@ export default function CartPage() {
             theadClassName={"bg-slate-100 rounded-2xl"}
             thClassName={"p-8 text-2xl text-gray-700"}
           />
+        </div>
+        <div className="lg:col-span-1 col-span-3">
+          <div className="p-8">
+            <div className="border p-12 max-w-[500px] rounded-2xl mx-auto">
+              <div className="border  font-quicksand ">
+                <div className=" flex justify-between p-4">
+                  <h4 className="text-3xl font-semibold opacity-70">Đơn giá</h4>
+                  <p className="text-4xl font-bold text-brand">800000</p>
+                </div>
+                <div className="border-t p-8">
+                  <div className="border"></div>
+                </div>
+                <div className=" flex justify-between border-t p-4">
+                  <h4 className="text-3xl font-semibold opacity-70">
+                    Tiền Ship
+                  </h4>
+                  <p className="text-4xl font-bold text-brand">Free</p>
+                </div>
+                <div className="border-t p-8">
+                  <div className="border"></div>
+                </div>
+                <div className=" flex justify-between border-t py-4 px-10">
+                  <h4 className="text-3xl font-semibold opacity-70">
+                    Thành tiền
+                  </h4>
+                  <p className="text-4xl font-bold text-brand">80000</p>
+                </div>
+              </div>
+              <button className="background-active text-white font-semibold text-3xl w-100 py-5 px-10 mt-10 rounded-lg flex justify-center items-center">
+                Tiếp tục thanh toán
+                <FiLogOut className="ml-3" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

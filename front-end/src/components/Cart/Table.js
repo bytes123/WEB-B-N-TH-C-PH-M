@@ -1,6 +1,5 @@
 import React from "react";
-import StarPointSection from "./StarpointSection";
-import useInputNumber from "../hooks/useInputNumber";
+import StarPointSection from "../../utils/components/StarpointSection";
 import { BsTrash } from "react-icons/bs";
 import {
   Table as MainTable,
@@ -11,7 +10,7 @@ import {
   Td,
 } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
-import Quantity from "./Quantity";
+import Quantity from "../../utils/components/Quantity";
 export default function Table({
   heading,
   list = [],
@@ -73,7 +72,7 @@ export default function Table({
               </section>
             </Td>
             <Td className="text-center">
-              <span className="text-3xl font-bold text-gray-700">
+              <span className="text-4xl font-bold text-gray-500">
                 {item.price}
               </span>
             </Td>
@@ -94,7 +93,7 @@ export default function Table({
             </Td>
             <Td className="text-center">
               <button className="text-3xl">
-                <BsTrash />
+                <BsTrash className="opacity-60" />
               </button>
             </Td>
           </Tr>

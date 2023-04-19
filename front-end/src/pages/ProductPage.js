@@ -57,6 +57,30 @@ export default function ProductPage() {
     },
   ]);
 
+  const [rateList, setRateList] = useState([
+    {
+      id: 1,
+      avatar: "",
+      fullname: "Minh Tân",
+      starpoint: 5,
+      body: "Hay",
+    },
+    {
+      id: 1,
+      avatar: "",
+      fullname: "Minh Tân",
+      starpoint: 5,
+      body: "Hay",
+    },
+    {
+      id: 1,
+      avatar: "",
+      fullname: "Minh Tân",
+      starpoint: 5,
+      body: "Hay",
+    },
+  ]);
+
   return (
     <div className="lg:px-20 px-40  mx-auto py-20">
       <div className="wrapper ">
@@ -166,7 +190,10 @@ export default function ProductPage() {
           </ul>
 
           <div className="product_information-main">
-            {[<DescriptionSection />, <ReviewSection />].map((item, index) =>
+            {[
+              <DescriptionSection />,
+              <ReviewSection rateList={rateList} />,
+            ].map((item, index) =>
               activeIndexSection == index
                 ? React.cloneElement(item, {
                     className: "visible-transition",

@@ -177,7 +177,14 @@
 
 .background-active {
   background-color: #3bb77e;
+  transition: all 0.3s;
 }
+
+.background-active:hover {
+  background-color: #fdc040;
+  transition: all 0.3s;
+}
+
 .text-brand {
   color: #3bb77e;
 }
@@ -211,4 +218,10 @@
 
 .btn-primary:hover {
   background-color: #3bb77e;
+}
+
+.status-label {
+  color: #16a34a;
+  font-weight: 600;
+  background-color: #def9ec;
 }
