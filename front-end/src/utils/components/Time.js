@@ -1,10 +1,11 @@
 import React from "react";
 import { format, formatDistance, formatRelative, subDays } from "date-fns";
-
+import vi from "date-fns/locale/vi";
 export default function Time({ className, timestamp }) {
   return (
-    <span className={className}>
-      {formatRelative(subDays(new Date(timestamp), 0), new Date(timestamp))}
+    <span className={className + " capitalize"}>
+      {formatRelative(new Date(timestamp), new Date(), { locale: vi })}{" "}
+      {/* Sử dụng locale tiếng Việt */}
     </span>
   );
 }

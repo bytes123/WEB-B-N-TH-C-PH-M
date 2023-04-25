@@ -25,11 +25,26 @@ module.exports = function (app) {
   // API SẢN PHẨM
   app.route("/products").get(productsCtrl.get);
 
+  // API USER
+  app.route("/users").get(userCrtl.getAllUser);
+  app.route("/delete_user").post(userCrtl.deleteUser);
+  app.route("/admin_type_user").get(userCrtl.getAdminTypeUser);
+  app.route("/search_user").post(userCrtl.searchUser);
+
   //API ĐĂNG KÝ
   app
     .route("/signup")
     .post(uploadAvatar.single("avatar"), userCrtl.signUpCustomer);
+  app
+    .route("/add-staff")
+    .post(uploadAvatar.single("avatar"), userCrtl.signUpStaff);
+
+  app
+    .route("/update-staff")
+    .post(uploadAvatar.single("avatar"), userCrtl.updateStaff);
+
   app.route("/login").post(userCrtl.login);
+  app.route("/update_online").post(userCrtl.updateOnline);
 
   app.route("/authen").post(authCrtl.authen);
 

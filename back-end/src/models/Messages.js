@@ -31,7 +31,7 @@ var Messages = {
     );
   },
   getMsgList: function (callback) {
-    let sql = `SELECT messages.room_id as roomid, messages.body as lastest_msg, messages.user_name as lastest_user_name,
+    let sql = `SELECT messages.room_id as roomid, messages.body as lastest_msg, messages.user_name as lastest_user_name,messages.create_date as lastest_time,
     (SELECT customers.fullname FROM customers INNER JOIN detail_room ON customers.user_name = detail_room.participant AND customers.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_fullname,
     (SELECT users.avatar FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_avatar
     FROM messages
@@ -51,7 +51,7 @@ var Messages = {
   },
   getContactUser: (data, callback) => {
     let sql =
-      "SELECT c.fullname,u.avatar FROM detail_room as dt INNER JOIN users as u ON dt.participant = u.user_name AND  dt.participant != ? AND dt.room_id = ? INNER JOIN customers as c ON dt.participant = c.user_name";
+      "SELECT c.fullname,u.avatar,u.online FROM detail_room as dt INNER JOIN users as u ON dt.participant = u.user_name AND  dt.participant != ? AND dt.room_id = ? INNER JOIN customers as c ON dt.participant = c.user_name";
     return db.query(sql, [data.user_name, data.room_id], callback);
   },
   insertMessage: (data, callback) => {

@@ -5,7 +5,7 @@ export default function Avatar({ imgData, handleChangeAvatar }) {
     <>
       <label htmlFor="photo-upload" className="custom-file-upload fas">
         <div className="img-wrap img-upload">
-          <img for="photo-upload" src={imgData.imagePreviewUrl} />
+          <img for="photo-upload" src={imgData} />
         </div>
         <input
           className="hidden"

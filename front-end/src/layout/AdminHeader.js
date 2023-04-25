@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaBars } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -8,7 +8,17 @@ import Popup from "../utils/components/Popup";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import useAdminChat from "../utils/hooks/Admin/useAdminChat";
 import useAdminNotification from "../utils/hooks/Admin/useAdminNotification";
+import { useSelector, useDispatch } from "react-redux";
+import MessageBar from "../components/Admin/MessageBar";
+import {
+  fetchMessageListAll,
+  getChatList,
+} from "../features/message/messageSlice";
+import { io } from "socket.io-client";
+const socket = io.connect("http://localhost:3001");
+
 export default function AdminHeader({ onBarActive, isBarActive }) {
+  const dispatch = useDispatch();
   const [isAdminChatActive, handleAdminChat, handleCloseAdminChat] =
     useAdminChat();
   const [
@@ -16,6 +26,13 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
     handleAdminNotification,
     handleCloseAdminNotification,
   ] = useAdminNotification();
+  let fetch_chat_list = useSelector(getChatList);
+
+  useEffect(() => {
+    dispatch(fetchMessageListAll()).unwrap();
+    socket.emit("join_room", "socket-web-app");
+  }, []);
+
   return (
     <div className="admin_header-wrapper sticky top-0 z-50  px-8 pt-6">
       <div
@@ -49,43 +66,10 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
                 : "hidden"
             }`}
           >
-            <div className="message-wrapper p-8">
-              <div className="message-top flex items-center justify-between">
-                <h2 className="text-3xl">Messages</h2>
-                <div
-                  className="close cursor-pointer"
-                  onClick={handleCloseAdminChat}
-                >
-                  <AiOutlineCloseCircle className="text-4xl text-gray-400 " />
-                </div>
-              </div>
-              <div className="message-bottom">
-                <ul className="message-list mt-12">
-                  <li className="message-item flex items-center border-b-[1px] py-5">
-                    <div className="message-avatar">
-                      <img
-                        className="rounded-full w-[36px]"
-                        src="https://scontent.fsgn13-1.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p40x40&_nc_cat=1&ccb=1-7&_nc_sid=7206a8&_nc_ohc=x3PhOYWAf78AX-hNfC9&_nc_ht=scontent.fsgn13-1.fna&oh=00_AfDiNTYPiIGzcmx_Wn1Y7xDQJL_lGjUd7e9eq-haCwJ2ag&oe=643D5DF8"
-                        alt=""
-                      />
-                    </div>
-                    <div className="mesage-detail ml-7">
-                      <div className="message-name">
-                        <p className="font-bold text-xl">Đen Vâu</p>
-                      </div>
-                      <div className="message-infor mt-2">
-                        <p className="font-[300] text-lg">
-                          Rất vui được làm quen!
-                        </p>
-                      </div>
-                      <div className="message-time">
-                        <span className="font-[300]">9:08 AM</span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <MessageBar
+              handleClose={handleCloseAdminChat}
+              list={fetch_chat_list}
+            />
           </Popup>
 
           {/* ------ */}

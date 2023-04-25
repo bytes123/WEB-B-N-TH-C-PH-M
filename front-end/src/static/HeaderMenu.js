@@ -59,11 +59,7 @@ const DesktopMenu = [
     value: "Quà tặng",
   },
 
-  {
-    key: "admin",
-    link: path.admin,
-    value: "Trang ADMIN",
-  },
+  ,
   {
     key: "login",
     link: path.login,

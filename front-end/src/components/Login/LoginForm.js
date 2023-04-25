@@ -18,22 +18,23 @@ import {
   getLoginStatus,
   resetLoginStatus,
 } from "../../features/user/userSlice";
+import { getSignUpStatus } from "../../features/authen/authenSlice";
 
 export default function LoginForm() {
   const [form] = Form.useForm();
-
+  let status = useSelector(getSignUpStatus);
   let error = useSelector(getError);
-
   const dispatch = useDispatch();
   const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
   const [user, setUser] = useState(defaultUser);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   useEffect(() => {
-    if (Cookies.get("isAuthenticating")) {
+    console.log(status);
+    if (status == "succeeded") {
       setIsAuthenticating(true);
     }
-  }, []);
+  }, [status]);
 
   const handleSubmit = async (values) => {
     setUser(user);

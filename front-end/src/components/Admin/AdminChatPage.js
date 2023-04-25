@@ -7,10 +7,11 @@ import {
   fetchMessageListAll,
   dropRoom,
   getChatList,
-  createCustomerRoom,
-  fetchMessageListByUser,
+  fetchContactUser,
+  getMessages,
 } from "../../features/message/messageSlice";
 import { loginedUser } from "../../utils/hooks/useAccessUser";
+import { useParams, useLocation } from "react-router-dom";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -19,10 +20,40 @@ export default function AdminChatPage() {
   const [user, setUser] = React.useState(null);
   const [activeItem, setActiveItem] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { room_id } = useParams();
+  const [page, setPage] = useState("");
+  const location = useLocation();
+  const fetch_msg_list = useSelector(getMessages);
   let fetch_chat_list = useSelector(getChatList);
 
   useEffect(() => {
+    if (room_id) {
+      setIsSubmitting(true);
+      dispatch(fetchMessagesByRoom(room_id)).unwrap();
+      dispatch(
+        fetchContactUser({
+          user_name: user,
+          room_id: room_id,
+        })
+      ).unwrap();
+      setActiveItem({
+        ...activeItem,
+        roomid: room_id,
+      });
+    }
+  }, [room_id, location, fetch_chat_list]);
+
+  useEffect(() => {
     if (loginedUser) {
+      if (activeItem && activeItem.roomid) {
+        dispatch(
+          fetchContactUser({
+            user_name: loginedUser.user_name,
+            room_id: activeItem.roomid,
+          })
+        ).unwrap();
+      }
+
       setUser(loginedUser.user_name);
     }
   }, [loginedUser]);
@@ -30,7 +61,7 @@ export default function AdminChatPage() {
   useEffect(() => {
     dispatch(fetchMessageListAll()).unwrap();
     socket.emit("join_room", "socket-web-app");
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     socket.on("send_action", async () => {
@@ -40,14 +71,19 @@ export default function AdminChatPage() {
       }
     });
     socket.on("receive_message", async (room) => {
-      console.log(activeItem);
       dispatch(fetchMessageListAll()).unwrap();
+      dispatch(
+        fetchContactUser({
+          user_name: user,
+          room_id: room,
+        })
+      ).unwrap();
 
       if (activeItem && room == activeItem.roomid) {
         dispatch(fetchMessagesByRoom(room)).unwrap();
       }
     });
-  }, [socket, activeItem]);
+  }, [socket, activeItem, location]);
 
   const handleActiveItem = (item) => {
     setActiveItem(item);
@@ -76,9 +112,19 @@ export default function AdminChatPage() {
     }
   };
 
-  return (
-    <div className="">
-      {loginedUser?.type_user_id == "admin-message" ? (
+  useEffect(() => {
+    if (!loginedUser) {
+      setPage(
+        <h1 className="font-semibold text-4xl p-10">Vui lòng đăng nhập</h1>
+      );
+      return;
+    }
+
+    if (
+      loginedUser &&
+      loginedUser.type_user.some((item) => item.type_user_id == "admin-message")
+    ) {
+      setPage(
         <ChatForm
           socket={socket}
           list={fetch_chat_list}
@@ -90,13 +136,15 @@ export default function AdminChatPage() {
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
         />
-      ) : loginedUser?.type_user_id !== "admin-message" ? (
-        <h1 className="font-semibold text-4xl p-10">
-          Trang tin nhắn này chỉ dành cho admin
+      );
+    } else {
+      setPage(
+        <h1 className="font-semibold text-4xl text-center p-10">
+          Bạn không đủ quyền để truy cập trang này
         </h1>
-      ) : (
-        <h1 className="font-semibold text-4xl p-10">Vui lòng đăng nhập</h1>
-      )}
-    </div>
-  );
+      );
+    }
+  }, [loginedUser, location, fetch_chat_list, activeItem]);
+
+  return <div className="">{page}</div>;
 }

@@ -4,31 +4,115 @@ import {
   rulesSignUp as rules,
   userSignUp as defaultUser,
 } from "../../static/UserForm";
-
-export default function useSignUp(callback) {
+import { Form } from "antd";
+export default function useSignUp(imgData, callback, updateValues) {
+  const [form] = Form.useForm();
+  const [checked, setChecked] = useState({});
   const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
-  const [user, setUser] = useState(defaultUser);
+  const [newValues, setNewValues] = useState({
+    gender: "Nam",
+  });
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
+  const [isChange, setIsChange] = useState(false);
+
+  useEffect(() => {
+    if (updateValues) {
+      if (updateValues?.gender) {
+        setNewValues({
+          gender: updateValues.gender,
+        });
+      }
+      setChecked(
+        ...updateValues.detail_type_user.map((item) => ({
+          [item.type_user_id]: true,
+        }))
+      );
+    }
+  }, [updateValues]);
+
+  // cập nhật form khi thay đổi avatar
+  useEffect(() => {
+    if (imgData?.file) {
+      setNewValues({
+        ...newValues,
+        avatar: imgData.file,
+      });
+    }
+  }, [imgData]);
+
+  const handleChangeGender = (e) => {
+    setNewValues({
+      gender: e.target.value,
+    });
+  };
+
+  // Cập nhật khi thay đổi value mới cho submit
+  useEffect(() => {
+    if (Object.keys(newValues).length) {
+      setIsChange(true);
+    }
+  }, [newValues]);
+
+  // cập nhật form khi thay đổi quyền
+  const handlePermission = (type_user_id) => {
+    setChecked({
+      ...checked,
+      [type_user_id]: !checked[type_user_id],
+    });
+  };
+
+  const handleUpdatePermission = (type_user_id, fetchChecked) => {
+    if (checked && checked[type_user_id]) {
+      setChecked({
+        ...checked,
+        [type_user_id]: !checked[type_user_id],
+      });
+      setNewValues({
+        ...newValues,
+        type_user: !checked[type_user_id],
+      });
+    } else {
+      setChecked({
+        ...checked,
+        [type_user_id]: !fetchChecked,
+      });
+      setNewValues({
+        ...newValues,
+        type_user: !fetchChecked,
+      });
+    }
+  };
+
+  const clearChecked = () => {
+    setChecked({});
+  };
+
+  useEffect(() => {
+    if (!updateValues) {
+      const trueKeys = Object.keys(checked).filter(
+        (key) => checked[key] === true
+      );
+
+      setNewValues({
+        ...newValues,
+        type_user: trueKeys,
+      });
+    }
+  }, [checked]);
 
   const handleSubmit = (data) => {
-    setUser({
-      ...user,
-      ...data,
-    });
-
-    if (!user.user_ward) {
-      errors.user_ward = "Vui lòng chọn phường/xã";
-    }
-
-    if (!user.user_district) {
-      errors.user_district = "Vui lòng chọn quận/huyện";
-    }
-
-    if (!user.address) {
-      errors.address = "Vui lòng nhập địa chỉ";
+    if (!updateValues) {
+      setNewValues({
+        ...newValues,
+        ...data,
+      });
     }
     setIsSubmit(true);
+  };
+
+  const clearUser = () => {
+    setNewValues({});
   };
 
   const clearErrors = () => {
@@ -46,29 +130,30 @@ export default function useSignUp(callback) {
     setPlaceHolder(defaultPlaceHolder);
   };
 
-  const handleAddress = (name, item) => {
-    setUser({
-      ...user,
-      [name]: item,
-    });
-    clearErrors();
-  };
-
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmit) {
-      callback(user);
+      callback(newValues);
     }
     setIsSubmit(false);
   }, [isSubmit]);
 
   return {
+    form,
+    newValues,
+    setNewValues,
+    handlePermission,
+    handleUpdatePermission,
+    checked,
+    setErrors,
     placeHolder,
-    user,
     handleSubmit,
     handleBlurPlaceHolder,
     handleFocusPlaceHolder,
-    handleAddress,
     errors,
     clearErrors,
+    clearUser,
+    clearChecked,
+    isChange,
+    handleChangeGender,
   };
 }

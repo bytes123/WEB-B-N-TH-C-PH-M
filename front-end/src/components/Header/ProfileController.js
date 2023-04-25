@@ -19,7 +19,7 @@ export default function ProfileController({ children, user }) {
       <li className="profile-item p-3 mb-5 ">
         <Link to="/tin-nhan" className="flex items-center h-[40px]">
           <BiMessageRoundedDots className="text-5xl" />
-          <span className="ml-5 font-semibold">Nhắn tin với admin</span>
+          <span className="ml-5 font-semibold">Nhắn tin hỗ trợ</span>
         </Link>
       </li>
       <li className="profile-item p-3 mb-5 ">

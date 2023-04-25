@@ -1,5 +1,6 @@
+import React, { useEffect } from "react";
 import { Layout } from "antd";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import {
   MainDashBoard,
   MainDetailProduct,
@@ -11,7 +12,7 @@ import {
   MainBrand,
   MainStatistic,
 } from "../static/AdminData";
-
+import { useSelector, useDispatch } from "react-redux";
 import { path } from "../static/Router";
 import {
   HomePage,
@@ -36,7 +37,36 @@ import Footer from "../layout/Footer";
 import UserChatPage from "../pages/UserChatPage";
 import AdminChatPage from "./Admin/AdminChatPage";
 
+import { loginedUser } from "../utils/hooks/useAccessUser";
+import { updateOnline } from "../features/authen/authenSlice";
+
 const App = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  useEffect(() => {
+    if (loginedUser) {
+      dispatch(
+        updateOnline({
+          user_name: loginedUser.user_name,
+          online: true,
+        })
+      ).unwrap();
+    } else {
+      const userName = localStorage.getItem("user_name");
+      dispatch(
+        updateOnline({
+          user_name: userName,
+          online: false,
+        })
+      ).unwrap();
+    }
+  }, [loginedUser]);
+
+  useEffect(() => {
+    console.log(location.pathname);
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="App">
       <Routes>
@@ -99,6 +129,15 @@ const App = () => {
 
         <Route
           path="admin/quan-ly-tin-nhan"
+          element={
+            <AdminPage>
+              <AdminChatPage />
+            </AdminPage>
+          }
+        />
+
+        <Route
+          path="admin/quan-ly-tin-nhan/:room_id"
           element={
             <AdminPage>
               <AdminChatPage />

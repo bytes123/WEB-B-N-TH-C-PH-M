@@ -7,7 +7,7 @@ import { sideBarList } from "../../static/AdminData";
 export default function MainSideBar({ isBarActive, onBarActive }) {
   let navigate = useNavigate();
   const location = useLocation();
-
+  console.log(isBarActive);
   return (
     <div
       className={`sidebar p-4 fixed top-0 bottom-0 z-100 bg-white lg:relative ${
@@ -25,8 +25,11 @@ export default function MainSideBar({ isBarActive, onBarActive }) {
         onClick={() => navigate("/")}
       >
         <div className="flex items-center">
-          <StarBucksIcon className="inline" />
-          <span className="ml-4 font-bold text-3xl">StarBuck</span>
+          <img
+            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
+            className="w-[150px]"
+            alt=""
+          />
         </div>
       </div>
       {sideBarList.map((item, index) => (

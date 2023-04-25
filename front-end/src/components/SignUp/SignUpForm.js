@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, Input, Form, Button, Checkbox } from "antd";
+import React, { useEffect, useState, useRef } from "react";
+import { Card, Input, Form, Button, Radio } from "antd";
 import {
   defaultPlaceHolder,
   rulesSignUp as rules,
@@ -7,9 +7,7 @@ import {
 } from "../../static/UserForm";
 import useSignUp from "../../utils/hooks/useSignUp";
 import AddressForm from "../../utils/components/AddressForm";
-import { values } from "lodash";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import Cookies from "js-cookie";
 import {
   signUpRequest,
@@ -22,42 +20,41 @@ import Avatar from "../Utils/Avatar";
 import useUploadImage from "../../utils/hooks/useUploadImage";
 
 export default function SignUpForm() {
-  const [form] = Form.useForm();
-
   let newrules = useSelector(getErrors);
   let status = useSelector(getSignUpStatus);
   const [error, setError] = useState(newrules);
   let location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const {
-    selectedFile,
-    imagePreview = "https://github.com/OlgaKoplik/CodePen/blob/master/profile.jpg?raw=true",
-    setSelectedFile,
-  } = useUploadImage();
-  const [imgData, setImgData] = useState({
-    file: null,
-    name: "",
-    imagePreviewUrl: "",
-  });
+  const [cookieSet, setCookieSet] = useState(false);
+  const { setSelectedFile, imgData } = useUploadImage();
 
   const handleChangeAvatar = (e) => {
     setSelectedFile(e.target.files[0]);
   };
 
-  useEffect(() => {
-    setImgData({
-      ...imgData,
-      file: selectedFile,
-      imagePreviewUrl: imagePreview,
-    });
-  }, [imagePreview]);
-
   const signUpSubmit = async (values) => {
-    values.avatar = imgData.file;
-    dispatch(signUpRequest(values)).unwrap();
+    if (
+      !values.user_province ||
+      !values.user_district ||
+      !values.user_ward ||
+      !values.address
+    ) {
+      setError({
+        ...error,
+        address: "Vui lòng nhập đầy đủ địa chỉ",
+      });
+    } else {
+      dispatch(signUpRequest(values)).unwrap();
+    }
+  };
+
+  useEffect(() => {
     setError(newrules);
+  }, [newrules]);
+
+  const clearError = () => {
+    setError({});
   };
 
   const handleUserNameChange = () => {
@@ -67,11 +64,6 @@ export default function SignUpForm() {
   };
 
   useEffect(() => {
-    console.log(newrules);
-    setError(newrules);
-  }, [newrules]);
-
-  useEffect(() => {
     if (status == "succeeded") {
       const handleAuthentication = async () => {
         var inThirtySeconds = new Date(new Date().getTime() + 0.5 * 60 * 1000);
@@ -79,28 +71,27 @@ export default function SignUpForm() {
           expires: inThirtySeconds,
           path: "/dang-nhap",
         });
-        navigate("/dang-nhap");
       };
 
       handleAuthentication();
+      navigate("/dang-nhap");
     }
 
     return () => dispatch(resetSignUpStatus());
   }, [status]);
 
   const {
+    form,
+    newValues,
+    setNewValues,
     placeHolder,
-    user,
     handleSubmit,
     handleFocusPlaceHolder,
     handleBlurPlaceHolder,
-    handleAddress,
-    errors,
-    clearErrors,
-  } = useSignUp(signUpSubmit);
+  } = useSignUp(imgData, signUpSubmit);
 
   return (
-    <div className="user_form mt-5">
+    <div className="user_form my-5">
       {/* <h3 className="text-2xl text-center mx-auto w-[400px] font-bold my-4">
         Tạo tài khoản
       </h3> */}
@@ -114,22 +105,37 @@ export default function SignUpForm() {
         <h3 className="text-lg font-bold mb-2">Thông tin tài khoản</h3>
         <Form form={form} onFinish={handleSubmit} initialValues={defaultUser}>
           <Form.Item className="mt-5">
-            <Avatar imgData={imgData} handleChangeAvatar={handleChangeAvatar} />
-          </Form.Item>
-          <Form.Item
-            name="user_name"
-            rules={rules.user_name}
-            validateStatus={error && error.user_name && "error"}
-            help={error && error.user_name}
-          >
-            <Input
-              onChange={handleUserNameChange}
-              onFocus={() => handleFocusPlaceHolder("user_name")}
-              onBlur={handleBlurPlaceHolder}
-              placeholder={placeHolder.user_name}
-              className="font-medium"
+            <Avatar
+              imgData={imgData.imagePreviewUrl}
+              handleChangeAvatar={handleChangeAvatar}
             />
           </Form.Item>
+          {error && error.user_name ? (
+            <Form.Item
+              name="user_name"
+              rules={rules.user_name}
+              validateStatus={"error"}
+              help={error.user_name}
+            >
+              <Input
+                onChange={handleUserNameChange}
+                onFocus={() => handleFocusPlaceHolder("user_name")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.user_name}
+                className="font-medium"
+              />
+            </Form.Item>
+          ) : (
+            <Form.Item name="user_name" rules={rules.user_name}>
+              <Input
+                onChange={handleUserNameChange}
+                onFocus={() => handleFocusPlaceHolder("user_name")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.user_name}
+                className="font-medium"
+              />
+            </Form.Item>
+          )}
           <Form.Item name="fullname" rules={rules.fullname}>
             <Input
               onFocus={() => handleFocusPlaceHolder("fullname")}
@@ -147,27 +153,48 @@ export default function SignUpForm() {
             />
           </Form.Item>
 
+          <Form.Item name="gender">
+            <h3 className="text-xl font-semibold mb-3">Giới tính</h3>
+            <Radio.Group defaultValue={"Nam"}>
+              <Radio value={"Nam"}>Nam</Radio>
+              <Radio value={"Nữ"}>Nữ</Radio>
+              <Radio value={"Khác"}>Khác</Radio>
+            </Radio.Group>
+          </Form.Item>
+
           <AddressForm
-            errors={errors}
-            handleAddress={handleAddress}
-            values={user}
-            onClearErrors={clearErrors}
+            values={newValues}
+            handleValues={setNewValues}
+            error={error}
+            clearError={clearError}
           />
           <h3 className="text-lg font-bold mb-2">Bảo mật tài khoản</h3>
-          <Form.Item
-            validateStatus={error && error.email && "error"}
-            name="email"
-            help={error && error.email && error.email}
-            rules={rules.email}
-          >
-            <Input
-              onChange={handleUserNameChange}
-              onFocus={() => handleFocusPlaceHolder("email")}
-              onBlur={handleBlurPlaceHolder}
-              placeholder={placeHolder.email}
-              className="font-medium"
-            />
-          </Form.Item>
+          {error && error.email ? (
+            <Form.Item
+              validateStatus={"error"}
+              name="email"
+              help={error.email}
+              rules={rules.email}
+            >
+              <Input
+                onChange={handleUserNameChange}
+                onFocus={() => handleFocusPlaceHolder("email")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.email}
+                className="font-medium"
+              />
+            </Form.Item>
+          ) : (
+            <Form.Item name="email" rules={rules.email}>
+              <Input
+                onChange={handleUserNameChange}
+                onFocus={() => handleFocusPlaceHolder("email")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.email}
+                className="font-medium"
+              />
+            </Form.Item>
+          )}
           <Form.Item name="password" rules={rules.password}>
             <Input.Password
               onFocus={() => handleFocusPlaceHolder("password")}

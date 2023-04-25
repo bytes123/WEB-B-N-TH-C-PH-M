@@ -25,6 +25,7 @@ export default function ChatForm({
   isSubmitting,
   setIsSubmitting,
   handleCreateRoom,
+  activeItem,
 }) {
   const [currentMsg, setCurrentMsg] = useState("");
 
@@ -58,7 +59,6 @@ export default function ChatForm({
   const handleActiveItem = (item) => {
     setActiveItem(item);
     setIsSubmitting(true);
-
     dispatch(fetchMessagesByRoom(item.roomid)).unwrap();
     dispatch(
       fetchContactUser({
@@ -100,13 +100,17 @@ export default function ChatForm({
             list.map((item, index) => (
               <li
                 key={item.roomid}
-                className="chat_item cursor-pointer w-100 p-2 mb-2 hover:bg-cyan-900 rounded-xl"
+                className={`chat_item cursor-pointer w-100 p-5 mb-2 hover:bg-cyan-900 rounded-xl ${
+                  activeItem && activeItem.roomid == item.roomid
+                    ? "bg-cyan-900"
+                    : ""
+                }`}
                 onClick={() => handleActiveItem(item)}
               >
                 <div className="flex items-center">
-                  <div className="img_wrapper w-[50px] ">
+                  <div className="img_wrapper  w-[20%]">
                     <img
-                      className="rounded-full object-cover"
+                      className="rounded-full object-cover w-[50px] h-[40px]"
                       src={
                         item?.partner_avatar
                           ? `http://localhost:8000/resources/avatar/${item.partner_avatar}`
@@ -115,11 +119,11 @@ export default function ChatForm({
                       alt=""
                     />
                   </div>
-                  <div className="chat_label ml-5 text-white">
+                  <div className="chat_label ml-5 text-white w-[80%]">
                     <p className="text-[1.2rem] font-semibold">
                       {item.partner_fullname ?? "Admin"}
                     </p>
-                    <p className="text-[1rem] opacity-80">
+                    <p className="text-[1rem] opacity-80 msg-body">
                       {item.lastest_user_name == user ? "Bạn:" : ""}{" "}
                       {item.lastest_msg}
                     </p>
@@ -150,9 +154,27 @@ export default function ChatForm({
                 className="w-[40px] rounded-full"
                 alt=""
               />
-              <p className="ml-3 text-white text-semibold text-2xl ">
-                {activeContactUser?.fullname}
-              </p>
+              <div className="ml-3">
+                <p className=" text-white text-semibold text-2xl ">
+                  {activeContactUser?.fullname}
+                </p>
+                {activeContactUser?.online ? (
+                  <div className="flex items-center mt-2">
+                    <div className="w-[10px] h-[10px] rounded-full bg-green-700"></div>
+                    <span className="text-xl ml-2 font-semibold text-brand">
+                      Online
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center mt-2">
+                    <div className="w-[10px] h-[10px] rounded-full bg-slate-700"></div>
+                    <span className="text-xl ml-2 font-semibold text-slate-500">
+                      Offline
+                    </span>
+                  </div>
+                )}
+              </div>
+
               {onDropMsg && (
                 <div className="ml-auto" onClick={onDropMsg}>
                   <AiTwotoneDelete className="text-red-600 text-5xl cursor-pointer" />
@@ -183,7 +205,7 @@ export default function ChatForm({
                           />
                         )}
                         <p
-                          className={` text-md ml-2 text-white px-4 py-2 ${
+                          className={` text-2xl ml-2 text-white px-4 py-2 ${
                             item.user_name == user
                               ? "bg-sky-500"
                               : "bg-slate-500"

@@ -2,7 +2,13 @@ import React from "react";
 import { RiErrorWarningLine } from "react-icons/ri";
 import Modal from "./Modal";
 
-export default function ConfirmDialog({ active, onClose, header, content }) {
+export default function ConfirmDialog({
+  active,
+  onClose,
+  onConfirm,
+  header,
+  content,
+}) {
   return active ? (
     <Modal active={active} className="top-0 flex items-center justify-center">
       <div className="dialog_wrapper text-center bg-white p-8">
@@ -19,7 +25,7 @@ export default function ConfirmDialog({ active, onClose, header, content }) {
           <button className="cancel-btn" onClick={onClose}>
             Thoát ngay
           </button>
-          <button className="delete-btn ml-5" onClick={onClose}>
+          <button className="delete-btn ml-5" onClick={onConfirm}>
             Đồng ý
           </button>
         </div>

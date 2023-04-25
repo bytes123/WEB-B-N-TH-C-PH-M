@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SIGNUP_URL, AUTH_URL } from "../../static/API";
+import {
+  SIGNUP_URL,
+  AUTH_URL,
+  SIGNUP_STAFF_URL,
+  UPDATE_ONLINE_URL,
+} from "../../static/API";
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
@@ -10,8 +15,16 @@ const initialState = {
     user_name: "",
     email: "",
   },
-  signup_status: "",
+  signup_status: "none",
 };
+
+export const updateOnline = createAsyncThunk(
+  "auth/updateonline",
+  async (data) => {
+    const response = await axios.post(UPDATE_ONLINE_URL, data);
+    return response.data;
+  }
+);
 
 export const fetchAuthSignup = createAsyncThunk(
   "auth/authtokensignup",
@@ -31,6 +44,21 @@ export const signUpRequest = createAsyncThunk("auth/signup", async (data) => {
   const response = await axios({
     method: "post",
     url: SIGNUP_URL,
+    data: formData,
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data;
+});
+
+export const addStaff = createAsyncThunk("auth/addstaff", async (data) => {
+  const formData = new FormData();
+  formData.append("avatar", data.avatar);
+  delete data.avatar;
+  formData.append("data", JSON.stringify(data));
+  const response = await axios({
+    method: "post",
+    url: SIGNUP_STAFF_URL,
     data: formData,
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -88,6 +116,35 @@ const authenSlice = createSlice({
         // }
       })
       .addCase(signUpRequest.rejected, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(addStaff.fulfilled, (state, action) => {
+        state.errors.user_name = "";
+        state.errors.email = "";
+        console.log(action.payload);
+        if (action.payload.includes("USER_EXISTS")) {
+          state.errors.user_name = "Tài khoản đã tồn tại";
+          state.signup_status = "failed";
+        }
+
+        if (action.payload.includes("EMAIL_EXISTS")) {
+          state.errors.email = "Email đã tồn tại";
+          state.signup_status = "failed";
+        }
+
+        if (action.payload.includes("SIGNUP_SUCCESS")) {
+          state.errors.user_name = "";
+          state.errors.email = "";
+          state.signup_status = "succeeded";
+        }
+      })
+      .addCase(addStaff.rejected, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(updateOnline.fulfilled, (state, action) => {
+        console.log(action.payload);
+      })
+      .addCase(updateOnline.rejected, (state, action) => {
         console.log(action.payload);
       });
   },

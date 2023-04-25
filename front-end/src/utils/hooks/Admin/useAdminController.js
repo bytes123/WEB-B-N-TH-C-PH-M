@@ -3,14 +3,13 @@ import { Input } from "antd";
 export default function useAdminController(
   handleChangeValue,
   handleSetValue,
-  clearErrors = () => {},
-  clearValues = () => {}
+
+  clearFetchError
 ) {
   const [isAdd, setIsAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-
-  const dataCheck = ["catalog_name"];
+  const [idDelete, setIdDelete] = useState();
 
   const handleOpenAdd = () => {
     setIsAdd(true);
@@ -26,15 +25,15 @@ export default function useAdminController(
 
   const handleOpenEdit = (data, index) => {
     console.log(data);
+    handleSetValue(data);
     setIsEdit(true);
-    handleSetValue(data, index);
   };
 
-  const handleCloseEdit = (data, index) => {
+  const handleCloseEdit = () => {
     setIsEdit(false);
   };
 
-  const handleCloseDelete = (data, index) => {
+  const handleCloseDelete = () => {
     setIsDelete(false);
   };
 
@@ -42,7 +41,8 @@ export default function useAdminController(
     handleCloseEdit(false);
   };
 
-  const handleOpenDelete = (data) => {
+  const handleOpenDelete = (user_name) => {
+    setIdDelete(user_name);
     setIsDelete(true);
   };
 
@@ -51,11 +51,10 @@ export default function useAdminController(
   };
 
   useEffect(() => {
-    if (!isEdit && !isAdd) {
-      clearErrors();
-      clearValues();
+    if (!isEdit) {
+      clearFetchError();
     }
-  }, [isEdit, isAdd]);
+  }, [isEdit]);
 
   return {
     isDelete,
@@ -70,5 +69,6 @@ export default function useAdminController(
     handleOpenAdd,
     handleCloseAdd,
     handleConfirmRate,
+    idDelete,
   };
 }

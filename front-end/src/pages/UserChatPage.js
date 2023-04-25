@@ -71,7 +71,10 @@ export default function UserChatPage() {
 
   return (
     <div className="">
-      {user && loginedUser?.type_user_id == "normal-customer" ? (
+      {user &&
+      loginedUser.type_user.some(
+        (item) => item.type_user_id == "normal-customer"
+      ) ? (
         <ChatForm
           socket={socket}
           list={fetch_chat_list}

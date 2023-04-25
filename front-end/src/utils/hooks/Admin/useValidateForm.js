@@ -47,11 +47,8 @@ export default function useCondition(callback, validate) {
     });
   };
 
-  const handleSetValue = (data, index) => {
-    setValues({
-      row_index: index,
-      ...data,
-    });
+  const handleSetValue = (data) => {
+    setValues(data);
   };
 
   const clearErrors = () => {

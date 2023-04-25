@@ -36,11 +36,7 @@ export default function HomePage() {
     <div className="home_page  h-full my-10 caret-transparent">
       <FeatureSwiper />
       <FeatureProduct title="Sản phẩm bán chạy" items={products} />
-      <BannerSection
-        img="section-img-1.jpg"
-        children={<ContentSectionFirst />}
-        background="#00b388"
-      />
+      <ContentSectionFirst />
       <FeatureProduct title="Sản phẩm mới nhất" items={products} />
     </div>
   );

@@ -57,6 +57,8 @@ export default function Header({ className }) {
   const [isBarActive, setIsBarActive] = useHeaderBar();
   const [isOpenMobileSubMenu, setIsOpenMobileSubMenu] = useMobileSubMenu();
 
+  const [menuList, setMenuList] = useState([]);
+
   const handleMobileBar = () => {
     setIsBarActive(!isBarActive);
   };
@@ -67,6 +69,35 @@ export default function Header({ className }) {
       navigate(item.link);
     }
   };
+
+  useEffect(() => {
+    if (
+      loginedUser &&
+      loginedUser.type_user.some((item) => item.type_user_id == "admin")
+    ) {
+      return setMenuList([
+        ...DesktopMenu.filter(
+          (item) => item.key !== "login" && item.key !== "signup"
+        ),
+        {
+          key: "admin",
+          link: path.admin,
+          value: "Trang ADMIN",
+        },
+      ]);
+    }
+
+    if (loginedUser) {
+      return setMenuList(
+        DesktopMenu.filter(
+          (item) => item.key !== "login" && item.key !== "signup"
+        )
+      );
+    }
+    if (!loginedUser) {
+      return setMenuList(DesktopMenu.filter((item) => item.key !== "admin"));
+    }
+  }, [loginedUser]);
 
   return (
     <div className={`${className} header bg-white`}>
@@ -97,7 +128,7 @@ export default function Header({ className }) {
           {isLogined ? (
             <HeaderUser
               onPopup={handlePopup}
-              className="w-[40px]"
+              className="w-[40px] h-[40px]"
               user={loginedUser}
             />
           ) : (
@@ -108,7 +139,7 @@ export default function Header({ className }) {
       <Popup
         className={`${
           isPopupActive
-            ? "block z-[1111] rounded-lg fixed right-5 top-[60px] w-[300px] p-3 "
+            ? "block z-[1111] rounded-lg absolute right-5 top-[60px] w-[300px] p-3 "
             : "hidden"
         }`}
       >
@@ -119,38 +150,21 @@ export default function Header({ className }) {
         </div>
       </Popup>
       {/*  // HEADER */}
-      <AntdHeader className="hidden lg:block  md:w-full pc flex items-center justify-between header-bg-color  header md:h-100">
+      <AntdHeader className="hidden lg:block z-[-1]  md:w-full pc flex items-center justify-between header-bg-color  header md:h-100">
         <Menu className={desktopMenuClass}>
-          {DesktopMenu.map((item) =>
-            isLogined ? (
-              item.key !== "login" &&
-              item.key !== "signup" && (
-                <Menu.Item
-                  key={item.key}
-                  style={{ width: "auto" }}
-                  onClick={(e) => navigate(item.link)}
-                  className={
-                    activeMenuClass(item.link) + seperateMenuClass(item.link)
-                  }
-                >
-                  <span className="header_menu-title">{item.value}</span>
-                  <HeaderMenuItem items={item.key == "menu" && ProductData} />
-                </Menu.Item>
-              )
-            ) : (
-              <Menu.Item
-                key={item.key}
-                style={{ width: "auto" }}
-                onClick={(e) => navigate(item.link)}
-                className={
-                  activeMenuClass(item.link) + seperateMenuClass(item.link)
-                }
-              >
-                <span className="header_menu-title">{item.value}</span>
-                <HeaderMenuItem items={item.key == "menu" && ProductData} />
-              </Menu.Item>
-            )
-          )}
+          {menuList.map((item) => (
+            <Menu.Item
+              key={item.key}
+              style={{ width: "auto" }}
+              onClick={(e) => navigate(item.link)}
+              className={
+                activeMenuClass(item.link) + seperateMenuClass(item.link)
+              }
+            >
+              <span className="header_menu-title">{item.value}</span>
+              <HeaderMenuItem items={item.key == "menu" && ProductData} />
+            </Menu.Item>
+          ))}
         </Menu>
       </AntdHeader>
       {/*  // MOBILE BAR HEADER */}
