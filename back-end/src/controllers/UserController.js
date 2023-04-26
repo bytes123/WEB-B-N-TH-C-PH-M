@@ -195,10 +195,12 @@ module.exports = {
 
     console.log(staff);
 
-    const detail_type_user = data.type_user.map((item) => ({
-      user_name: data.user_name,
-      type_user_id: item,
-    }));
+    const detail_type_user =
+      data?.type_user &&
+      data?.type_user.map((item) => ({
+        user_name: data.user_name,
+        type_user_id: item,
+      }));
 
     User.getUserConfirmed(user, (err, res) => {
       if (res.length > 0) {
@@ -223,7 +225,7 @@ module.exports = {
                     if (err) {
                       return result.status(400).json(err);
                     } else {
-                      if (detail_type_user.length) {
+                      if (detail_type_user && detail_type_user?.length) {
                         detail_type_user.forEach((item) => {
                           User.setDetailTypeUser(item, (err, res) => {
                             if (err) {

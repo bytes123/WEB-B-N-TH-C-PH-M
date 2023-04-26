@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function useCondition(callback, validate) {
+export default function useCondition(callback) {
   const [values, setValues] = useState({});
   const [sendValues, setSendValues] = useState({});
   const [errors, setErrors] = useState({});
@@ -62,7 +62,6 @@ export default function useCondition(callback, validate) {
 
   const submit = (e) => {
     e.preventDefault();
-    setErrors(validate(sendValues));
     setIsSubmitting(true);
   };
 

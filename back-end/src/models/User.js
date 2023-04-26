@@ -142,16 +142,20 @@ var User = {
         SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.created_date as order_date 
         FROM customers c 
         INNER JOIN users u ON u.user_name = c.user_name 
-        WHERE u.isAuth = 1 
+        WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 
         UNION ALL 
         SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.created_date as order_date 
         FROM STAFFS s 
         INNER JOIN users u ON u.user_name = s.user_name 
-        WHERE u.user_name LIKE ? OR u.email = ? AND u.isAuth = 1 
+        WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 
       ) AS subquery
       ORDER BY order_date DESC
       `;
-    db.query(sql, [`${data.value}%`, `${data.value}%`], callback);
+    db.query(
+      sql,
+      [`${data.value}%`, `${data.value}%`, `${data.value}%`, `${data.value}%`],
+      callback
+    );
   },
 };
 

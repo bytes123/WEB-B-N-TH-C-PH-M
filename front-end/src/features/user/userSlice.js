@@ -22,6 +22,9 @@ const initialState = {
   admin_type_user: [],
   delete_status: "",
   update_status: "",
+  search_status: "",
+  fetch_search_status: "",
+  search_users: [],
 };
 
 export const loginRequest = createAsyncThunk("user/login", async (user) => {
@@ -80,6 +83,17 @@ export const searchUser = createAsyncThunk("user/search", async (value) => {
   return response.data;
 });
 
+export const fetchSearchUser = createAsyncThunk(
+  "user/fetch_search",
+  async (value) => {
+    const response = await axios.post(SEARCH_USER_URL, {
+      value: value,
+    });
+
+    return response.data;
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -92,6 +106,9 @@ const userSlice = createSlice({
     },
     resetErrors(state, status) {
       state.errors = {};
+    },
+    resetSearchStatus(state, action) {
+      state.search_status = "";
     },
   },
   extraReducers(builder) {
@@ -167,10 +184,20 @@ const userSlice = createSlice({
       })
       .addCase(searchUser.fulfilled, (state, action) => {
         state.search_status = "succeeded";
-        state.users = action.payload;
+        state.search_users = action.payload;
       })
       .addCase(searchUser.rejected, (state, action) => {
         state.search_status = "failed";
+      })
+      .addCase(fetchSearchUser.pending, (state, action) => {
+        state.fetch_search_status = "loading";
+      })
+      .addCase(fetchSearchUser.fulfilled, (state, action) => {
+        state.fetch_search_status = "succeeded";
+        state.search_users = action.payload;
+      })
+      .addCase(fetchSearchUser.rejected, (state, action) => {
+        state.fetch_search_status = "failed";
       });
   },
 });
@@ -187,8 +214,14 @@ export const getDeleteStatus = (state) => state.user.delete_status;
 export const getUpdateStatus = (state) => state.user.update_status;
 export const getAdminType = (state) => state.user.admin_type_user;
 export const getSearchStatus = (state) => state.user.search_status;
-
-export const { resetDeleteStatus, resetErrors, resetUpdateStatus } =
-  userSlice.actions;
+export const getFetchSearchStatus = (state) => state.user.fetch_search_status;
+export const getSearchUsers = (state) => state.user.search_users;
+export const {
+  resetDeleteStatus,
+  resetErrors,
+  resetUpdateStatus,
+  handleSearchUsers,
+  resetSearchStatus,
+} = userSlice.actions;
 
 export default userSlice.reducer;

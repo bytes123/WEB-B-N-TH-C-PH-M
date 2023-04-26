@@ -1,43 +1,60 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import {
+  resetSearchStatus,
+  fetchAllUser,
+  getFetchSearchStatus,
+  getSearchStatus,
+  getSearchUsers,
+  getAllUser,
+} from "../../features/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+export default function useMainUser() {
+  const dispatch = useDispatch();
 
-export default function useMainUser(fetchUsers) {
   const [users, setUsers] = useState([]);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
+  const [isLoadingAllUsers, setIsLoadingAllUsers] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const [currentSearch, setCurrentSearch] = useState();
+  const search_status = useSelector(getSearchStatus);
+  const search_users = useSelector(getSearchUsers);
+  const fetch_search_status = useSelector(getFetchSearchStatus);
+  const fetchUsers = useSelector(getAllUser);
+  const location = useLocation();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (fetchUsers) {
-        // Gửi các request lấy dữ liệu province và district cùng lúc
-        const provinceRequests = fetchUsers.map(async (item) => {
-          return getProvince(item.province_id);
-        });
-        const districtRequests = fetchUsers.map(async (item) => {
-          return getDistrict(item.province_id, item.district_id);
-        });
+    setIsSearch(false);
+    setCurrentSearch();
+    setIsLoadingAllUsers(false);
+    setIsLoadingSearch(false);
+  }, [location.pathname]);
 
-        const wardRequests = fetchUsers.map(async (item) => {
-          return getWard(item.district_id, item.ward_id);
-        });
+  useEffect(() => {
+    setUsers(search_users);
+  }, [fetch_search_status]);
 
-        // Đợi tất cả các request hoàn thành
-        const provinceResponses = await Promise.all(provinceRequests);
-        const districtResponses = await Promise.all(districtRequests);
-        const wardResponses = await Promise.all(wardRequests);
+  const fetchData = async () => {
+    if (fetchUsers) {
+      setUsers(fetchUsers);
+    }
+  };
 
-        // Set dữ liệu vào user
-        const data = fetchUsers.map((user, index) => {
-          return {
-            ...user,
-            user_province: provinceResponses[index],
-            user_district: districtResponses[index],
-            user_ward: wardResponses[index],
-          };
-        });
+  useEffect(() => {
+    if (search_status == "loading") {
+      setIsLoadingSearch(true);
+    } else if (search_status == "succeeded") {
+      setTimeout(() => {
+        setUsers(search_users);
+        setIsLoadingSearch(false);
+        setIsSearch(true);
+        dispatch(resetSearchStatus());
+      }, 2000);
+    }
+  }, [search_status]);
 
-        setUsers(data);
-      }
-    };
-
+  useEffect(() => {
     fetchData();
   }, [fetchUsers]);
 
@@ -89,9 +106,35 @@ export default function useMainUser(fetchUsers) {
     }
   };
 
+  const handleSearch = (value, callback) => {
+    if (value !== "") {
+      setCurrentSearch(value);
+    }
+    callback();
+  };
+
+  const handleOutSearch = () => {
+    setCurrentSearch();
+    setIsLoadingAllUsers(true);
+    setTimeout(async () => {
+      await dispatch(fetchAllUser()).unwrap();
+      setIsLoadingAllUsers(false);
+      setIsSearch(false);
+    }, 2000);
+  };
+
   useEffect(() => {
     console.log(users);
   }, [users]);
 
-  return { users, setUsers };
+  return {
+    users,
+    setUsers,
+    isLoadingSearch,
+    isSearch,
+    handleSearch,
+    handleOutSearch,
+    isLoadingAllUsers,
+    currentSearch,
+  };
 }

@@ -49,7 +49,7 @@ export default function useSignUp(imgData, callback, updateValues) {
 
   // Cập nhật khi thay đổi value mới cho submit
   useEffect(() => {
-    if (Object.keys(newValues).length) {
+    if (Object.keys(newValues).length > 1) {
       setIsChange(true);
     }
   }, [newValues]);
@@ -112,7 +112,9 @@ export default function useSignUp(imgData, callback, updateValues) {
   };
 
   const clearUser = () => {
-    setNewValues({});
+    setNewValues({
+      gender: "Nam",
+    });
   };
 
   const clearErrors = () => {

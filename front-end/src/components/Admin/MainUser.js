@@ -8,27 +8,21 @@ import {
   userDataCheck,
 } from "../../static/AdminData";
 import useAdminController from "../../utils/hooks/Admin/useAdminController";
-import { Input } from "antd";
-import { FaExchangeAlt } from "react-icons/fa";
-import { Table } from "antd";
-
-import AU from "../Admin/AU";
+import { Button, Table, Input } from "antd";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
-import validateUser from "../../utils/validates/validateUser";
-import { userForm } from "../../static/Admin/Forms";
 import Toast from "../../utils/components/Toast";
 import AddForm from "./User/AddForm";
 import {
   fetchAllUser,
-  getAllUser,
   getAllUserStatus,
   getDeleteStatus,
   deleteUser,
   searchUser,
   getUpdateStatus,
   resetUpdateStatus,
-  getSearchStatus,
   resetErrors,
+  resetDeleteStatus,
+  fetchSearchUser,
 } from "../../features/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Time from "../../utils/components/Time";
@@ -37,14 +31,11 @@ import UpdateForm from "./User/UpdateForm";
 
 export default function MainUser() {
   const { Search } = Input;
-  const userData = React.useMemo(() => userListData);
   const dispatch = useDispatch();
-  const fetchUsers = useSelector(getAllUser);
-  const status = useSelector(getAllUserStatus);
+
   const update_status = useSelector(getUpdateStatus);
   const delete_status = useSelector(getDeleteStatus);
-  const search_status = useSelector(getSearchStatus);
-  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
+
   const [isToast, setIsToast] = useState({
     style: "",
     value: false,
@@ -52,7 +43,19 @@ export default function MainUser() {
   });
   const [error, setError] = useState({});
 
-  const { users } = useMainUser(fetchUsers);
+  const {
+    users,
+    isLoadingSearch,
+    isSearch,
+    handleSearch,
+    handleOutSearch,
+    isLoadingAllUsers,
+    currentSearch,
+  } = useMainUser();
+
+  useEffect(() => {
+    console.log(isLoadingSearch);
+  }, [isLoadingSearch]);
 
   const addData = (values) => {
     values.user_type = "admin";
@@ -61,18 +64,8 @@ export default function MainUser() {
     await dispatch(resetUpdateStatus());
     await dispatch(resetErrors());
   };
-  const { values, handleChangeValue, handleSetValue } = useValidateForm(
-    addData,
-    validateUser
-  );
-
-  useEffect(() => {
-    if (search_status == "loading") {
-      setIsLoadingSearch(true);
-    } else if (search_status == "succeeded") {
-      setIsLoadingSearch(false);
-    }
-  }, [search_status]);
+  const { values, handleChangeValue, handleSetValue } =
+    useValidateForm(addData);
 
   const {
     isDelete,
@@ -89,38 +82,56 @@ export default function MainUser() {
 
   useEffect(() => {
     if (delete_status == "succeeded") {
-      setIsToast({
-        style: "success",
-        value: true,
-        body: "Xóa tài khoản thành công",
-      });
+      const updateDelete = async () => {
+        if (currentSearch) {
+          await dispatch(fetchSearchUser(currentSearch)).unwrap();
+          await handleCloseDelete();
+        } else {
+          await dispatch(fetchAllUser()).unwrap();
+          await handleCloseDelete();
+        }
+        setIsToast({
+          style: "success",
+          value: true,
+          body: "Xóa tài khoản thành công",
+        });
+      };
+      updateDelete();
     }
 
-    return () =>
+    return () => {
       setIsToast({
         value: false,
         body: "",
       });
+      dispatch(resetDeleteStatus());
+    };
   }, [delete_status]);
 
   useEffect(() => {
-    console.log(users);
     dispatch(fetchAllUser()).unwrap();
   }, []);
 
   useEffect(() => {
     if (update_status == "succeeded") {
-      const update = async () => {
-        await dispatch(fetchAllUser()).unwrap();
-
-        handleCloseEdit();
+      console.log(currentSearch);
+      const updateEdit = async () => {
+        if (currentSearch) {
+          console.log("Có ");
+          await dispatch(fetchSearchUser(currentSearch));
+          await handleCloseEdit();
+        } else {
+          await dispatch(fetchAllUser()).unwrap();
+          await handleCloseEdit();
+        }
+        setError({});
         setIsToast({
           style: "success",
           value: true,
           body: "Cập nhật tài khoản thành công",
         });
       };
-      update();
+      updateEdit();
     }
 
     return () =>
@@ -139,47 +150,34 @@ export default function MainUser() {
     handleCloseEdit();
   };
 
-  useEffect(() => {
-    if (!isEdit) {
-      const reset = async () => {
-        await dispatch(fetchAllUser()).unwrap();
-        setError({});
-      };
-      reset();
-    }
-  }, [isEdit]);
-
   const handleConfirmDelete = async (user_name) => {
     try {
       await dispatch(deleteUser({ user_name: user_name })).unwrap();
-      dispatch(fetchAllUser()).unwrap();
-      handleCloseDelete();
     } catch (error) {
       // Xử lý lỗi nếu cần thiết
       console.error("Lỗi khi xóa người dùng:", error);
     }
   };
 
-  const handleSearch = async (value) => {
+  const onSearch = async (value, callback) => {
     if (!value) {
-      setIsToast({
-        style: "failed",
-        value: true,
-        body: "Vui lòng nhập tên tài khoản hoặc email để tìm kiếm",
-      });
+      handleSearch(value, () =>
+        setIsToast({
+          style: "failed",
+          value: true,
+          body: "Vui lòng nhập tên tài khoản hoặc email để tìm kiếm",
+        })
+      );
     } else {
-      await dispatch(searchUser(value));
+      handleSearch(value, async () => {
+        await dispatch(searchUser(value));
+      });
     }
   };
 
   useEffect(() => {
-    return () =>
-      setIsToast({
-        style: "",
-        value: false,
-        body: "",
-      });
-  }, [isToast]);
+    console.log(currentSearch);
+  }, [currentSearch]);
 
   const columns = [
     {
@@ -333,8 +331,8 @@ export default function MainUser() {
     <div className="main_user mx-2">
       <Toast
         style={isToast?.style}
-        body={isToast.body}
-        isSuccess={isToast.value}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
       />
       <h1 className="text-4xl font-bold m-5">Quản lý tài khoản</h1>
 
@@ -404,9 +402,26 @@ export default function MainUser() {
                 placeholder="Nhập tên tài khoản để tìm kiếm"
                 enterButton="Tìm kiếm"
                 size="large"
-                onSearch={handleSearch}
+                onSearch={onSearch}
                 loading={isLoadingSearch}
               />
+
+              {isSearch ? (
+                <div>
+                  <Button
+                    className="mb-5"
+                    type="primary"
+                    danger
+                    loading={isLoadingAllUsers}
+                    onClick={!isLoadingAllUsers && handleOutSearch}
+                  >
+                    Quay lại tất cả
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
+
               <div className="table-wrapper">
                 <Table
                   bordered={true}
