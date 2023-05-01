@@ -5,11 +5,13 @@ import {
   ADD_CATEGORY_URL,
   UPDATE_CATEGORY_URL,
   DELETE_CATEGORY_URL,
+  CATEGORY_CHILDREN_URL,
 } from "../../static/API";
 import axios from "axios";
 
 const initialState = {
   categories: [],
+  category_children: [],
   errors: {},
   add_status: "",
   update_status: "",
@@ -17,9 +19,17 @@ const initialState = {
 };
 
 export const fetchCategory = createAsyncThunk(
-  "category/messageListAll",
+  "category/all_category",
   async () => {
     const response = await axios.get(CATEGORY_URL);
+    return response.data;
+  }
+);
+
+export const fetchCategoryAndChildren = createAsyncThunk(
+  "category/category_childrens",
+  async () => {
+    const response = await axios.get(CATEGORY_CHILDREN_URL);
     return response.data;
   }
 );
@@ -123,7 +133,14 @@ const categorySlice = createSlice({
       .addCase(deleteCategory.rejected, (state, action) => {
         state.delete_status = "failed";
         console.log(action.error);
-      });
+      })
+      .addCase(fetchCategoryAndChildren.pending, (state, action) => {})
+      .addCase(fetchCategoryAndChildren.fulfilled, (state, action) => {
+        if (action.payload.length) {
+          state.category_children = action.payload;
+        }
+      })
+      .addCase(fetchCategoryAndChildren.rejected, (state, action) => {});
   },
 });
 
@@ -132,6 +149,8 @@ export const getAddStatus = (state) => state.category.add_status;
 export const getUpdateStatus = (state) => state.category.update_status;
 export const getDeleteStatus = (state) => state.category.delete_status;
 export const getCategories = (state) => state.category.categories;
+export const getCategoryAndChildren = (state) =>
+  state.category.category_children;
 export const {
   resetAddStatus,
   resetUpdateStatus,

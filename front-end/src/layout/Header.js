@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Layout, Menu, Row, Col } from "antd";
 import { getLoginStatus } from "../features/user/userSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import Cookies from "js-cookie";
 import Modal from "../utils/components/Modal";
@@ -22,6 +22,10 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import Popup from "../utils/components/Popup";
 import ProfileController from "../components/Header/ProfileController";
 import { isLogined, loginedUser } from "../utils/hooks/useAccessUser";
+import {
+  fetchCategoryAndChildren,
+  getCategoryAndChildren,
+} from "../features/category/categorySlice";
 
 const { Header: AntdHeader } = Layout;
 
@@ -33,9 +37,10 @@ const mobileMenuClass =
 
 export default function Header({ className }) {
   const [isPopupActive, handlePopup, handleClosePopup] = usePopup();
-
+  const dispatch = useDispatch();
   let navigate = useNavigate();
   const location = useLocation();
+  const category_children = useSelector(getCategoryAndChildren);
 
   const activeMenuClass = (link) => {
     if (link === location.pathname) {
@@ -69,6 +74,16 @@ export default function Header({ className }) {
       navigate(item.link);
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchCategoryAndChildren()).unwrap();
+  }, []);
+
+  useEffect(() => {
+    if (category_children) {
+      console.log(category_children);
+    }
+  }, [category_children]);
 
   useEffect(() => {
     if (
@@ -162,7 +177,11 @@ export default function Header({ className }) {
               }
             >
               <span className="header_menu-title">{item.value}</span>
-              <HeaderMenuItem items={item.key == "menu" && ProductData} />
+              {item.key == "menu" ? (
+                <HeaderMenuItem items={category_children} />
+              ) : (
+                ""
+              )}
             </Menu.Item>
           ))}
         </Menu>

@@ -8,20 +8,25 @@ export default function HeaderMenuItem({ items }) {
     e.stopPropagation();
   };
 
-  return items ? (
+  console.log(items);
+
+  return items.length ? (
     <div className="header_menu-item" onClick={handleStopPropagation}>
       <ul className="menu_list">
-        {ProductData.map((item) => (
-          <li className="menu_item" key={item.key}>
-            <Link to={item.link} className="menu_item-title">
-              {item.value}
+        {items.map((item) => (
+          <li className="menu_item" key={item.id}>
+            <Link to={`thuc-don/${item.id}`} className="menu_item-title">
+              {item.name}
             </Link>
             <ul className="menu_list-children">
               {item.children &&
-                item.children.map((item) => (
-                  <li className="menu_item-children" key={item.key}>
-                    <Link to={item.link} className="menu_item-children-title">
-                      {item.value}
+                item.children.map((children) => (
+                  <li className="menu_item-children" key={children.id}>
+                    <Link
+                      to={`thuc-don/${item.id}/${children.id}`}
+                      className="menu_item-children-title"
+                    >
+                      {children.name}
                     </Link>
                   </li>
                 ))}

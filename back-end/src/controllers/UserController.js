@@ -41,6 +41,10 @@ module.exports = {
     let dateTimeNow = new Date();
     let authen_token = uuidv1();
 
+    data.user_name = data.user_name.trim();
+    data.phone_number = data.phone_number.trim();
+    data.fullname = data.fullname.trim();
+
     let auth_data = {
       auth_token: authen_token,
       user_name: data.user_name,
@@ -157,10 +161,11 @@ module.exports = {
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(data.password, salt);
 
-    let dateTimeNow = new Date();
-    let authen_token = uuidv1();
-
     let notifications = [];
+
+    data.user_name = data.user_name.trim();
+    data.phone_number = data.phone_number.trim();
+    data.fullname = data.fullname.trim();
 
     const user = avatar
       ? {

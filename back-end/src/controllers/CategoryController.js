@@ -1,7 +1,7 @@
 "use strict";
 
 const Category = require("../models/Category");
-
+const Products = require("../models/Products");
 var fs = require("fs");
 const { json } = require("express");
 
@@ -12,9 +12,35 @@ module.exports = {
       res.json(response);
     });
   },
+  getCategoryAndChildren: (req, res) => {
+    Category.getAllCategory(async (err, categories) => {
+      if (err) return res.status(400).json(err);
+
+      const categoryPromises = categories.map(async (item, index) => {
+        const products = await new Promise((resolve, reject) => {
+          Products.getProductsByCategory(item, (err, products) => {
+            if (err) reject(err);
+            resolve(products);
+          });
+        });
+
+        return { ...item, children: products };
+      });
+
+      const categoriesWithProducts = await Promise.all(categoryPromises);
+
+      return res.status(200).json(categoriesWithProducts);
+    });
+  },
   addCategory: (req, result) => {
+    function removeVietnameseAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     const data = req.body;
+    data.name = data.name.trim();
     data.created_date = new Date();
+    data.id = removeVietnameseAccents(data.name).replace(" ", "-");
 
     Category.getCategoryExists(data, (err, res) => {
       if (!res.length) {
@@ -32,6 +58,7 @@ module.exports = {
   },
   updateCategory: (req, result) => {
     const data = req.body;
+    data.name = data.name.trim();
     data.modify_date = new Date();
 
     const category = {

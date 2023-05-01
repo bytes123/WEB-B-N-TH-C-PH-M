@@ -18,6 +18,7 @@ const CATEGORY_URL = "http://localhost:8000/category";
 const ADD_CATEGORY_URL = "http://localhost:8000/add-category";
 const UPDATE_CATEGORY_URL = "http://localhost:8000/update-category";
 const DELETE_CATEGORY_URL = "http://localhost:8000/delete-category";
+const CATEGORY_CHILDREN_URL = "http://localhost:8000/category-children";
 export {
   LOGIN_URL,
   SIGNUP_URL,
@@ -39,4 +40,5 @@ export {
   ADD_CATEGORY_URL,
   UPDATE_CATEGORY_URL,
   DELETE_CATEGORY_URL,
+  CATEGORY_CHILDREN_URL,
 };

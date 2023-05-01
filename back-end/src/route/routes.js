@@ -31,6 +31,7 @@ module.exports = function (app) {
   app.route("/add-category").post(categoryCtrl.addCategory);
   app.route("/update-category").post(categoryCtrl.updateCategory);
   app.route("/delete-category").post(categoryCtrl.deleteCategory);
+  app.route("/category-children").get(categoryCtrl.getCategoryAndChildren);
   // API USER
   app.route("/users").get(userCrtl.getAllUser);
   app.route("/delete_user").post(userCrtl.deleteUser);
