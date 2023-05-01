@@ -76,6 +76,7 @@ export default function ChatForm({
 
   useEffect(() => {
     if (contact_user) {
+      console.log(contact_user);
       setActiveContactUser(contact_user);
     }
   }, [contact_user]);
@@ -90,7 +91,7 @@ export default function ChatForm({
     <div className="flex border-t border-t-slate-700">
       <div className="chat_list-wrapper px-4 bg-slate-800 min-h-screen  min-w-[250px]">
         <h3 className="mb-5 text-3xl text-yellow-100 font-semibold mt-5">
-          Chat với Admin
+          Hòm thư hỗ trợ
         </h3>
         <div className="label_chat active mb-5 text-cyan-500 rounded-3xl p-3 text-center font-semibold bg-cyan-900">
           <p>Hộp thư</p>
@@ -156,7 +157,7 @@ export default function ChatForm({
               />
               <div className="ml-3">
                 <p className=" text-white text-semibold text-2xl ">
-                  {activeContactUser?.fullname}
+                  {activeContactUser?.fullname ?? "Admin"}
                 </p>
                 {activeContactUser?.online ? (
                   <div className="flex items-center mt-2">

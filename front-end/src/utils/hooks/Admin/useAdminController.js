@@ -3,8 +3,8 @@ import { Input } from "antd";
 export default function useAdminController(
   handleChangeValue,
   handleSetValue,
-
-  clearFetchError
+  clearUpdate = () => {},
+  clearAdd = () => {}
 ) {
   const [isAdd, setIsAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -23,7 +23,7 @@ export default function useAdminController(
     handleChangeValue(e);
   };
 
-  const handleOpenEdit = (data, index) => {
+  const handleOpenEdit = (data) => {
     console.log(data);
     handleSetValue(data);
     setIsEdit(true);
@@ -41,8 +41,8 @@ export default function useAdminController(
     handleCloseEdit(false);
   };
 
-  const handleOpenDelete = (user_name) => {
-    setIdDelete(user_name);
+  const handleOpenDelete = (data) => {
+    setIdDelete(data);
     setIsDelete(true);
   };
 
@@ -52,9 +52,15 @@ export default function useAdminController(
 
   useEffect(() => {
     if (!isEdit) {
-      clearFetchError();
+      clearUpdate();
     }
   }, [isEdit]);
+
+  useEffect(() => {
+    if (!isAdd) {
+      clearAdd();
+    }
+  }, [isAdd]);
 
   return {
     isDelete,

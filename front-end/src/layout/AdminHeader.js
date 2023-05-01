@@ -14,11 +14,17 @@ import {
   fetchMessageListAll,
   getChatList,
 } from "../features/message/messageSlice";
+import { isLogined, loginedUser } from "../utils/hooks/useAccessUser";
+import usePopup from "../utils/hooks/usePopup";
+import ProfileController from "../components/Header/ProfileController";
+import HeaderUser from "../components/Header/HeaderUser";
 import { io } from "socket.io-client";
 const socket = io.connect("http://localhost:3001");
 
 export default function AdminHeader({ onBarActive, isBarActive }) {
   const dispatch = useDispatch();
+  const [isPopupActive, handlePopup, handleClosePopup] = usePopup();
+
   const [isAdminChatActive, handleAdminChat, handleCloseAdminChat] =
     useAdminChat();
   const [
@@ -130,21 +136,36 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
           </Popup>
 
           {/* ------ */}
-          <div className="admin_header-profile admin_tooltip mr-5 cursor-pointer flex items-center">
+          <div
+            className="admin_header-profile relative admin_tooltip mr-5 cursor-pointer flex items-center"
+            onClick={handlePopup}
+          >
             <ToolTip text="Profile" />
             <div className="admin_header-avatar mr-4">
               <img
                 className="w-[30px] rounded-full"
-                src="https://shoppymultidash.netlify.app/static/media/avatar.ad026443bbabdf64ce71.jpg"
+                src={`http://localhost:8000/resources/avatar/${loginedUser?.avatar}`}
                 alt=""
               />
             </div>
             <div className="admin_header-name mr-4 text-gray-500">
-              <span>Hi,</span> <span className="font-bold">Tân</span>
+              <span>Hi,</span>{" "}
+              <span className="font-bold">{loginedUser?.fullname}</span>
             </div>
             <div className="profile_more-icon text-gray-500">
               <BsChevronDown className="text-sm" />
             </div>
+            <Popup
+              className={`${
+                isPopupActive
+                  ? "block z-[1111]  absolute right-5 top-[100%] w-[200px] text-xl bg-teal-300 text-white flex flex-col justify-center"
+                  : "hidden"
+              }`}
+            >
+              <ProfileController user={loginedUser} isAdmin={true}>
+                <HeaderUser className="w-[40px]" user={loginedUser} />
+              </ProfileController>
+            </Popup>
           </div>
         </div>
       </div>

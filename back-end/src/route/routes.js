@@ -17,6 +17,7 @@ let storageAvatar = multer.diskStorage({
 let uploadAvatar = multer({ storage: storageAvatar });
 
 module.exports = function (app) {
+  let categoryCtrl = require("../controllers/CategoryController");
   let productsCtrl = require("../controllers/ProductsController");
   let userCrtl = require("../controllers/UserController");
   let authCrtl = require("../controllers/AuthController");
@@ -25,6 +26,11 @@ module.exports = function (app) {
   // API SẢN PHẨM
   app.route("/products").get(productsCtrl.get);
 
+  // API DANH MỤC
+  app.route("/category").get(categoryCtrl.get);
+  app.route("/add-category").post(categoryCtrl.addCategory);
+  app.route("/update-category").post(categoryCtrl.updateCategory);
+  app.route("/delete-category").post(categoryCtrl.deleteCategory);
   // API USER
   app.route("/users").get(userCrtl.getAllUser);
   app.route("/delete_user").post(userCrtl.deleteUser);

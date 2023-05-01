@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function useCondition(callback) {
+export default function useValidateForm(callback) {
   const [values, setValues] = useState({});
   const [sendValues, setSendValues] = useState({});
   const [errors, setErrors] = useState({});

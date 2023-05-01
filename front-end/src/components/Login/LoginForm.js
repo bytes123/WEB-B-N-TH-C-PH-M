@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Input, Form, Button, Checkbox } from "antd";
 import {
-  defaultPlaceHolder,
+  userPlaceHolder,
   rulesLogin as rules,
   userLogin as defaultUser,
 } from "../../static/UserForm";
@@ -25,7 +25,7 @@ export default function LoginForm() {
   let status = useSelector(getSignUpStatus);
   let error = useSelector(getError);
   const dispatch = useDispatch();
-  const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
+  const [placeHolder, setPlaceHolder] = useState(userPlaceHolder);
   const [user, setUser] = useState(defaultUser);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
@@ -49,7 +49,7 @@ export default function LoginForm() {
   };
 
   const handleBlurPlaceHolder = () => {
-    setPlaceHolder(defaultPlaceHolder);
+    setPlaceHolder(userPlaceHolder);
   };
 
   useEffect(() => {

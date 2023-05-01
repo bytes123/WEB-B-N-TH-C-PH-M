@@ -4,6 +4,7 @@ import { loginedUser } from "../../utils/hooks/useAccessUser";
 import Time from "../../utils/components/Time";
 import { Link } from "react-router-dom";
 export default function MessageBar({ handleClose, list }) {
+  console.log(list);
   return (
     <div className="message-wrapper p-8">
       <div className="message-top flex items-center justify-between">
@@ -19,7 +20,7 @@ export default function MessageBar({ handleClose, list }) {
               <div className="message-avatar w-[20%]">
                 <img
                   className="rounded-full w-[36px] h-[36px]"
-                  src="https://scontent.fsgn13-1.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p40x40&_nc_cat=1&ccb=1-7&_nc_sid=7206a8&_nc_ohc=x3PhOYWAf78AX-hNfC9&_nc_ht=scontent.fsgn13-1.fna&oh=00_AfDiNTYPiIGzcmx_Wn1Y7xDQJL_lGjUd7e9eq-haCwJ2ag&oe=643D5DF8"
+                  src={`http://localhost:8000/resources/avatar/${item?.partner_avatar}`}
                   alt=""
                 />
               </div>

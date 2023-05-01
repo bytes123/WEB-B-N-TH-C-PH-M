@@ -2,14 +2,19 @@ import MainDashBoard from "../components/Admin/MainDashBoard";
 import MainSideBar from "../components/Admin/MainSideBar";
 import MainDetailProduct from "../components/Admin/MainDetailProduct";
 import MainProduct from "../components/Admin/MainProduct";
-import MainCatalog from "../components/Admin/MainCatalog";
+import MainCatalog from "../components/Admin/MainCategory";
 import MainUser from "../components/Admin/MainUser";
 import MainRate from "../components/Admin/MainRate";
 import MainBrand from "../components/Admin/MainBrand";
 import MainStatistic from "../components/Admin/MainStatistic";
 import MainBill from "../components/Admin/MainBill";
 import { AiOutlineShoppingCart, AiOutlineUsergroupAdd } from "react-icons/ai";
-import { FiShoppingBag, FiUsers, FiPackage } from "react-icons/fi";
+import {
+  FiShoppingBag,
+  FiUsers,
+  FiPackage,
+  FiMessageSquare,
+} from "react-icons/fi";
 import { FcStatistics } from "react-icons/fc";
 import { MdOutlineRateReview } from "react-icons/md";
 import { BiCategoryAlt } from "react-icons/bi";
@@ -88,7 +93,7 @@ const sideBarList = [
       {
         key: 8,
         link: "quan-ly-tin-nhan",
-        icon: <FcStatistics />,
+        icon: <FiMessageSquare />,
         text: "Quản lý tin nhắn",
       },
     ],

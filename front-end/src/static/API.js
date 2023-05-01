@@ -14,7 +14,10 @@ const USERS_URL = "http://localhost:8000/users";
 const DELETE_USER_URL = "http://localhost:8000/delete_user";
 const ADMIN_TYPE_USER_URL = "http://localhost:8000/admin_type_user";
 const SEARCH_USER_URL = "http://localhost:8000/search_user";
-
+const CATEGORY_URL = "http://localhost:8000/category";
+const ADD_CATEGORY_URL = "http://localhost:8000/add-category";
+const UPDATE_CATEGORY_URL = "http://localhost:8000/update-category";
+const DELETE_CATEGORY_URL = "http://localhost:8000/delete-category";
 export {
   LOGIN_URL,
   SIGNUP_URL,
@@ -32,4 +35,8 @@ export {
   ADMIN_TYPE_USER_URL,
   UPDATE_STAFF_URL,
   SEARCH_USER_URL,
+  CATEGORY_URL,
+  ADD_CATEGORY_URL,
+  UPDATE_CATEGORY_URL,
+  DELETE_CATEGORY_URL,
 };

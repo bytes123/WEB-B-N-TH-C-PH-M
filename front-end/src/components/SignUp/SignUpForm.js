@@ -153,7 +153,7 @@ export default function SignUpForm() {
             />
           </Form.Item>
 
-          <Form.Item name="gender">
+          <Form.Item>
             <h3 className="text-xl font-semibold mb-3">Giới tính</h3>
             <Radio.Group defaultValue={"Nam"}>
               <Radio value={"Nam"}>Nam</Radio>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Input, Form, Button, Radio } from "antd";
 import {
-  defaultPlaceHolder,
   rulesSignUp as rules,
   userSignUp as defaultUser,
 } from "../../../static/UserForm";

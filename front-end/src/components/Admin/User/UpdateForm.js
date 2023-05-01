@@ -33,7 +33,6 @@ export default function UpdateForm({ error, setError, updateValues }) {
   let adminTypes = useSelector(getAdminType);
 
   const [isChangePassword, setIsChangePassword] = useState(false);
-  const [isUpdateToast, setIsUpdateToast] = useState(false);
   const dispatch = useDispatch();
 
   const { setSelectedFile, imgData, clearImage } = useUploadImage(
@@ -49,7 +48,7 @@ export default function UpdateForm({ error, setError, updateValues }) {
     setError(newrules);
   }, [newrules]);
 
-  const signUpSubmit = async (values) => {
+  const updateSubmit = async (values) => {
     newValues?.confirmpassword && delete newValues.confirmpassword;
     newValues.old_user_avatar = updateValues?.avatar;
     newValues.current_user_name = updateValues?.user_name;
@@ -70,7 +69,7 @@ export default function UpdateForm({ error, setError, updateValues }) {
     clearErrors,
     handleUpdatePermission,
     isChange,
-  } = useSignUp(imgData, signUpSubmit, updateValues);
+  } = useSignUp(imgData, updateSubmit, updateValues);
 
   const handleChangeInput = (e) => {
     if ((error && error.user_name) || (error && error.email)) {

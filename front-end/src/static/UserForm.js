@@ -1,4 +1,4 @@
-let defaultPlaceHolder = {
+let userPlaceHolder = {
   avatar: "Ảnh đại diện",
   user_name: "* Tài khoản",
   fullname: "* Họ và tên",
@@ -6,6 +6,10 @@ let defaultPlaceHolder = {
   password: "* Mật khẩu",
   confirmpassword: "* Nhập lại mật khẩu",
   phone_number: "* Nhập số điện thoại",
+};
+
+let categoryPlaceHolder = {
+  name: "* Tên danh mục",
 };
 
 const validateConfirmPassword = ({ getFieldValue }) => ({
@@ -16,6 +20,10 @@ const validateConfirmPassword = ({ getFieldValue }) => ({
     return Promise.reject("Mật khẩu không khớp");
   },
 });
+
+const rulesCategory = {
+  name: [{ required: true, message: "Vui lòng nhập tên danh mục!" }],
+};
 
 const rulesSignUp = {
   user_name: [{ required: true, message: "Vui lòng nhập tài khoản của bạn!" }],
@@ -54,4 +62,12 @@ const userLogin = {
   save: false,
 };
 
-export { defaultPlaceHolder, rulesSignUp, rulesLogin, userSignUp, userLogin };
+export {
+  userPlaceHolder,
+  rulesCategory,
+  rulesSignUp,
+  rulesLogin,
+  userSignUp,
+  userLogin,
+  categoryPlaceHolder,
+};

@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
-import {
-  userTemplateData,
-  userListData,
-  userDataCheck,
-} from "../../static/AdminData";
 import useAdminController from "../../utils/hooks/Admin/useAdminController";
 import { Button, Table, Input } from "antd";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
@@ -60,7 +55,7 @@ export default function MainUser() {
   const addData = (values) => {
     values.user_type = "admin";
   };
-  const clearFetchError = async () => {
+  const clearUpdate = async () => {
     await dispatch(resetUpdateStatus());
     await dispatch(resetErrors());
   };
@@ -78,7 +73,7 @@ export default function MainUser() {
     handleOpenAdd,
     handleCloseAdd,
     idDelete,
-  } = useAdminController(handleChangeValue, handleSetValue, clearFetchError);
+  } = useAdminController(handleChangeValue, handleSetValue, clearUpdate);
 
   useEffect(() => {
     if (delete_status == "succeeded") {

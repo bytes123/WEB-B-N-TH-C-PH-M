@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  defaultPlaceHolder,
+  userPlaceHolder,
   rulesSignUp as rules,
   userSignUp as defaultUser,
 } from "../../static/UserForm";
@@ -8,10 +8,12 @@ import { Form } from "antd";
 export default function useSignUp(imgData, callback, updateValues) {
   const [form] = Form.useForm();
   const [checked, setChecked] = useState({});
-  const [placeHolder, setPlaceHolder] = useState(defaultPlaceHolder);
-  const [newValues, setNewValues] = useState({
+  const [placeHolder, setPlaceHolder] = useState(userPlaceHolder);
+  const initialValue = {
     gender: "Nam",
-  });
+  };
+
+  const [newValues, setNewValues] = useState(initialValue);
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [isChange, setIsChange] = useState(false);
@@ -112,9 +114,7 @@ export default function useSignUp(imgData, callback, updateValues) {
   };
 
   const clearUser = () => {
-    setNewValues({
-      gender: "Nam",
-    });
+    setNewValues(initialValue);
   };
 
   const clearErrors = () => {
@@ -129,7 +129,7 @@ export default function useSignUp(imgData, callback, updateValues) {
   };
 
   const handleBlurPlaceHolder = () => {
-    setPlaceHolder(defaultPlaceHolder);
+    setPlaceHolder(userPlaceHolder);
   };
 
   useEffect(() => {

@@ -23,6 +23,10 @@ export default function UserChatPage() {
   let fetch_chat_list = useSelector(getChatList);
 
   useEffect(() => {
+    console.log(fetch_chat_list);
+  }, [fetch_chat_list]);
+
+  useEffect(() => {
     socket.emit("join_room", "socket-web-app");
   }, []);
 
