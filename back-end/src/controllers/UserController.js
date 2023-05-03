@@ -333,9 +333,7 @@ module.exports = {
             if (res) {
               if (avatar && old_user_avatar !== "default.jpg") {
                 fs.stat(filePath + old_user_avatar, function (err, stats) {
-                  if (err) {
-                  }
-
+                  if (err) return console.log(err);
                   fs.unlink(filePath + old_user_avatar, function (err) {
                     if (err) return console.log(err);
                   });

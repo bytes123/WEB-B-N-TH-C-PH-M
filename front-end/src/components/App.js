@@ -39,6 +39,7 @@ import AdminChatPage from "./Admin/AdminChatPage";
 
 import { loginedUser } from "../utils/hooks/useAccessUser";
 import { updateOnline } from "../features/authen/authenSlice";
+import MainArea from "./Admin/MainArea";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -161,6 +162,16 @@ const App = () => {
             </AdminPage>
           }
         />
+
+        <Route
+          path="admin/quan-ly-chi-nhanh"
+          element={
+            <AdminPage>
+              <MainArea />
+            </AdminPage>
+          }
+        />
+
         {Object.values(path).map((route) => (
           <Route
             key={route}

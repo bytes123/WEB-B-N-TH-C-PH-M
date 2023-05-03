@@ -98,4 +98,12 @@ module.exports = {
       }
     });
   },
+  searchCategory: (req, result) => {
+    const data = req.body;
+    console.log(data);
+    Category.searchCategory(data, (err, categories) => {
+      if (err) throw err;
+      return result.status(200).json(categories);
+    });
+  },
 };

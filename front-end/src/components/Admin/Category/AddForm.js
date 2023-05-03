@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Card, Input, Form, Button, Radio } from "antd";
+import { Card, Input, Form, Button, Upload } from "antd";
 import { rulesCategory as rules } from "../../../static/UserForm";
-import useHandleCategory from "../../../utils/hooks/Admin/useHandleCategory";
-import useAdminCategory from "../../../utils/hooks/Admin/useAdminCategory";
-import Cookies from "js-cookie";
+import useForm from "../../../utils/hooks/Admin/useForm";
 import {
   addCategory,
   getErrors,
@@ -12,27 +10,16 @@ import {
 } from "../../../features/category/categorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "../../../utils/components/Toast";
+import { categoryPlaceHolder } from "../../../static/UserForm";
 
 export default function AddForm() {
-  const [isToast, setIsToast] = useState(false);
-
-  let newrules = useSelector(getErrors);
-
-  const [errors, setErrors] = useState(newrules);
   const dispatch = useDispatch();
-
   const signUpSubmit = async (values) => {
     dispatch(addCategory(values)).unwrap();
   };
-
-  useEffect(() => {
-    setErrors(newrules);
-  }, [newrules]);
-
   const clearErrors = (name) => {
     dispatch(resetError(name));
   };
-
   const {
     form,
     newValues,
@@ -40,15 +27,11 @@ export default function AddForm() {
     handleSubmit,
     handleFocusPlaceHolder,
     handleBlurPlaceHolder,
-  } = useHandleCategory(signUpSubmit);
-
-  useEffect(() => {
-    console.log(newValues);
-  }, [newValues]);
+    errors,
+  } = useForm(signUpSubmit, getErrors, categoryPlaceHolder);
 
   return (
     <>
-      <Toast body="Thêm tài khoản thành công" isSuccess={isToast} />
       <div className="user_form mt-5 h-screen">
         <Card
           style={{

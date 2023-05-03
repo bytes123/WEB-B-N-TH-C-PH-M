@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Input, Form, Button, Radio } from "antd";
 import { rulesCategory as rules } from "../../../static/UserForm";
-import useHandleCategory from "../../../utils/hooks/Admin/useHandleCategory";
-import useAdminCategory from "../../../utils/hooks/Admin/useAdminCategory";
-import Cookies from "js-cookie";
-import { updateCategory } from "../../../features/category/categorySlice";
+import useForm from "../../../utils/hooks/Admin/useForm";
+import {
+  updateCategory,
+  getErrors,
+} from "../../../features/category/categorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import Toast from "../../../utils/components/Toast";
+import { categoryPlaceHolder } from "../../../static/UserForm";
 
 export default function UpdateForm({ updateValues }) {
   const dispatch = useDispatch();
@@ -27,7 +29,7 @@ export default function UpdateForm({ updateValues }) {
     isChange,
     errors,
     setErrors,
-  } = useHandleCategory(updateSubmit);
+  } = useForm(updateSubmit, getErrors, categoryPlaceHolder);
 
   const handleChangeInput = (e) => {
     if (errors && errors.name) {

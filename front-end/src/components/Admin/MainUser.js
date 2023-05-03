@@ -394,7 +394,7 @@ export default function MainUser() {
               <h3 className="text-2xl font-bold mb-5">Danh sách tài khoản</h3>
               <Search
                 className="w-[400px]  my-5 "
-                placeholder="Nhập tên tài khoản để tìm kiếm"
+                placeholder="Nhập tên tài khoản hoặc email để tìm kiếm"
                 enterButton="Tìm kiếm"
                 size="large"
                 onSearch={onSearch}

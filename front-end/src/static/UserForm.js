@@ -12,6 +12,10 @@ let categoryPlaceHolder = {
   name: "* Tên danh mục",
 };
 
+let productPlaceHolder = {
+  name: "* Tên sản phẩm",
+};
+
 const validateConfirmPassword = ({ getFieldValue }) => ({
   validator(rule, value) {
     if (!value || getFieldValue("password") === value) {
@@ -22,7 +26,13 @@ const validateConfirmPassword = ({ getFieldValue }) => ({
 });
 
 const rulesCategory = {
-  name: [{ required: true, message: "Vui lòng nhập tên danh mục!" }],
+  name: [{ required: true, message: "Vui lòng nhập tên sản phẩm!" }],
+  category_id: [{ required: true, message: "Vui lòng chọn danh mục!" }],
+  brand_id: [{ required: true, message: "Vui lòng chọn nhà sãn xuất!" }],
+};
+
+const rulesProduct = {
+  name: [{ required: true, message: "Vui lòng nhập tên sản phẩm!" }],
 };
 
 const rulesSignUp = {
@@ -70,4 +80,6 @@ export {
   userSignUp,
   userLogin,
   categoryPlaceHolder,
+  productPlaceHolder,
+  rulesProduct,
 };

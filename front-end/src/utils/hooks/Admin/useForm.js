@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { categoryPlaceHolder } from "../../../static/UserForm";
+
 import { Form } from "antd";
-import { getErrors } from "../../../features/category/categorySlice";
+
 import { useSelector } from "react-redux";
-export default function useHandleCategory(callback) {
+export default function useForm(
+  callback,
+  getErrors,
+  formPlaceHolder,
+  isUpdate = false
+) {
   const [form] = Form.useForm();
-  const [placeHolder, setPlaceHolder] = useState(categoryPlaceHolder);
+  const [placeHolder, setPlaceHolder] = useState(formPlaceHolder);
   const [errors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [isChange, setIsChange] = useState(false);
@@ -18,20 +23,33 @@ export default function useHandleCategory(callback) {
     });
   };
 
+  const handleChangeValue = (name, value) => {
+    setNewValues({
+      ...newValues,
+      [name]: value,
+    });
+  };
+
   useEffect(() => {
     setErrors(newrules);
   }, [newrules]);
 
   const handleSubmit = (data) => {
-    setNewValues({
-      ...newValues,
-      ...data,
-    });
+    if (!isUpdate) {
+      setNewValues({
+        ...newValues,
+        ...data,
+      });
+    } else {
+      setNewValues({
+        ...newValues,
+      });
+    }
     setIsSubmit(true);
   };
 
   const handleBlurPlaceHolder = () => {
-    setPlaceHolder(categoryPlaceHolder);
+    setPlaceHolder(formPlaceHolder);
   };
 
   useEffect(() => {
@@ -58,5 +76,6 @@ export default function useHandleCategory(callback) {
     isChange,
     errors,
     setErrors,
+    handleChangeValue,
   };
 }

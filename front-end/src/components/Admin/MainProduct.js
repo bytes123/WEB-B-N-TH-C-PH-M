@@ -1,76 +1,45 @@
-import React, { useState } from "react";
-import useAdminController from "../../utils/hooks/Admin/useAdminController";
+import React, { useState, useEffect } from "react";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
-import { Table } from "antd";
+import { Button, Table, Input } from "antd";
+import useAdminController from "../../utils/hooks/Admin/useAdminController";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
-import {
-  productTemplateData,
-  productListData,
-  productDataCheck,
-} from "../../static/AdminData";
-import AU from "./AU";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
-import validateProduct from "../../utils/validates/validateProduct";
-import { productForm } from "../../static/Admin/Forms";
+import { useDispatch, useSelector } from "react-redux";
+import Time from "../../utils/components/Time";
+import AddForm from "./Product/AddForm";
+import UpdateForm from "./Product/UpdateForm";
+import useAdminProduct from "../../utils/hooks/Admin/useAdminProduct";
+// import { resetAllErrors } from "../../features/category/categorySlice";
+import Toast from "../../utils/components/Toast";
+import {
+  deleteProduct,
+  searchProduct,
+} from "../../features/product/productSlice";
 
 export default function MainProduct() {
-  const productData = React.useMemo(() => productListData);
-
-  const columns = [
-    {
-      title: "STT",
-      key: "product_index",
-      render: (data, arr, index) => index + 1,
-    },
-    {
-      title: "Tên",
-      dataIndex: "product_name",
-      key: "product_name",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-    {
-      title: "Danh mục",
-      dataIndex: "catalog_name",
-      key: "catalog_name",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-
-    {
-      title: "Hành động",
-      dataIndex: "action",
-      key: "action",
-      render: (data, arr, index) => (
-        <div className="flex">
-          <button
-            className="edit-btn mr-5"
-            name="edit-btn"
-            onClick={() => handleOpenEdit(arr, index)}
-          >
-            Sửa
-          </button>
-          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
-            Xóa
-          </button>
-        </div>
-      ),
-    },
-  ];
+  const { Search } = Input;
+  const dispatch = useDispatch();
 
   const addData = (values) => {
     console.log(values);
   };
 
-  const {
-    values,
-    handleChangeValue,
-    handleSetValue,
-    handleSelect,
-    submit,
-    errors,
-    clearErrors,
-    clearValues,
-  } = useValidateForm(addData, validateProduct);
+  const [isToast, setIsToast] = useState({
+    style: "",
+    value: false,
+    body: "",
+  });
+
+  const { values, handleChangeValue, handleSetValue } =
+    useValidateForm(addData);
+
+  const clearUpdate = async () => {
+    // dispatch(resetAllErrors());
+  };
+  const clearAdd = async () => {
+    // dispatch(resetAllErrors());
+  };
 
   const {
     isDelete,
@@ -82,25 +51,155 @@ export default function MainProduct() {
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
+    idDelete,
   } = useAdminController(
     handleChangeValue,
     handleSetValue,
-    clearErrors,
-    clearValues
+    clearUpdate,
+    clearAdd
   );
 
+  const resetToast = () => {
+    setIsToast({
+      style: "",
+      value: false,
+      body: "",
+    });
+  };
+
+  const addSuccess = () => {
+    handleCloseAdd();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Thêm sản phẩm thành công",
+    });
+  };
+
+  const updateSuccess = () => {
+    handleCloseEdit();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Cập nhật sản phẩm thành công",
+    });
+  };
+
+  const deleteSuccess = () => {
+    handleCloseDelete();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Xóa sản phẩm thành công",
+    });
+  };
+
+  const {
+    products,
+    categories,
+    brands,
+    handleSearch,
+    isLoadingSearch,
+    isSearch,
+    isLoadingAllProducts,
+    handleOutSearch,
+  } = useAdminProduct(addSuccess, updateSuccess, deleteSuccess, resetToast);
+
+  const handleConfirmDelete = async (id) => {
+    try {
+      await dispatch(deleteProduct({ id: id })).unwrap();
+    } catch (error) {
+      // Xử lý lỗi nếu cần thiết
+      console.error("Lỗi khi xóa người dùng:", error);
+    }
+  };
+
+  const onSearch = async (value, callback) => {
+    if (!value) {
+      handleSearch(value, () =>
+        setIsToast({
+          style: "failed",
+          value: true,
+          body: "Vui lòng nhập tên sản phẩm để tìm kiếm",
+        })
+      );
+    } else {
+      handleSearch(value, async () => {
+        await dispatch(searchProduct(value));
+      });
+    }
+  };
+
+  const columns = [
+    {
+      title: "STT",
+      key: "index",
+      render: (data, arr, index) => index + 1,
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+      key: "name",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Tên danh mục",
+      dataIndex: "category_name",
+      key: "category_name",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Tên nhà sản xuất",
+      dataIndex: "brand_name",
+      key: "brand_name",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "created_date",
+      key: "created_date",
+      render: (data, arr, index) => <Time timestamp={data} />,
+    },
+
+    {
+      title: "Hành động",
+      dataIndex: "id",
+      key: "id",
+      render: (data, arr, index) => (
+        <div className="flex">
+          <button
+            className="edit-btn mr-5"
+            name="edit-btn"
+            onClick={() => handleOpenEdit(arr)}
+          >
+            Sửa
+          </button>
+          <button className="delete-btn" onClick={() => handleOpenDelete(data)}>
+            Xóa
+          </button>
+          {isDelete ? (
+            <ConfirmDialog
+              active={true}
+              onConfirm={() => handleConfirmDelete(idDelete)}
+              onClose={handleCloseDelete}
+              header={"Bạn có chắc muốn xóa cột này ?"}
+              content={"Bạn sẽ không thể phục hồi sau khi xóa cột!"}
+            />
+          ) : (
+            ""
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="main_product mx-2">
-      {isDelete ? (
-        <ConfirmDialog
-          active={true}
-          onClose={handleCloseDelete}
-          header={"Bạn có chắc muốn xóa cột này ?"}
-          content={"Bạn sẽ không thể phục hồi sau khi xóa cột!"}
-        />
-      ) : (
-        ""
-      )}
+    <div className="main_catalog mx-2">
+      <Toast
+        style={isToast?.style}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
+      />
       <h1 className="text-4xl font-bold m-5">Quản lý sản phẩm</h1>
 
       {isAdd && (
@@ -116,16 +215,7 @@ export default function MainProduct() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm sản phẩm</h3>
-              <AU
-                list={productForm}
-                data={values}
-                handleChangeData={handleChangeValue}
-                handleSelect={handleSelect}
-                errors={errors}
-                onSubmit={submit}
-                label="Thêm"
-                className={"confirm-btn"}
-              />
+              <AddForm categories={categories} brands={brands} />
               {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách sản phẩm
           </p>
@@ -149,16 +239,11 @@ export default function MainProduct() {
           </Section>
           <Section span={24}>
             <div className="wrapper p-8 ">
-              <h3 className="text-2xl font-bold">Sửa sản phẩm</h3>
-              <AU
-                list={productForm}
-                data={values}
-                handleChangeData={handleChangeValue}
-                handleSelect={handleSelect}
-                errors={errors}
-                onSubmit={submit}
-                label="Sửa"
-                className={"edit-btn"}
+              <h3 className="text-2xl font-bold">Cập nhật sản phẩm</h3>
+              <UpdateForm
+                categories={categories}
+                brands={brands}
+                updateValues={values}
               />
             </div>
           </Section>
@@ -172,18 +257,41 @@ export default function MainProduct() {
               className="form-btn confirm-btn p-4 mr-5 text-right "
               onClick={handleOpenAdd}
             >
-              Thêm sản phẩm
+              Thêm danh mục
             </button>
           </Section>
           <Section span={24}>
             <div className="wrapper p-8">
               <h3 className="text-2xl font-bold mb-5">Danh sách sản phẩm</h3>
+              <Search
+                className="w-[400px]  my-5 "
+                placeholder="Nhập tên danh mục để tìm kiếm"
+                enterButton="Tìm kiếm"
+                size="large"
+                onSearch={onSearch}
+                loading={isLoadingSearch}
+              />
+
+              {isSearch ? (
+                <div>
+                  <Button
+                    className="mb-5"
+                    type="primary"
+                    danger
+                    loading={isLoadingAllProducts}
+                    onClick={!isLoadingAllProducts && handleOutSearch}
+                  >
+                    Quay lại tất cả
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
               <div className="table-wrapper">
                 <Table
                   bordered={true}
                   columns={columns}
-                  dataSource={productData}
-                  className="text-sm"
+                  dataSource={products}
                 />
               </div>
             </div>

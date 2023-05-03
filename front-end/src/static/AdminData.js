@@ -42,6 +42,12 @@ const sideBarList = [
     text: "TRANG QUẢN LÝ",
     list: [
       {
+        key: 0,
+        link: "quan-ly-tin-nhan",
+        icon: <FiMessageSquare />,
+        text: "Quản lý tin nhắn",
+      },
+      {
         key: 1,
         link: "quan-ly-danh-muc",
         icon: <BiCategoryAlt />,
@@ -90,11 +96,12 @@ const sideBarList = [
         icon: <FcStatistics />,
         text: "Quản lý thống kê",
       },
+
       {
-        key: 8,
-        link: "quan-ly-tin-nhan",
-        icon: <FiMessageSquare />,
-        text: "Quản lý tin nhắn",
+        key: 9,
+        link: "quan-ly-chi-nhanh",
+        icon: <TbBrandAirtable />,
+        text: "Phân tán chi nhánh",
       },
     ],
   },

@@ -6,6 +6,7 @@ import {
   UPDATE_CATEGORY_URL,
   DELETE_CATEGORY_URL,
   CATEGORY_CHILDREN_URL,
+  SEARCH_CATEGORY_URL,
 } from "../../static/API";
 import axios from "axios";
 
@@ -16,6 +17,9 @@ const initialState = {
   add_status: "",
   update_status: "",
   delete_status: "",
+  search_status: "",
+  fetch_search_status: "",
+  search_category: [],
 };
 
 export const fetchCategory = createAsyncThunk(
@@ -58,6 +62,28 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+export const searchCategory = createAsyncThunk(
+  "category/search",
+  async (value) => {
+    const response = await axios.post(SEARCH_CATEGORY_URL, {
+      value: value,
+    });
+
+    return response.data;
+  }
+);
+
+export const fetchSearchCategory = createAsyncThunk(
+  "user/fetch_search",
+  async (value) => {
+    const response = await axios.post(SEARCH_CATEGORY_URL, {
+      value: value,
+    });
+
+    return response.data;
+  }
+);
+
 const categorySlice = createSlice({
   name: "category",
   initialState,
@@ -76,6 +102,9 @@ const categorySlice = createSlice({
     },
     resetError(state, action) {
       delete state.errors[action.payload];
+    },
+    resetSearchStatus(state, action) {
+      state.search_status = "";
     },
   },
   extraReducers(builder) {
@@ -140,7 +169,27 @@ const categorySlice = createSlice({
           state.category_children = action.payload;
         }
       })
-      .addCase(fetchCategoryAndChildren.rejected, (state, action) => {});
+      .addCase(fetchCategoryAndChildren.rejected, (state, action) => {})
+      .addCase(searchCategory.pending, (state, action) => {
+        state.search_status = "loading";
+      })
+      .addCase(searchCategory.fulfilled, (state, action) => {
+        state.search_status = "succeeded";
+        state.search_category = action.payload;
+      })
+      .addCase(searchCategory.rejected, (state, action) => {
+        state.search_status = "failed";
+      })
+      .addCase(fetchSearchCategory.pending, (state, action) => {
+        state.fetch_search_status = "loading";
+      })
+      .addCase(fetchSearchCategory.fulfilled, (state, action) => {
+        state.fetch_search_status = "succeeded";
+        state.search_category = action.payload;
+      })
+      .addCase(fetchSearchCategory.rejected, (state, action) => {
+        state.fetch_search_status = "failed";
+      });
   },
 });
 
@@ -149,6 +198,10 @@ export const getAddStatus = (state) => state.category.add_status;
 export const getUpdateStatus = (state) => state.category.update_status;
 export const getDeleteStatus = (state) => state.category.delete_status;
 export const getCategories = (state) => state.category.categories;
+export const getSearchStatus = (state) => state.category.search_status;
+export const getSearchCategory = (state) => state.category.search_category;
+export const getFetchSearchStatus = (state) =>
+  state.category.fetch_search_status;
 export const getCategoryAndChildren = (state) =>
   state.category.category_children;
 export const {
@@ -157,5 +210,6 @@ export const {
   resetDeleteStatus,
   resetAllErrors,
   resetError,
+  resetSearchStatus,
 } = categorySlice.actions;
 export default categorySlice.reducer;

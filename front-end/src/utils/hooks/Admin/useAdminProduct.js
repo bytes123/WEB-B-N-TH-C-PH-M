@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchCategory,
-  getCategories,
+  fetchProducts,
+  getProducts,
   getAddStatus,
   getUpdateStatus,
   getDeleteStatus,
@@ -10,35 +10,46 @@ import {
   resetUpdateStatus,
   resetDeleteStatus,
   getSearchStatus,
-  getSearchCategory,
+  getSearchProducts,
   resetSearchStatus,
   getFetchSearchStatus,
-  fetchSearchCategory,
-} from "../../../features/category/categorySlice";
+  fetchSearchProduct,
+} from "../../../features/product/productSlice";
 import { useLocation } from "react-router-dom";
-export default function useAdminCategory(
+import {
+  fetchCategory,
+  getCategories,
+} from "../../../features/category/categorySlice";
+
+import { fetchBrands, getBrands } from "../../../features/brand/brandSlice";
+
+export default function useAdminProduct(
   addSuccess,
   updateSuccess,
   deleteSuccess,
   resetToast
 ) {
   const dispatch = useDispatch();
-  const fetchCategories = useSelector(getCategories);
+  const fetch_products = useSelector(getProducts);
+  const fetch_category = useSelector(getCategories);
+  const fetch_brands = useSelector(getBrands);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const add_status = useSelector(getAddStatus);
   const update_status = useSelector(getUpdateStatus);
   const delete_status = useSelector(getDeleteStatus);
   const [currentSearch, setCurrentSearch] = useState();
-  const [categories, setCategories] = useState([]);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const location = useLocation();
-  const [isLoadingAllCategory, setIsLoadingAllCategory] = useState(false);
-  const search_category = useSelector(getSearchCategory);
+  const [isLoadingAllProducts, setIsLoadingAllProducts] = useState(false);
+  const search_products = useSelector(getSearchProducts);
   const search_status = useSelector(getSearchStatus);
   const fetch_search_status = useSelector(getFetchSearchStatus);
 
   useEffect(() => {
-    setCategories(search_category);
+    setProducts(search_products);
   }, [fetch_search_status]);
 
   const handleSearch = (value, callback) => {
@@ -50,10 +61,10 @@ export default function useAdminCategory(
 
   const handleOutSearch = () => {
     setCurrentSearch();
-    setIsLoadingAllCategory(true);
+    setIsLoadingAllProducts(true);
     setTimeout(async () => {
-      await dispatch(fetchCategory()).unwrap();
-      setIsLoadingAllCategory(false);
+      await dispatch(fetchProducts()).unwrap();
+      setIsLoadingAllProducts(false);
       setIsSearch(false);
     }, 2000);
   };
@@ -61,7 +72,7 @@ export default function useAdminCategory(
   useEffect(() => {
     setIsSearch(false);
     setCurrentSearch();
-    setIsLoadingAllCategory(false);
+    setIsLoadingAllProducts(false);
     setIsLoadingSearch(false);
   }, [location.pathname]);
 
@@ -70,7 +81,7 @@ export default function useAdminCategory(
       setIsLoadingSearch(true);
     } else if (search_status == "succeeded") {
       setTimeout(() => {
-        setCategories(search_category);
+        setProducts(search_products);
         setIsLoadingSearch(false);
         setIsSearch(true);
         dispatch(resetSearchStatus());
@@ -80,16 +91,40 @@ export default function useAdminCategory(
 
   useEffect(() => {
     console.log(1);
+    dispatch(fetchProducts()).unwrap();
     dispatch(fetchCategory()).unwrap();
+    dispatch(fetchBrands()).unwrap();
   }, []);
+
+  useEffect(() => {
+    if (fetch_products?.length) {
+      console.log(fetch_products);
+      console.log(fetch_products);
+      setProducts(fetch_products);
+    }
+  }, [fetch_products]);
+
+  useEffect(() => {
+    if (fetch_category?.length) {
+      setCategories(fetch_category);
+    }
+  }, [fetch_category]);
+
+  useEffect(() => {
+    if (fetch_brands?.length) {
+      setBrands(fetch_brands);
+    }
+  }, [fetch_brands]);
 
   useEffect(() => {
     if (add_status == "succeeded") {
       const reset = async () => {
-        await dispatch(fetchCategory()).unwrap();
+        await dispatch(fetchProducts()).unwrap();
         addSuccess();
       };
       reset();
+    } else {
+      console.log("test");
     }
 
     return () => {
@@ -101,13 +136,13 @@ export default function useAdminCategory(
   useEffect(() => {
     if (!currentSearch && update_status == "succeeded") {
       const reset = async () => {
-        await dispatch(fetchCategory()).unwrap();
+        await dispatch(fetchProducts()).unwrap();
         updateSuccess();
       };
       reset();
     } else if (currentSearch && update_status == "succeeded") {
       const reset = async () => {
-        await dispatch(fetchSearchCategory(currentSearch)).unwrap();
+        await dispatch(fetchSearchProduct(currentSearch)).unwrap();
         updateSuccess();
       };
       reset();
@@ -122,13 +157,13 @@ export default function useAdminCategory(
   useEffect(() => {
     if (!currentSearch && delete_status == "succeeded") {
       const reset = async () => {
-        await dispatch(fetchCategory()).unwrap();
+        await dispatch(fetchProducts()).unwrap();
         deleteSuccess();
       };
       reset();
-    } else if (currentSearch && update_status == "succeeded") {
+    } else if (currentSearch && delete_status == "succeeded") {
       const reset = async () => {
-        await dispatch(fetchSearchCategory(currentSearch)).unwrap();
+        await dispatch(fetchSearchProduct(currentSearch)).unwrap();
         updateSuccess();
       };
       reset();
@@ -140,19 +175,14 @@ export default function useAdminCategory(
     };
   }, [delete_status]);
 
-  useEffect(() => {
-    console.log(fetchCategories);
-    if (fetchCategories?.length) {
-      setCategories(fetchCategories);
-    }
-  }, [fetchCategories]);
-
   return {
+    products,
     categories,
+    brands,
     handleSearch,
     isLoadingSearch,
     isSearch,
-    isLoadingAllCategory,
+    isLoadingAllProducts,
     handleOutSearch,
   };
 }

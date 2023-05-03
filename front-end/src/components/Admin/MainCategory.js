@@ -12,7 +12,10 @@ import UpdateForm from "./Category/UpdateForm";
 import useAdminCategory from "../../utils/hooks/Admin/useAdminCategory";
 import { resetAllErrors } from "../../features/category/categorySlice";
 import Toast from "../../utils/components/Toast";
-import { deleteCategory } from "../../features/category/categorySlice";
+import {
+  deleteCategory,
+  searchCategory,
+} from "../../features/category/categorySlice";
 
 export default function MainCategory() {
   const { Search } = Input;
@@ -91,12 +94,14 @@ export default function MainCategory() {
     });
   };
 
-  const { categories } = useAdminCategory(
-    addSuccess,
-    updateSuccess,
-    deleteSuccess,
-    resetToast
-  );
+  const {
+    categories,
+    handleSearch,
+    isLoadingSearch,
+    isSearch,
+    isLoadingAllCategory,
+    handleOutSearch,
+  } = useAdminCategory(addSuccess, updateSuccess, deleteSuccess, resetToast);
 
   const handleConfirmDelete = async (id) => {
     try {
@@ -106,10 +111,27 @@ export default function MainCategory() {
       console.error("Lỗi khi xóa người dùng:", error);
     }
   };
+
+  const onSearch = async (value, callback) => {
+    if (!value) {
+      handleSearch(value, () =>
+        setIsToast({
+          style: "failed",
+          value: true,
+          body: "Vui lòng nhập tên danh mục để tìm kiếm",
+        })
+      );
+    } else {
+      handleSearch(value, async () => {
+        await dispatch(searchCategory(value));
+      });
+    }
+  };
+
   const columns = [
     {
       title: "STT",
-      key: "product_index",
+      key: "index",
       render: (data, arr, index) => index + 1,
     },
     {
@@ -230,6 +252,30 @@ export default function MainCategory() {
           <Section span={24}>
             <div className="wrapper p-8">
               <h3 className="text-2xl font-bold mb-5">Danh sách danh mục</h3>
+              <Search
+                className="w-[400px]  my-5 "
+                placeholder="Nhập tên danh mục để tìm kiếm"
+                enterButton="Tìm kiếm"
+                size="large"
+                onSearch={onSearch}
+                loading={isLoadingSearch}
+              />
+
+              {isSearch ? (
+                <div>
+                  <Button
+                    className="mb-5"
+                    type="primary"
+                    danger
+                    loading={isLoadingAllCategory}
+                    onClick={!isLoadingAllCategory && handleOutSearch}
+                  >
+                    Quay lại tất cả
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
               <div className="table-wrapper">
                 <Table
                   bordered={true}

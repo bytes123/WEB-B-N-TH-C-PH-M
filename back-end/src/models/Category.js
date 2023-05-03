@@ -25,6 +25,10 @@ var Category = {
 
     return db.query(sql, [data.id], callback);
   },
+  searchCategory: (data, callback) => {
+    let sql = "SELECT * FROM category WHERE name LIKE ?";
+    return db.query(sql, [`${data.value}%`], callback);
+  },
 };
 
 module.exports = Category;
