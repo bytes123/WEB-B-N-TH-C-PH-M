@@ -180,7 +180,20 @@
   transition: all 0.3s;
 }
 
+.background-secondary {
+  background-color: #fff;
+  color: #3bb77e;
+  transition: all 0.3s;
+  border: 1px solid #3bb77e;
+}
+
 .background-active:hover {
+  background-color: #fdc040;
+  transition: all 0.3s;
+}
+
+.background-secondary:hover {
+  color: #3bb77e !important;
   background-color: #fdc040;
   transition: all 0.3s;
 }
@@ -212,12 +225,21 @@
   border-radius: 6px;
 }
 
+.btn-dark {
+  color: #fff;
+  background-color: #212529;
+  border-color: #212529;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
 .btn-primary:focus {
   background-color: #3bb77e;
 }
 
 .btn-primary:hover {
-  background-color: #3bb77e;
+  color: white !important;
+  background-color: #4ba67b;
 }
 
 .status-label {

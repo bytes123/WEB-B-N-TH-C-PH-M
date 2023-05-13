@@ -9,12 +9,12 @@ var User = {
   getAllUser: (callback) => {
     let sql = `
     SELECT * FROM (
-      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.created_date as order_date 
+      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
       FROM customers c 
       INNER JOIN users u ON u.user_name = c.user_name 
       WHERE u.isAuth = 1 
       UNION ALL 
-      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.created_date as order_date 
+      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
       FROM STAFFS s 
       INNER JOIN users u ON u.user_name = s.user_name 
       WHERE u.isAuth = 1 
@@ -29,7 +29,7 @@ var User = {
   },
   getStaffs: (callback) => {
     let sql =
-      "SELECT * FROM users u INNER JOIN staffs s ON u.user_name = s.user_name ORDER BY u.created_date ";
+      "SELECT * FROM users u INNER JOIN staffs s ON u.user_name = s.user_name ORDER BY u.createdAt ";
     return db.query(sql, callback);
   },
   getAdminTypeUser: (callback) => {
@@ -39,7 +39,7 @@ var User = {
   },
   getCustomers: (callback) => {
     let sql =
-      "SELECT * FROM users u INNER JOIN customers c ON u.user_name = c.user_name ORDER BY u.created_date DESC";
+      "SELECT * FROM users u INNER JOIN customers c ON u.user_name = c.user_name ORDER BY u.createdAt DESC";
     return db.query(sql, callback);
   },
   getAllDetailTypeUser: (callback) => {
@@ -54,20 +54,20 @@ var User = {
   getUserConfirmed: (data, callback) => {
     let sql = `SELECT combined.*
         FROM (
-          SELECT c.*, u.created_date,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
+          SELECT c.*, u.createdAt,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
           FROM customers c
           LEFT JOIN staffs s ON c.user_name = s.user_name
           LEFT JOIN users u ON c.user_name = u.user_name
           WHERE c.user_name IS NOT NULL
           UNION ALL
-          SELECT s.*, u.created_date,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
+          SELECT s.*, u.createdAt,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
           FROM customers c
           RIGHT JOIN staffs s ON c.user_name = s.user_name
           LEFT JOIN users u ON s.user_name = u.user_name
           WHERE c.user_name IS NULL
         ) AS combined
         WHERE combined.isAuth = 1 AND combined.user_name = ?
-        ORDER BY combined.created_date DESC;
+        ORDER BY combined.createdAt DESC;
         `;
     return db.query(sql, [data.user_name], callback);
   },
@@ -139,12 +139,12 @@ var User = {
   searchUser: (data, callback) => {
     let sql = `
       SELECT * FROM (
-        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.created_date as order_date 
+        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
         FROM customers c 
         INNER JOIN users u ON u.user_name = c.user_name 
         WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 
         UNION ALL 
-        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.created_date,u.modify_date, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.created_date as order_date 
+        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
         FROM STAFFS s 
         INNER JOIN users u ON u.user_name = s.user_name 
         WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 

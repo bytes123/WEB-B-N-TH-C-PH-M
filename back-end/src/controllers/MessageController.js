@@ -38,7 +38,7 @@ module.exports = {
   },
   insertMessage: (req, res) => {
     const data = req.body;
-    data.create_date = new Date();
+    data.createdAt = new Date();
 
     Messages.insertMessage(data, (err, response) => {
       if (err) throw err;
@@ -65,7 +65,7 @@ module.exports = {
         body: "Xin chào Admin, tôi cần hỗ trợ",
         user_name: data.participant,
         room_id: response.insertId,
-        create_date: new Date(),
+        createdAt: new Date(),
       };
       Messages.insertDetailRoom(detail_room_participant, (err, response) => {
         if (err) throw err;

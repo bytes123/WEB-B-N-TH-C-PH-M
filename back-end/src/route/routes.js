@@ -35,20 +35,33 @@ let storageProduct = multer.diskStorage({
 let uploadProduct = multer({ storage: storageProduct });
 
 module.exports = function (app) {
+  let branchCrtl = require("../controllers/BranchController");
+  let storageCrtl = require("../controllers/StorageController");
   let categoryCtrl = require("../controllers/CategoryController");
   let productsCtrl = require("../controllers/ProductsController");
+  let detailproductsCrtl = require("../controllers/DetailProductController");
   let userCrtl = require("../controllers/UserController");
   let authCrtl = require("../controllers/AuthController");
   let messagesCtrl = require("../controllers/MessageController");
   let brandCrtl = require("../controllers/BrandController");
   let dbCrtl = require("../controllers/DBController");
-
+  let cartCrtl = require("../controllers/CartController");
+  let billCrtl = require("../controllers/BillController");
   //API PHÂN TÁN
   app.route("/mysql-login").post(dbCrtl.loginDB);
   app.route("/migrate").post(dbCrtl.migrate);
+  app.route("/get_table").post(dbCrtl.getTable);
+  app.route("/get_column").post(dbCrtl.getColumn);
+
+  // API KHO
+  app.route("/branch").get(branchCrtl.get);
+
+  // API KHO
+  app.route("/storage").get(storageCrtl.get);
 
   // API SẢN PHẨM
   app.route("/product").get(productsCtrl.get);
+  app.route("/top-products").post(productsCtrl.getTopProducts);
   app
     .route("/add-product/:productId")
     .post(uploadProduct.array("images"), productsCtrl.addProduct);
@@ -57,6 +70,29 @@ module.exports = function (app) {
     .post(uploadProduct.array("images"), productsCtrl.updateProduct);
   app.route("/delete-product").post(productsCtrl.deleteProduct);
   app.route("/search-product").post(productsCtrl.searchProduct);
+
+  //API CT SP
+  app.route("/detail_product").get(detailproductsCrtl.get);
+  app.route("/add-detail_product").post(detailproductsCrtl.addDetailProduct);
+  app
+    .route("/update-detail_product")
+    .post(detailproductsCrtl.updateDetailProduct);
+  app
+    .route("/delete-detail_product")
+    .post(detailproductsCrtl.deleteDetailProduct);
+  app
+    .route("/search-detail_product")
+    .post(detailproductsCrtl.searchDetailProduct);
+
+  // API CART
+
+  app.route("/add-cart").post(cartCrtl.addCart);
+  app.route("/update-cart").post(cartCrtl.updateCart);
+  app.route("/get-cart").post(cartCrtl.getCart);
+
+  // API BILL
+  app.route("/get-bill").get(billCrtl.getBill);
+  app.route("/update-statement-bill").post(billCrtl.updateStatementBill);
 
   // API DANH MỤC
   app.route("/category").get(categoryCtrl.get);
@@ -88,6 +124,8 @@ module.exports = function (app) {
     .post(uploadAvatar.single("avatar"), userCrtl.updateStaff);
 
   app.route("/login").post(userCrtl.login);
+  app.route("/fb-login").post(userCrtl.fbLogin);
+
   app.route("/update_online").post(userCrtl.updateOnline);
 
   app.route("/authen").post(authCrtl.authen);

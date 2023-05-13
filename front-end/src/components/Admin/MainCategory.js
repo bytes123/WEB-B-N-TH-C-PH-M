@@ -142,14 +142,14 @@ export default function MainCategory() {
     },
     {
       title: "Ngày tạo",
-      dataIndex: "created_date",
-      key: "created_date",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (data, arr, index) => <Time timestamp={data} />,
     },
     {
       title: "Ngày cập nhật gần nhất",
-      dataIndex: "modify_date",
-      key: "modify_date",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
       render: (data, arr, index) =>
         data ? <Time timestamp={data} /> : "Chưa cập nhật lần nào",
     },

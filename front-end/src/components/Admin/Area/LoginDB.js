@@ -1,81 +1,42 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
-import { FormGroup, FormLabel, FormControl, Button } from "react-bootstrap";
-export default function LoginDB({ onAccess, onLogin }) {
+import { Form, Button, Input } from "antd";
+
+import { loginMysql } from "../../../features/zone/zoneSlice";
+import { useDispatch } from "react-redux";
+import { rulesArea as rules } from "../../../static/UserForm";
+export default function LoginDB({ onLogin }) {
+  const dispatch = useDispatch();
+
+  const login = async (data) => {
+    await dispatch(loginMysql(data)).unwrap();
+    onLogin(data);
+  };
+  const [form] = Form.useForm();
   return (
     <div>
-      <h1>Login</h1>
-      <Formik
-        initialValues={{
-          host: "",
-          username: "",
-          password: "",
-          database: "",
-        }}
-        onSubmit={(values) => {
-          // Gửi thông tin đăng nhập đến API
-          fetch("http://localhost:8000/mysql-login", {
-            method: "POST",
-            body: JSON.stringify(values),
-            headers: { "Content-Type": "application/json" },
-          }).then((response) => {
-            if (response.status === 200) {
-              onLogin(values);
-              alert("Thành công");
+      {/* <h1 className="text-3xl font-semibold font-quicksand my-10">Đăng nhập</h1> */}
+      <Form form={form} onFinish={login} className="w-[500px]">
+        <Form.Item name="host" rules={rules.host}>
+          <Input placeholder={"Nhập host"} className="font-medium" />
+        </Form.Item>
 
-              onAccess(true);
-            } else {
-              // Hiển thị thông báo lỗi nếu đăng nhập không thành công
-              alert("Invalid username or password");
-              onAccess(false);
-            }
-          });
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form className="mb-20 w-[500px]">
-            <FormGroup controlId="formHost">
-              <FormLabel>host</FormLabel>
-              <Field
-                as={FormControl}
-                type="text"
-                name="host"
-                placeholder="Enter host"
-              />
-            </FormGroup>
-            <FormGroup controlId="formUsername">
-              <FormLabel>Username</FormLabel>
-              <Field
-                as={FormControl}
-                type="text"
-                name="username"
-                placeholder="Enter username"
-              />
-            </FormGroup>
-            <FormGroup controlId="formPassword">
-              <FormLabel>Password</FormLabel>
-              <Field
-                as={FormControl}
-                type="password"
-                name="password"
-                placeholder="Enter password"
-              />
-            </FormGroup>
-            <FormGroup controlId="formDatabase">
-              <FormLabel>Database</FormLabel>
-              <Field
-                as={FormControl}
-                type="text"
-                name="database"
-                placeholder="Enter database name"
-              />
-            </FormGroup>
-            <Button variant="primary" type="submit" className="mt-5">
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
+        <Form.Item name="user" rules={rules.user}>
+          <Input placeholder="Nhập user" className="font-medium" />
+        </Form.Item>
+
+        <Form.Item name="password" rules={rules.password}>
+          <Input.Password placeholder="Nhập mật khẩu" className="font-medium" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            htmlType="submit"
+            className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
+          >
+            Đăng nhập
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

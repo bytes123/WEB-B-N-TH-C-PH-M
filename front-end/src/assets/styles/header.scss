@@ -260,3 +260,13 @@
     }
   }
 }
+
+.header_cart-list {
+  display: none;
+}
+
+.header_cart:hover {
+  .header_cart-list {
+    display: block;
+  }
+}

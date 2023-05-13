@@ -1,9 +1,25 @@
 import React, { useState } from "react";
-
-export default function useClassifySection() {
+import { BiGridAlt, BiSort } from "react-icons/bi";
+export default function useClassifySection(displayChildren, sortChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState();
-  const [activeValueIndex, setActiveValueIndex] = useState(0);
+  const [activeDisplayIndex, setActiveDisplayIndex] = useState();
+  const [activeSortIndex, setActiveSortIndex] = useState();
+
+  const classifyMenu = [
+    {
+      key: "display",
+      icon: <BiGridAlt className="mx-1" />,
+      content: "Hiển thị",
+      value: displayChildren,
+    },
+    {
+      key: "sort",
+      icon: <BiSort className="mx-1" />,
+      content: "Sắp xếp theo",
+      value: sortChildren,
+    },
+  ];
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -22,8 +38,11 @@ export default function useClassifySection() {
     }
   };
 
-  const handleActiveValueIndex = (index) => {
-    setActiveValueIndex(index);
+  const handleActiveSortIndex = (index) => {
+    setActiveSortIndex(index);
+  };
+  const handleActiveDisplayIndex = (index) => {
+    setActiveDisplayIndex(index);
   };
 
   return {
@@ -32,7 +51,10 @@ export default function useClassifySection() {
     handleClose,
     handleSwitch,
     activeIndex,
-    activeValueIndex,
-    handleActiveValueIndex,
+    activeDisplayIndex,
+    activeSortIndex,
+    handleActiveDisplayIndex,
+    handleActiveSortIndex,
+    classifyMenu,
   };
 }

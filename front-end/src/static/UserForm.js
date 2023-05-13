@@ -8,6 +8,13 @@ let userPlaceHolder = {
   phone_number: "* Nhập số điện thoại",
 };
 
+let detailProductPlaceHolder = {
+  product_id: "* Chọn sản phẩm",
+  size: "* Kích thước",
+  price: "* Giá",
+  discount: "* Giảm giá",
+};
+
 let categoryPlaceHolder = {
   name: "* Tên danh mục",
 };
@@ -26,13 +33,49 @@ const validateConfirmPassword = ({ getFieldValue }) => ({
 });
 
 const rulesCategory = {
+  name: [{ required: true, message: "Vui lòng nhập tên danh mục!" }],
+  category_id: [{ required: true, message: "Vui lòng chọn danh mục!" }],
+  brand_id: [{ required: true, message: "Vui lòng chọn nhà sãn xuất!" }],
+};
+
+const rulesArea = {
+  storage_id: [{ required: true, message: "Vui lòng chọn kho muốn phân tán!" }],
+  branch_id: [{ required: true, message: "Vui lòng chọn chi nhánh đích!" }],
+};
+
+const rulesProduct = {
   name: [{ required: true, message: "Vui lòng nhập tên sản phẩm!" }],
   category_id: [{ required: true, message: "Vui lòng chọn danh mục!" }],
   brand_id: [{ required: true, message: "Vui lòng chọn nhà sãn xuất!" }],
 };
 
-const rulesProduct = {
-  name: [{ required: true, message: "Vui lòng nhập tên sản phẩm!" }],
+const rulesDetailProduct = {
+  product_id: [{ required: true, message: "Vui lòng chọn sản phẩm!" }],
+  size: [{ required: true, message: "Vui lòng nhập kích cỡ sản phẩm!" }],
+  price: [
+    { required: true, message: "Vui lòng nhập giá sản phẩm!" },
+    {
+      pattern: "^([-]?[1-9][0-9]*|0)$",
+      message: "Vui lòng nhập giá sản phẩm là số hợp lệ!",
+    },
+  ],
+  discount: [
+    {
+      pattern: "^([-]?[1-9][0-9]*|0)$",
+      message: "Vui lòng nhập giảm giá phẩm là số hợp lệ!",
+    },
+    () => ({
+      validator(_, value) {
+        if (value < 0) {
+          return Promise.reject("Vui lòng nhập giảm giá tối thiểu là 0");
+        }
+        if (value > 100) {
+          return Promise.reject("Vui lòng nhập giảm giá tối đa là 100");
+        }
+        return Promise.resolve();
+      },
+    }),
+  ],
 };
 
 const rulesSignUp = {
@@ -82,4 +125,7 @@ export {
   categoryPlaceHolder,
   productPlaceHolder,
   rulesProduct,
+  rulesArea,
+  rulesDetailProduct,
+  detailProductPlaceHolder,
 };

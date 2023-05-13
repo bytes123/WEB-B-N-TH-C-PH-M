@@ -1,81 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useAdminController from "../../utils/hooks/Admin/useAdminController";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
-import { Table } from "antd";
+import { Button, Table, Input } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
-import {
-  detailProductTemplateData,
-  detailProductListData,
-  productDataCheck,
-} from "../../static/AdminData";
-import AU from "./AU";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
 import validateDetailProduct from "../../utils/validates/validateDetailProduct";
-import { detailProductForm } from "../../static/Admin/Forms";
+import useAdminDetailProduct from "../../utils/hooks/Admin/useAdminDetailProduct";
+import Time from "../../utils/components/Time";
+import AddForm from "./DetailProduct/AddForm";
+import UpdateForm from "./DetailProduct/UpdateForm";
+import Toast from "../../utils/components/Toast";
+import Spinner from "../../utils/components/Spinner";
+import {
+  deleteDetailProduct,
+  searchDetailProduct,
+} from "../../features/detail_product/detailProductSlice";
 
+import { useDispatch, useSelector } from "react-redux";
 export default function MainDetailProduct() {
-  const productData = React.useMemo(() => detailProductListData);
-
-  const columns = [
-    {
-      title: "STT",
-      key: "product_index",
-      render: (data, arr, index) => index + 1,
-    },
-    {
-      title: "Hình ảnh",
-      dataIndex: "detail_product_image",
-      key: "detail_product_image",
-      render: (data, arr, index) => (
-        <img className="w-[80px]" src={data} alt="" />
-      ),
-    },
-    {
-      title: "Tên",
-      dataIndex: "product_name",
-      key: "product_name",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-    {
-      title: "Giá sản phẩm",
-      dataIndex: "detail_product_price",
-      key: "detail_product_price",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-    {
-      title: "Trọng lượng",
-      dataIndex: "detail_product_size",
-      key: "detail_product_size",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-    {
-      title: "Số lượng",
-      dataIndex: "detail_product_storage",
-      key: "detail_product_storage",
-      render: (data, arr, index) => <p>{data}</p>,
-    },
-
-    {
-      title: "Hành động",
-      dataIndex: "action",
-      key: "action",
-      render: (data, arr, index) => (
-        <div className="flex">
-          <button
-            className="edit-btn mr-5"
-            name="edit-btn"
-            onClick={() => handleOpenEdit(arr, index)}
-          >
-            Sửa
-          </button>
-          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
-            Xóa
-          </button>
-        </div>
-      ),
-    },
-  ];
+  const dispatch = useDispatch();
+  const { Search } = Input;
+  const [isToast, setIsToast] = useState({
+    style: "",
+    value: false,
+    body: "",
+  });
 
   const addData = (values) => {
     console.log(values);
@@ -102,6 +52,7 @@ export default function MainDetailProduct() {
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
+    idDelete,
   } = useAdminController(
     handleChangeValue,
     handleSetValue,
@@ -109,18 +60,192 @@ export default function MainDetailProduct() {
     clearValues
   );
 
+  const handleConfirmDelete = async (id) => {
+    try {
+      await dispatch(deleteDetailProduct({ id: id })).unwrap();
+    } catch (error) {
+      setIsToast({
+        style: "error",
+        value: true,
+        body: "Xảy ra lỗi!",
+      });
+    }
+  };
+
+  const onSearch = async (value, callback) => {
+    if (!value) {
+      handleSearch(value, () =>
+        setIsToast({
+          style: "failed",
+          value: true,
+          body: "Vui lòng nhập tên sản phẩm để tìm kiếm",
+        })
+      );
+    } else {
+      handleSearch(value, async () => {
+        await dispatch(searchDetailProduct(value));
+      });
+    }
+  };
+
+  const resetToast = () => {
+    setIsToast({
+      style: "",
+      value: false,
+      body: "",
+    });
+  };
+
+  const addSuccess = () => {
+    handleCloseAdd();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Thêm loại sản phẩm thành công",
+    });
+  };
+
+  const updateSuccess = () => {
+    handleCloseEdit();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Cập nhật loại sản phẩm thành công",
+    });
+  };
+
+  const deleteSuccess = () => {
+    handleCloseDelete();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Xóa sản phẩm thành công",
+    });
+  };
+
+  const {
+    detailProducts,
+    products,
+    isLoading,
+    handleSearch,
+    isLoadingSearch,
+    isSearch,
+    isLoadingAll,
+    handleOutSearch,
+  } = useAdminDetailProduct(
+    addSuccess,
+    updateSuccess,
+    deleteSuccess,
+    resetToast
+  );
+
+  const columns = [
+    {
+      title: "STT",
+      key: "index",
+      render: (data, arr, index) => index + 1,
+    },
+    {
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+      key: "name",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Kích cỡ",
+      dataIndex: "size",
+      key: "size",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Giá gốc",
+      dataIndex: "price",
+      key: "price",
+      render: (data, arr, index) => (
+        <p className="capitalize">
+          {Number(data).toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </p>
+      ),
+    },
+    {
+      title: "Tỉ lệ giảm",
+      dataIndex: "discount",
+      key: "discount",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Giá bán",
+      dataIndex: "newPrice",
+      key: "newPrice",
+      render: (data, arr, index) => (
+        <p className="capitalize">
+          {data.toLocaleString("it-IT", { style: "currency", currency: "VND" })}
+        </p>
+      ),
+    },
+    {
+      title: "Số sao",
+      dataIndex: "starpoint",
+      key: "starpoint",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
+    {
+      title: "Ngày tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (data, arr, index) => (data ? <Time timestamp={data} /> : ""),
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (data, arr, index) =>
+        data ? <Time timestamp={data} /> : "Chưa cập nhật lần nào",
+    },
+
+    {
+      title: "Hành động",
+      dataIndex: "id",
+      key: "id",
+      render: (data, arr, index) => (
+        <div className="flex">
+          <button
+            className="edit-btn mr-5"
+            name="edit-btn"
+            onClick={() => handleOpenEdit(arr)}
+          >
+            Sửa
+          </button>
+          <button className="delete-btn" onClick={() => handleOpenDelete(data)}>
+            Xóa
+          </button>
+          {isDelete ? (
+            <ConfirmDialog
+              active={true}
+              onConfirm={() => handleConfirmDelete(idDelete)}
+              onClose={handleCloseDelete}
+              header={"Bạn có chắc muốn xóa cột này ?"}
+              content={"Bạn sẽ không thể phục hồi sau khi xóa cột!"}
+            />
+          ) : (
+            ""
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="main_product mx-2">
-      {isDelete ? (
-        <ConfirmDialog
-          active={true}
-          onClose={handleCloseDelete}
-          header={"Bạn có chắc muốn xóa cột này ?"}
-          content={"Bạn sẽ không thể phục hồi sau khi xóa cột!"}
-        />
-      ) : (
-        ""
-      )}
+      <Spinner isLoading={isLoading} />
+      <Toast
+        style={isToast?.style}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
+      />
       <h1 className="text-4xl font-bold m-5">Quản lý loại sản phẩm</h1>
 
       {isAdd && (
@@ -136,16 +261,7 @@ export default function MainDetailProduct() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm loại sản phẩm</h3>
-              <AU
-                list={detailProductForm}
-                data={values}
-                handleChangeData={handleChangeValue}
-                handleSelect={handleSelect}
-                errors={errors}
-                onSubmit={submit}
-                label="Thêm"
-                className={"confirm-btn"}
-              />
+              <AddForm products={products} />
               {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách sản phẩm
           </p>
@@ -170,16 +286,7 @@ export default function MainDetailProduct() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Sửa loại sản phẩm</h3>
-              <AU
-                list={detailProductForm}
-                data={values}
-                handleChangeData={handleChangeValue}
-                handleSelect={handleSelect}
-                errors={errors}
-                onSubmit={submit}
-                label="Sửa"
-                className={"edit-btn"}
-              />
+              <UpdateForm products={products} updateValues={values} />
             </div>
           </Section>
         </>
@@ -192,17 +299,42 @@ export default function MainDetailProduct() {
               className="form-btn confirm-btn p-4 mr-5 text-right "
               onClick={handleOpenAdd}
             >
-              Thêm sản phẩm
+              Thêm loại sản phẩm
             </button>
           </Section>
           <Section span={24}>
             <div className="wrapper p-8">
-              <h3 className="text-2xl font-bold mb-5">Danh sách sản phẩm</h3>
+              <h3 className="text-2xl font-bold mb-5">
+                Danh sách loại sản phẩm
+              </h3>
               <div className="table-wrapper">
+                <Search
+                  className="w-[400px]  my-5 "
+                  placeholder="Nhập tên sản phẩm để tìm kiếm"
+                  enterButton="Tìm kiếm"
+                  size="large"
+                  onSearch={onSearch}
+                  loading={isLoadingSearch}
+                />
+                {isSearch ? (
+                  <div>
+                    <Button
+                      className="mb-5"
+                      type="primary"
+                      danger
+                      loading={isLoadingAll}
+                      onClick={!isLoadingAll && handleOutSearch}
+                    >
+                      Quay lại tất cả
+                    </Button>
+                  </div>
+                ) : (
+                  ""
+                )}
                 <Table
                   bordered={true}
                   columns={columns}
-                  dataSource={productData}
+                  dataSource={detailProducts}
                   className="text-sm"
                 />
               </div>

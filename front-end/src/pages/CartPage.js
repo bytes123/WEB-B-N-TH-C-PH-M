@@ -1,14 +1,19 @@
 import React from "react";
 import { BsTrash } from "react-icons/bs";
 import Table from "../components/Cart/Table";
-import useCart from "../utils/hooks/useCart";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { RxUpdate } from "react-icons/rx";
 import { FiLogOut } from "react-icons/fi";
-
+import useCart from "../utils/hooks/useCart";
+import Toast from "../utils/components/Toast";
 export default function CartPage() {
   const {
-    values,
+    isToast,
+    cart,
+    cartPrice,
+    shipPrice,
+    cartSubPrice,
+    handleCheckOut,
     handleUpQuantity,
     handleDownQuantity,
     handleChangeInputNumber,
@@ -22,6 +27,7 @@ export default function CartPage() {
       title: (
         <input
           type="checkbox"
+          checked={cart.every((item) => item?.checked)}
           onChange={(e) => handleAllCheck(e.target.checked)}
           className="scale-150  cursor-pointer "
         />
@@ -51,13 +57,19 @@ export default function CartPage() {
 
   return (
     <div className="cart_page ">
+      <Toast
+        position={isToast?.position}
+        style={isToast?.style}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
+      />
       <div className="grid grid-cols-3">
         <div className="p-8 mt-20  lg:col-span-2 col-span-3">
           <div className="heading flex mb-20 font-quicksand justify-between">
             <div>
               <h1 className="mb-5  font-semibold text-6xl">Giỏ hàng của bạn</h1>
               <p className=" font-semibold text-2xl opacity-70">
-                Có 3 sản phẩm trong giỏ của bạn
+                Có {cart.length} sản phẩm trong giỏ của bạn
               </p>
             </div>
             <div className="flex items-center">
@@ -79,7 +91,7 @@ export default function CartPage() {
           </div>
           <Table
             heading={cartHeading}
-            list={values}
+            list={cart}
             handleUpQuantity={handleUpQuantity}
             handleDownQuantity={handleDownQuantity}
             handleChangeInputNumber={handleChangeInputNumber}
@@ -94,7 +106,12 @@ export default function CartPage() {
               <div className="border  font-quicksand ">
                 <div className=" flex justify-between p-4">
                   <h4 className="text-3xl font-semibold opacity-70">Đơn giá</h4>
-                  <p className="text-4xl font-bold text-brand">800000</p>
+                  <p className="text-4xl font-bold text-brand">
+                    {cartSubPrice.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </p>
                 </div>
                 <div className="border-t p-8">
                   <div className="border"></div>
@@ -103,7 +120,12 @@ export default function CartPage() {
                   <h4 className="text-3xl font-semibold opacity-70">
                     Tiền Ship
                   </h4>
-                  <p className="text-4xl font-bold text-brand">Free</p>
+                  <p className="text-4xl font-bold text-brand">
+                    {shipPrice.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </p>
                 </div>
                 <div className="border-t p-8">
                   <div className="border"></div>
@@ -112,10 +134,18 @@ export default function CartPage() {
                   <h4 className="text-3xl font-semibold opacity-70">
                     Thành tiền
                   </h4>
-                  <p className="text-4xl font-bold text-brand">80000</p>
+                  <p className="text-4xl font-bold text-brand">
+                    {cartPrice.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </p>
                 </div>
               </div>
-              <button className="background-active text-white font-semibold text-3xl w-100 py-5 px-10 mt-10 rounded-lg flex justify-center items-center">
+              <button
+                className="background-active text-white font-semibold text-3xl w-100 py-5 px-10 mt-10 rounded-lg flex justify-center items-center"
+                onClick={handleCheckOut}
+              >
                 Tiếp tục thanh toán
                 <FiLogOut className="ml-3" />
               </button>

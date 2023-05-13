@@ -48,7 +48,7 @@ module.exports = {
     let auth_data = {
       auth_token: authen_token,
       user_name: data.user_name,
-      created_date: dateTimeNow,
+      createdAt: dateTimeNow,
     };
 
     let notifications = [];
@@ -60,14 +60,14 @@ module.exports = {
           avatar: avatar,
           email: data.email,
           isAuth: false,
-          created_date: new Date(),
+          createdAt: new Date(),
         }
       : {
           user_name: data.user_name,
           password: password,
           email: data.email,
           isAuth: false,
-          created_date: new Date(),
+          createdAt: new Date(),
         };
 
     const customer = {
@@ -174,14 +174,14 @@ module.exports = {
           avatar: avatar,
           email: data.email,
           isAuth: true,
-          created_date: new Date(),
+          createdAt: new Date(),
         }
       : {
           user_name: data.user_name,
           password: password,
           email: data.email,
           isAuth: true,
-          created_date: new Date(),
+          createdAt: new Date(),
         };
 
     const staff = {
@@ -284,7 +284,7 @@ module.exports = {
       password: password ?? "",
       avatar: avatar ?? "",
       email: data?.email ?? "",
-      modify_date: new Date(),
+      updatedAt: new Date(),
     };
 
     let staff = {
@@ -490,6 +490,13 @@ module.exports = {
         return result.status(200).json("FAILED_LOGIN");
       }
     });
+  },
+  fbLogin: async (req, result) => {
+    const { id, name, email, picture } = req.body;
+
+    const user = {
+      user_name: id,
+    };
   },
   updateOnline: async (req, res) => {
     const data = req.body;

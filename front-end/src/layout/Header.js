@@ -16,9 +16,8 @@ import SubMenuMobile from "../components/Header/SubMenuMobile";
 import useMobileSubMenu from "../utils/hooks/useMobileSubMenu";
 import HeaderBarIcon from "../components/Header/HeaderBarIcon";
 import HeaderUser from "../components/Header/HeaderUser";
-import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import usePopup from "../utils/hooks/usePopup";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+
 import Popup from "../utils/components/Popup";
 import ProfileController from "../components/Header/ProfileController";
 import { isLogined, loginedUser } from "../utils/hooks/useAccessUser";
@@ -26,6 +25,8 @@ import {
   fetchCategoryAndChildren,
   getCategoryAndChildren,
 } from "../features/category/categorySlice";
+
+import HeaderSection from "../components/Cart/HeaderSection";
 
 const { Header: AntdHeader } = Layout;
 
@@ -88,7 +89,7 @@ export default function Header({ className }) {
   useEffect(() => {
     if (
       loginedUser &&
-      loginedUser.type_user.some((item) => item.type_user_id == "admin")
+      loginedUser?.type_user?.some((item) => item.type_user_id == "admin")
     ) {
       return setMenuList([
         ...DesktopMenu.filter(
@@ -126,21 +127,8 @@ export default function Header({ className }) {
           />
         </div>
         <div className="flex items-center">
-          <div className="header_section flex mr-5  block ">
-            <div className="header_wishlist mr-3">
-              <Link to="/yeu-thich" className="relative">
-                <AiOutlineHeart className="text-5xl mx-2 opacity-70" />
-                <span className="quanity-wishlist-card">0</span>
-              </Link>
-            </div>
-            <div className="header_cart">
-              <Link to="/gio-hang" className="relative">
-                <AiOutlineShoppingCart className="text-5xl mx-2 opacity-70" />
-                <span className="quanity-wishlist-card">0</span>
-              </Link>
-            </div>
-          </div>
-          {isLogined ? (
+          <HeaderSection />
+          {loginedUser ? (
             <HeaderUser
               onPopup={handlePopup}
               className="w-[40px] h-[40px]"

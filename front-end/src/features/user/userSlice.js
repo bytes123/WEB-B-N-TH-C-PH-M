@@ -7,6 +7,7 @@ import {
   ADMIN_TYPE_USER_URL,
   UPDATE_STAFF_URL,
   SEARCH_USER_URL,
+  LOGIN_FB_URL,
 } from "../../static/API";
 import { handleLogIn } from "../../utils/hooks/useAccessUser";
 
@@ -26,6 +27,13 @@ const initialState = {
   fetch_search_status: "",
   search_users: [],
 };
+
+export const loginFB = createAsyncThunk("user/fb-login", async (data) => {
+  console.log(data);
+  const response = await axios.post(LOGIN_FB_URL, data);
+
+  return response.data;
+});
 
 export const loginRequest = createAsyncThunk("user/login", async (user) => {
   const response = await axios.post(LOGIN_URL, user);

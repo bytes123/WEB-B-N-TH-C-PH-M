@@ -38,8 +38,9 @@ module.exports = {
     }
 
     const data = req.body;
+
     data.name = data.name.trim();
-    data.created_date = new Date();
+    data.createdAt = new Date();
     data.id = removeVietnameseAccents(data.name).replace(" ", "-");
 
     Category.getCategoryExists(data, (err, res) => {
@@ -52,18 +53,18 @@ module.exports = {
           }
         });
       } else {
-        return result.status(200).json("CATEGORY_EXISTS");
+        return result.status(400).json("CATEGORY_EXISTS");
       }
     });
   },
   updateCategory: (req, result) => {
     const data = req.body;
     data.name = data.name.trim();
-    data.modify_date = new Date();
+    data.updatedAt = new Date();
 
     const category = {
       name: data.name,
-      modify_date: new Date(),
+      updatedAt: new Date(),
     };
 
     Category.getCategoryExists(data, (err, res) => {

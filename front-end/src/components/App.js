@@ -40,6 +40,7 @@ import AdminChatPage from "./Admin/AdminChatPage";
 import { loginedUser } from "../utils/hooks/useAccessUser";
 import { updateOnline } from "../features/authen/authenSlice";
 import MainArea from "./Admin/MainArea";
+import CheckoutPage from "../pages/CheckoutPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -209,6 +210,16 @@ const App = () => {
             <Layout className="h-full bg-white">
               <Header className="relative" />
               <UserChatPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="thanh-toan"
+          element={
+            <Layout className="h-full bg-white">
+              <Header className="relative" />
+              <CheckoutPage />
             </Layout>
           }
         />

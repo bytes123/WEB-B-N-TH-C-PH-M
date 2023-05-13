@@ -156,9 +156,16 @@ export default function MainProduct() {
     },
     {
       title: "Ngày tạo",
-      dataIndex: "created_date",
-      key: "created_date",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (data, arr, index) => <Time timestamp={data} />,
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (data, arr, index) =>
+        data ? <Time timestamp={data} /> : "Chưa cập nhật lần nào",
     },
 
     {
@@ -257,7 +264,7 @@ export default function MainProduct() {
               className="form-btn confirm-btn p-4 mr-5 text-right "
               onClick={handleOpenAdd}
             >
-              Thêm danh mục
+              Thêm sản phẩm
             </button>
           </Section>
           <Section span={24}>
@@ -265,7 +272,7 @@ export default function MainProduct() {
               <h3 className="text-2xl font-bold mb-5">Danh sách sản phẩm</h3>
               <Search
                 className="w-[400px]  my-5 "
-                placeholder="Nhập tên danh mục để tìm kiếm"
+                placeholder="Nhập tên sản phẩm để tìm kiếm"
                 enterButton="Tìm kiếm"
                 size="large"
                 onSearch={onSearch}

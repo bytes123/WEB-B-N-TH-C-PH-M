@@ -1,47 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Link } from "react-router-dom";
 import StarpointSection from "../../components/Utils/StarpointSection";
+import useCart from "../../utils/hooks/useCart";
 
 export default function ItemList({ currentItems, isHiddenBtn, className }) {
-  const handleAddCart = (item) => {
-    console.log(item);
-  };
+  const { handleAddCart } = useCart();
 
   return (
     <div className={`item_list-wrapper  ${className}`}>
       <ul className="item_list grid lg:grid-cols-5 grid-cols-2 gap-10">
         {currentItems.map((item) => (
           <li className="item">
-            <Link to={`/thuc-don/${item.catalog_name}/${item.key}`}>
+            <Link to={`/thuc-don/${item.category_id}/${item.product_id}`}>
               <div className="label pink">
                 <p>Hot</p>
               </div>
               <div className="item_img-wrapper ">
                 <img
-                  src="https://wp.alithemes.com/html/nest/demo/assets/imgs/shop/product-3-2.jpg"
+                  className="h-[300px]"
+                  src={
+                    item.image1 !== "default.jpg"
+                      ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
+                      : `http://localhost:8000/resources/product/${item.image1}`
+                  }
                   alt=""
                 />
               </div>
               <div className="item_information mt-4">
-                <p className="item_catalog-label">{item.catalog_name}</p>
+                <p className="item_category-label  my-5">
+                  {item.category_name}
+                </p>
                 <Link
-                  className="item_name mt-4"
-                  to={`/thuc-don/${item.catalog_name}/${item.key}`}
+                  className="item_name block my-5 font-quicksand text-4xl"
+                  to={`/thuc-don/${item.category_id}/${item.product_id}`}
                 >
-                  {item.product_name}
+                  {item.name}
                 </Link>
-                <StarpointSection starpoint={item.product_starpoint} />
+                <StarpointSection starpoint={item.starpoint + 5} />
                 <div className="item_card flex-wrap mt-5 flex items-center">
-                  <div className="item_price">{item.product_price}</div>
+                  <div className="item_price">
+                    {item?.newPrice?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </div>
                   <div className="item_price-discount">
-                    {item.product_discount}
+                    {item?.price?.toLocaleString("it-IT", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </div>
                   {!isHiddenBtn ? (
                     <div className="btn-wrapper mt-5">
                       <button
                         className="item_btn "
-                        onClick={() => handleAddCart(item)}
+                        onClick={(e) => handleAddCart(e, item)}
                       >
                         <MdOutlineShoppingCart className="text-2xl mr-1" />
                         Thêm

@@ -273,9 +273,8 @@ export default function AddForm() {
             </Form.Item>
             <Form.Item>
               <Button
-                type="primary"
                 htmlType="submit"
-                className="form_btn py-6 text-2xl flex items-center justify-center font-bold"
+                className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
               >
                 Thêm tài khoản
               </Button>

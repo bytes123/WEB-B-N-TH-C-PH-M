@@ -17,6 +17,7 @@ import {
   getError,
   getLoginStatus,
   resetLoginStatus,
+  loginFB,
 } from "../../features/user/userSlice";
 import { getSignUpStatus } from "../../features/authen/authenSlice";
 
@@ -83,8 +84,8 @@ export default function LoginForm() {
             iconSize="1.6rem"
           />
           <LoginSocialFacebook
-            appId="777825046653704"
-            onResolve={(res) => console.log(res)}
+            appId="177094665300279"
+            onResolve={(res) => dispatch(loginFB(res.data)).unwrap()}
             onReject={(err) => console.log(err)}
           >
             <FacebookLoginButton

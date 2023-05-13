@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuList from "../components/Home/MenuList";
 import BannerHighLand from "../components/Banner/BannerHighLand";
-import ClassifySection from "../components/Product/ClassifySection";
+import ClassifySection from "../utils/components/ClassifySection";
 import ItemList from "../components/Product/ItemList";
-import { BiGridAlt, BiSort } from "react-icons/bi";
+
 import { nanoid } from "nanoid";
 import PaginatedItems from "../utils/components/PaginatedItems";
 import usePagination from "../utils/hooks/usePagination";
@@ -19,49 +19,41 @@ export default function MenuItemPage() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const classifyMenu = [
+  const sortChildren = [
     {
       key: 1,
-      icon: <BiGridAlt className="mx-1" />,
-      content: "Hiển thị",
-      value: [
-        {
-          key: 1,
-          value: "50",
-        },
-        {
-          key: 2,
-          value: "100",
-        },
-      ],
+      value: "50",
     },
     {
       key: 2,
-      icon: <BiSort className="mx-1" />,
-      content: "Sắp xếp theo",
-      value: [
-        {
-          key: 1,
-          value: "Danh mục",
-        },
-        {
-          key: 2,
-          value: "Giá: Từ thấp đến cao",
-        },
-        {
-          key: 3,
-          value: "Giá: Từ cao đến thấp",
-        },
-      ],
+      value: "100",
+    },
+  ];
+
+  const displayChildren = [
+    {
+      key: 1,
+      value: "Danh mục",
+    },
+    {
+      key: 2,
+      value: "Giá: Từ thấp đến cao",
+    },
+    {
+      key: 3,
+      value: "Giá: Từ cao đến thấp",
     },
   ];
 
   const {
     handleSwitch,
     activeIndex,
-    activeValueIndex,
-    handleActiveValueIndex,
-  } = useClassifySection();
+    activeDisplayIndex,
+    handleActiveDisplayIndex,
+    activeSortIndex,
+    handleActiveSortIndex,
+    classifyMenu,
+  } = useClassifySection(sortChildren, displayChildren);
 
   const [items, setItems] = useState([
     {
@@ -112,13 +104,19 @@ export default function MenuItemPage() {
 
         <div className="lg:grid lg:grid-cols-4 lg:px-10">
           <div className="lg:col-span-3">
-            <ClassifySection
-              activeIndex={activeIndex}
-              data={classifyMenu}
-              onSwitch={handleSwitch}
-              activeValueIndex={activeValueIndex}
-              onActiveValueIndex={handleActiveValueIndex}
-            />
+            <div className="mt-10">
+              <ClassifySection
+                className="justify-between"
+                text="sản phẩm"
+                activeIndex={activeIndex}
+                data={classifyMenu}
+                onSwitch={handleSwitch}
+                activeDisplayIndex={activeDisplayIndex}
+                onActiveDisplayIndex={handleActiveDisplayIndex}
+                activeSortIndex={activeSortIndex}
+                onActiveSortIndex={handleActiveSortIndex}
+              />
+            </div>
             <div className="container mx-auto py-10">
               <ItemList currentItems={currentItems} />
 

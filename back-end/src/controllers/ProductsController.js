@@ -1,6 +1,7 @@
 "use strict";
 
 const Products = require("../models/Products");
+const DetailProduct = require("../models/DetailProduct");
 
 var fs = require("fs");
 const { json } = require("express");
@@ -12,6 +13,18 @@ module.exports = {
       if (err) throw err;
       res.status(200).json(response);
     });
+  },
+  getTopProducts: (req, result) => {
+    const { type, quantity } = req.body;
+
+    if (type == "newest") {
+      DetailProduct.getTopProducts(quantity, (err, response) => {
+        if (err) result.status(500).json(err);
+        if (result) {
+          result.status(200).json(response);
+        }
+      });
+    }
   },
   addProduct: (req, result) => {
     const images = req.files;
@@ -28,7 +41,7 @@ module.exports = {
     !data.image2 && delete data.image2;
     !data.image3 && delete data.image3;
 
-    data.created_date = new Date();
+    data.createdAt = new Date();
 
     Products.addProduct(data, (err, res) => {
       if (err) {
@@ -60,9 +73,15 @@ module.exports = {
       delete data.image3;
     }
 
-    data.old_images = data?.old_images
-      .filter((item) => item.isDelete)
-      .map((item) => item.file_name);
+    data.old_images = [];
+
+    if (data?.old_images.length) {
+      console.log(data.old_images);
+      data?.old_images
+        .filter((item) => item.isDelete)
+        .map((item) => item.file_name);
+    }
+
     const id = data.id;
     data?.old_images.length &&
       data.old_images.forEach((item) => {
@@ -77,7 +96,7 @@ module.exports = {
         }
       });
 
-    data.modify_date = new Date();
+    data.updatedAt = new Date();
 
     delete data.id;
     delete data.old_images;

@@ -49,7 +49,9 @@ export default function useAdminProduct(
   const fetch_search_status = useSelector(getFetchSearchStatus);
 
   useEffect(() => {
-    setProducts(search_products);
+    if (fetch_search_status == "succeeded") {
+      setProducts(search_products);
+    }
   }, [fetch_search_status]);
 
   const handleSearch = (value, callback) => {

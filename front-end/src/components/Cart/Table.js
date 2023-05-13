@@ -55,7 +55,11 @@ export default function Table({
             <Td className=" flex justify-center  m-10 items-center">
               <img
                 className="w-[100px] rounded-xl  border-1"
-                src={item.image}
+                src={
+                  item.image1 !== "default.jpg"
+                    ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
+                    : `http://localhost:8000/resources/product/${item.image1}`
+                }
                 alt=""
               />
               <section className="ml-5">
@@ -73,7 +77,10 @@ export default function Table({
             </Td>
             <Td className="text-center">
               <span className="text-4xl font-bold text-gray-500">
-                {item.price}
+                {item.newPrice.toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </span>
             </Td>
             <Td className="text-brand ">
@@ -88,7 +95,10 @@ export default function Table({
             </Td>
             <Td className="text-center">
               <span className="text-3xl font-bold text-brand">
-                {item.price * item.quantity}
+                {(item.newPrice * item.quantity).toLocaleString("it-IT", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </span>
             </Td>
             <Td className="text-center">

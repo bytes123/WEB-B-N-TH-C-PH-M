@@ -3,6 +3,8 @@ const SIGNUP_STAFF_URL = "http://localhost:8000/add-staff";
 const UPDATE_STAFF_URL = "http://localhost:8000/update-staff";
 const LOGIN_URL = "http://localhost:8000/login";
 const AUTH_URL = "http://localhost:8000/authen";
+const LOGIN_FB_URL = "http://localhost:8000/fb-login";
+
 const MSG_BY_ROOM_URL = "http://localhost:8000/messages_by_room";
 const MSG_LIST_BY_USER_URL = "http://localhost:8000/message_list_by_user";
 const CONTACT_USER_URL = "http://localhost:8000/contact_user";
@@ -27,11 +29,35 @@ const ADD_PRODUCT_URL = "http://localhost:8000/add-product";
 const UPDATE_PRODUCT_URL = "http://localhost:8000/update-product";
 const DELETE_PRODUCT_URL = "http://localhost:8000/delete-product";
 const SEARCH_PRODUCT_URL = "http://localhost:8000/search-product";
+const TOP_PRODUCT_URL = "http://localhost:8000/top-products";
+
+const DETAIL_PRODUCT_URL = "http://localhost:8000/detail_product";
+const ADD_DETAIL_PRODUCT_URL = "http://localhost:8000/add-detail_product";
+const UPDATE_DETAIL_PRODUCT_URL = "http://localhost:8000/update-detail_product";
+const DELETE_DETAIL_PRODUCT_URL = "http://localhost:8000/delete-detail_product";
+const SEARCH_DETAIL_PRODUCT_URL = "http://localhost:8000/search-detail_product";
 
 const BRAND_URL = "http://localhost:8000/brand";
 const ADD_BRAND_URL = "http://localhost:8000/add-brand";
 const UPDATE_BRAND_URL = "http://localhost:8000/update-brand";
 const DELETE_BRAND_URL = "http://localhost:8000/delete-brand";
+
+const MYSQL_LOGIN_URL = "http://localhost:8000/mysql-login";
+const GET_TABLE_URL = "http://localhost:8000/get_table";
+const GET_COLUMN_URL = "http://localhost:8000/get_column";
+
+const HORIZON_MIGRATE = "http://localhost:8000/migrate";
+
+const STORAGE_URL = "http://localhost:8000/storage";
+
+const BRANCH_URL = "http://localhost:8000/branch";
+
+const ADD_CART_URL = "http://localhost:8000/add-cart";
+const UPDATE_CART_URL = "http://localhost:8000/update-cart";
+const GET_CART_URL = "http://localhost:8000/get-cart";
+
+const GET_BILL_URL = "http://localhost:8000/get-bill";
+const UPDATE_STATEMENT_BILL_URL = "http://localhost:8000/update-statement-bill";
 
 export {
   LOGIN_URL,
@@ -65,4 +91,22 @@ export {
   ADD_BRAND_URL,
   UPDATE_BRAND_URL,
   DELETE_BRAND_URL,
+  MYSQL_LOGIN_URL,
+  LOGIN_FB_URL,
+  DETAIL_PRODUCT_URL,
+  ADD_DETAIL_PRODUCT_URL,
+  UPDATE_DETAIL_PRODUCT_URL,
+  DELETE_DETAIL_PRODUCT_URL,
+  SEARCH_DETAIL_PRODUCT_URL,
+  GET_TABLE_URL,
+  GET_COLUMN_URL,
+  HORIZON_MIGRATE,
+  STORAGE_URL,
+  BRANCH_URL,
+  TOP_PRODUCT_URL,
+  ADD_CART_URL,
+  GET_CART_URL,
+  UPDATE_CART_URL,
+  GET_BILL_URL,
+  UPDATE_STATEMENT_BILL_URL,
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Input, Form, Button, Select } from "antd";
-import { rulesCategory as rules } from "../../../static/UserForm";
+import { rulesProduct as rules } from "../../../static/UserForm";
 import useForm from "../../../utils/hooks/Admin/useForm";
 import Cookies from "js-cookie";
 import {
@@ -192,9 +192,8 @@ export default function AddForm({ categories, brands }) {
 
             <Form.Item>
               <Button
-                type="primary"
                 htmlType="submit"
-                className="form_btn py-6 text-2xl flex items-center justify-center font-bold"
+                className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
               >
                 Thêm sản phẩm
               </Button>

@@ -10,7 +10,7 @@ export default function MainSideBar({ isBarActive, onBarActive }) {
   console.log(isBarActive);
   return (
     <div
-      className={`sidebar p-4 fixed top-0 bottom-0 z-100 bg-white lg:relative ${
+      className={`sidebar p-4 fixed top-0 bottom-0 z-[999] bg-white lg:relative ${
         isBarActive ? "active" : ""
       }`}
     >

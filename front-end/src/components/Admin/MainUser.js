@@ -8,28 +8,23 @@ import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
 import Toast from "../../utils/components/Toast";
 import AddForm from "./User/AddForm";
 import {
-  fetchAllUser,
-  getAllUserStatus,
-  getDeleteStatus,
   deleteUser,
   searchUser,
-  getUpdateStatus,
   resetUpdateStatus,
   resetErrors,
-  resetDeleteStatus,
-  fetchSearchUser,
 } from "../../features/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Time from "../../utils/components/Time";
 import useMainUser from "../../utils/hooks/useMainUser";
 import UpdateForm from "./User/UpdateForm";
+import useClassifySection from "../../utils/hooks/useClassifySection";
+import ClassifySection from "../../utils/components/ClassifySection";
 
 export default function MainUser() {
   const { Search } = Input;
   const dispatch = useDispatch();
 
-  const update_status = useSelector(getUpdateStatus);
-  const delete_status = useSelector(getDeleteStatus);
+  const [pageSize, setPageSize] = useState(10);
 
   const [isToast, setIsToast] = useState({
     style: "",
@@ -38,20 +33,6 @@ export default function MainUser() {
   });
   const [error, setError] = useState({});
 
-  const {
-    users,
-    isLoadingSearch,
-    isSearch,
-    handleSearch,
-    handleOutSearch,
-    isLoadingAllUsers,
-    currentSearch,
-  } = useMainUser();
-
-  useEffect(() => {
-    console.log(isLoadingSearch);
-  }, [isLoadingSearch]);
-
   const addData = (values) => {
     values.user_type = "admin";
   };
@@ -59,6 +40,33 @@ export default function MainUser() {
     await dispatch(resetUpdateStatus());
     await dispatch(resetErrors());
   };
+
+  const successDelete = () => {
+    handleCloseDelete();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Xóa tài khoản thành công",
+    });
+  };
+
+  const successUpdate = () => {
+    handleCloseEdit();
+    setError({});
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Cập nhật tài khoản thành công",
+    });
+  };
+
+  const clearToast = () => {
+    setIsToast({
+      value: false,
+      body: "",
+    });
+  };
+
   const { values, handleChangeValue, handleSetValue } =
     useValidateForm(addData);
 
@@ -75,66 +83,70 @@ export default function MainUser() {
     idDelete,
   } = useAdminController(handleChangeValue, handleSetValue, clearUpdate);
 
-  useEffect(() => {
-    if (delete_status == "succeeded") {
-      const updateDelete = async () => {
-        if (currentSearch) {
-          await dispatch(fetchSearchUser(currentSearch)).unwrap();
-          await handleCloseDelete();
-        } else {
-          await dispatch(fetchAllUser()).unwrap();
-          await handleCloseDelete();
-        }
-        setIsToast({
-          style: "success",
-          value: true,
-          body: "Xóa tài khoản thành công",
-        });
-      };
-      updateDelete();
-    }
+  const sortChildren = [
+    {
+      key: 10,
+      value: 10,
+    },
+    {
+      key: 20,
+      value: 20,
+    },
+  ];
 
-    return () => {
-      setIsToast({
-        value: false,
-        body: "",
-      });
-      dispatch(resetDeleteStatus());
-    };
-  }, [delete_status]);
+  const displayChildren = [
+    {
+      key: "all",
+      value: "Tất cả",
+    },
+    {
+      key: "customer",
+      value: "Khách hàng",
+    },
+    {
+      key: "admin",
+      value: "Admin",
+    },
+    {
+      key: "createdAt",
+      value: "Ngày tạo",
+    },
+  ];
+
+  const {
+    handleSwitch,
+    activeIndex,
+    activeDisplayIndex,
+    handleActiveDisplayIndex,
+    activeSortIndex,
+    handleActiveSortIndex,
+    classifyMenu,
+  } = useClassifySection(sortChildren, displayChildren);
 
   useEffect(() => {
-    dispatch(fetchAllUser()).unwrap();
+    handleActiveDisplayIndex(10);
+    handleActiveSortIndex("all");
   }, []);
 
   useEffect(() => {
-    if (update_status == "succeeded") {
-      console.log(currentSearch);
-      const updateEdit = async () => {
-        if (currentSearch) {
-          console.log("Có ");
-          await dispatch(fetchSearchUser(currentSearch));
-          await handleCloseEdit();
-        } else {
-          await dispatch(fetchAllUser()).unwrap();
-          await handleCloseEdit();
-        }
-        setError({});
-        setIsToast({
-          style: "success",
-          value: true,
-          body: "Cập nhật tài khoản thành công",
-        });
-      };
-      updateEdit();
-    }
+    setPageSize(activeDisplayIndex);
+  }, [activeDisplayIndex]);
 
-    return () =>
-      setIsToast({
-        value: false,
-        body: "",
-      });
-  }, [update_status]);
+  const {
+    users,
+    isLoadingSearch,
+    isSearch,
+    handleSearch,
+    handleOutSearch,
+    isLoadingAllUsers,
+    currentSearch,
+  } = useMainUser(
+    successDelete,
+    successUpdate,
+    clearToast,
+    activeDisplayIndex,
+    activeSortIndex
+  );
 
   useEffect(() => {
     console.log(error);
@@ -273,14 +285,14 @@ export default function MainUser() {
     },
     {
       title: "Thời gian tạo tài khoản",
-      dataIndex: "created_date",
-      key: "created_date",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (data, arr, index) => <Time timestamp={data} />,
     },
     {
       title: "Thời gian cập nhật gần nhất",
-      dataIndex: "modify_date",
-      key: "modify_date",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
       render: (data, arr, index) =>
         data ? <Time timestamp={data} /> : "Chưa cập nhật lần nào",
     },
@@ -392,14 +404,26 @@ export default function MainUser() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold mb-5">Danh sách tài khoản</h3>
-              <Search
-                className="w-[400px]  my-5 "
-                placeholder="Nhập tên tài khoản hoặc email để tìm kiếm"
-                enterButton="Tìm kiếm"
-                size="large"
-                onSearch={onSearch}
-                loading={isLoadingSearch}
-              />
+              <div className="flex justify-between items-center mb-5">
+                <Search
+                  className="w-[400px]  my-5 "
+                  placeholder="Nhập tên tài khoản hoặc email để tìm kiếm"
+                  enterButton="Tìm kiếm"
+                  size="large"
+                  onSearch={onSearch}
+                  loading={isLoadingSearch}
+                />
+                <ClassifySection
+                  className="justify-end"
+                  activeIndex={activeIndex}
+                  data={classifyMenu}
+                  onSwitch={handleSwitch}
+                  activeDisplayIndex={activeDisplayIndex}
+                  onActiveDisplayIndex={handleActiveDisplayIndex}
+                  activeSortIndex={activeSortIndex}
+                  onActiveSortIndex={handleActiveSortIndex}
+                />
+              </div>
 
               {isSearch ? (
                 <div>
@@ -419,6 +443,7 @@ export default function MainUser() {
 
               <div className="table-wrapper">
                 <Table
+                  pagination={{ pageSize: pageSize }}
                   bordered={true}
                   columns={columns}
                   dataSource={users}

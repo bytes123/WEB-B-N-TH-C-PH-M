@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Toast({ style = "success", body, isSuccess }) {
+export default function Toast({
+  position = "top-right",
+  style = "success",
+  body,
+  isSuccess,
+}) {
   useEffect(() => {
     if (isSuccess && body) {
       style == "success" &&
         toast.success(body, {
           className: "text-xl",
-          position: "top-right",
+          position: position,
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -21,7 +26,7 @@ export default function Toast({ style = "success", body, isSuccess }) {
       style == "failed" &&
         toast.error(body, {
           className: "text-xl",
-          position: "top-right",
+          position: position,
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -35,7 +40,7 @@ export default function Toast({ style = "success", body, isSuccess }) {
 
   return (
     <ToastContainer
-      position="top-right"
+      position={position}
       autoClose={5000}
       hideProgressBar={false}
       newestOnTop={false}

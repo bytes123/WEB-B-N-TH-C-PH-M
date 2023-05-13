@@ -14,7 +14,7 @@ export default function AdminPage({ children }) {
     }
     if (
       loginedUser &&
-      loginedUser.type_user.some((item) => item.type_user_id == "admin")
+      loginedUser?.type_user?.some((item) => item.type_user_id == "admin")
     ) {
       setPage(
         <div className="admin_page wrapper flex min-h-screen">

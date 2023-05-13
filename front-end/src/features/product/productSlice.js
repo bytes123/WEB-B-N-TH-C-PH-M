@@ -6,6 +6,7 @@ import {
   UPDATE_PRODUCT_URL,
   DELETE_PRODUCT_URL,
   SEARCH_PRODUCT_URL,
+  TOP_PRODUCT_URL,
 } from "../../static/API";
 import axios from "axios";
 import { v1 as uuidv1 } from "uuid";
@@ -19,6 +20,7 @@ const initialState = {
   search_status: "",
   fetch_search_status: "",
   search_products: [],
+  top_products: [],
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -28,6 +30,15 @@ export const fetchProducts = createAsyncThunk(
     return response.data;
   }
 );
+
+export const fetchTopProducts = createAsyncThunk(
+  "product/top-products",
+  async (data) => {
+    const response = await axios.post(TOP_PRODUCT_URL, data);
+    return response.data;
+  }
+);
+
 function removeVietnameseAccents(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -63,7 +74,7 @@ export const updateProduct = createAsyncThunk(
       data.images.forEach((item, index) => {
         let filename = "";
         if (item?.name) {
-          filename = Date.now() + "-" + item?.name;
+          filename = Date.now() + "-" + item?.name.replace(" ", "-");
         }
         if (item?.default) {
           filename = item?.default;
@@ -151,6 +162,15 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         console.log("err");
       })
+      .addCase(fetchTopProducts.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchTopProducts.fulfilled, (state, action) => {
+        state.top_products = action.payload;
+      })
+      .addCase(fetchTopProducts.rejected, (state, action) => {
+        console.log("err");
+      })
       .addCase(addProduct.pending, (state, action) => {
         state.add_status = "loading";
       })
@@ -215,6 +235,7 @@ export const getSearchStatus = (state) => state.product.search_status;
 export const getSearchProducts = (state) => state.product.search_products;
 export const getFetchSearchStatus = (state) =>
   state.product.fetch_search_status;
+export const getTopProducts = (state) => state.product.top_products;
 
 export const {
   resetAddStatus,
