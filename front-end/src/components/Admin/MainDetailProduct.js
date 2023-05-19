@@ -5,7 +5,6 @@ import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import { Button, Table, Input } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
-import validateDetailProduct from "../../utils/validates/validateDetailProduct";
 import useAdminDetailProduct from "../../utils/hooks/Admin/useAdminDetailProduct";
 import Time from "../../utils/components/Time";
 import AddForm from "./DetailProduct/AddForm";
@@ -40,7 +39,7 @@ export default function MainDetailProduct() {
     errors,
     clearErrors,
     clearValues,
-  } = useValidateForm(addData, validateDetailProduct);
+  } = useValidateForm(addData);
 
   const {
     isDelete,

@@ -40,7 +40,11 @@ export default function MessageBar({ handleClose, list }) {
                   </div>
                   <div className="message-time">
                     <span className="font-[300]">
-                      <Time timestamp={item.lastest_time} />
+                      {item?.lastest_time ? (
+                        <Time timestamp={item.lastest_time} />
+                      ) : (
+                        ""
+                      )}
                     </span>
                   </div>
                 </Link>

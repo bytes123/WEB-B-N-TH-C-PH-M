@@ -9,7 +9,7 @@ export default function MainLoading({ isLoading }) {
     >
       <img
         className="w-[80px] h-[80px]"
-        src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/loading.gif"
+        src="http://localhost:8000/resources/images/loading.gif"
         alt=""
       />
     </div>

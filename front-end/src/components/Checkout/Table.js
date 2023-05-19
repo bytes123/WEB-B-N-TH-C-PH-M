@@ -38,52 +38,53 @@ export default function Table({
         </Tr>
       </Thead>
       <Tbody>
-        {list.map((item) => (
-          <Tr className="p-5">
-            <Td className=" flex justify-center  m-10 items-center">
-              <img
-                className="w-[100px] rounded-xl  border-1"
-                src={
-                  item.image1 !== "default.jpg"
-                    ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
-                    : `http://localhost:8000/resources/product/${item.image1}`
-                }
-                alt=""
-              />
-              <section className="ml-5">
-                <h3 className="text-3xl font-semibold">{item.name}</h3>
-                <section className="mt-3">
-                  <StarPointSection
-                    className={"inline"}
-                    starpoint={item.starpoint}
-                  />
-                  <span className="font-semibold ml-3 opacity-50">
-                    ({item.starpoint}.0)
-                  </span>
+        {list?.length &&
+          list.map((item) => (
+            <Tr className="p-5">
+              <Td className=" flex justify-center  m-10 items-center">
+                <img
+                  className="w-[100px] rounded-xl  border-1"
+                  src={
+                    item.image1 !== "default.jpg"
+                      ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
+                      : `http://localhost:8000/resources/product/${item.image1}`
+                  }
+                  alt=""
+                />
+                <section className="ml-5">
+                  <h3 className="text-3xl font-semibold">{item.name}</h3>
+                  <section className="mt-3">
+                    <StarPointSection
+                      className={"inline"}
+                      starpoint={item.starpoint}
+                    />
+                    <span className="font-semibold ml-3 opacity-50">
+                      ({item.starpoint}.0)
+                    </span>
+                  </section>
                 </section>
-              </section>
-            </Td>
-            <Td className="text-center">
-              <span className="text-4xl font-bold text-gray-500">
-                {item.newPrice.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </span>
-            </Td>
-            <Td className="text-brand ">
-              <Quantity disabled={true} inputNumberValue={item.quantity} />
-            </Td>
-            <Td className="text-center">
-              <span className="text-3xl font-bold text-brand">
-                {(item.newPrice * item.quantity).toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
-              </span>
-            </Td>
-          </Tr>
-        ))}
+              </Td>
+              <Td className="text-center">
+                <span className="text-4xl font-bold text-gray-500">
+                  {item.newPrice.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
+              </Td>
+              <Td className="text-brand ">
+                <Quantity disabled={true} inputNumberValue={item.quantity} />
+              </Td>
+              <Td className="text-center">
+                <span className="text-3xl font-bold text-brand">
+                  {(item.newPrice * item.quantity).toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
+              </Td>
+            </Tr>
+          ))}
       </Tbody>
     </MainTable>
   );

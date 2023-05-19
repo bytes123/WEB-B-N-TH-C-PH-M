@@ -10,15 +10,17 @@ export default function CartPage() {
   const {
     isToast,
     cart,
-    cartPrice,
+    cartCheckedPrice,
     shipPrice,
-    cartSubPrice,
+    cartCheckedSubPrice,
     handleCheckOut,
     handleUpQuantity,
     handleDownQuantity,
     handleChangeInputNumber,
     handleAllCheck,
     handleCheckById,
+    handleUpdateCart,
+    handleDeleteCart,
   } = useCart();
 
   const cartHeading = [
@@ -72,19 +74,26 @@ export default function CartPage() {
                 Có {cart.length} sản phẩm trong giỏ của bạn
               </p>
             </div>
-            <div className="flex items-center">
-              <button className="font-semibold text-2xl flex items-center opacity-50 hover:bg-red-500 hover:text-white hover:opacity-100 p-4 rounded-xl transition-all">
-                <BsTrash className=" mr-3" />
-                Xóa giỏ hàng
-              </button>
-            </div>
+            {/* {cart?.length ? (
+              <div className="flex items-center">
+                <button className="font-semibold text-2xl flex items-center opacity-50 hover:bg-red-500 hover:text-white hover:opacity-100 p-4 rounded-xl transition-all">
+                  <BsTrash className=" mr-3" />
+                  Xóa giỏ hàng
+                </button>
+              </div>
+            ) : (
+              ""
+            )} */}
           </div>
           <div className="flex mb-10 justify-between">
             <button className="background-active font-bold flex items-center text-2xl text-white py-4 px-8 rounded-xl">
               <IoMdArrowRoundBack className="mr-3 text-3xl" />
               Tiếp tục mua
             </button>
-            <button className="background-active items-center flex font-bold text-2xl text-white py-4 px-8 rounded-xl">
+            <button
+              onClick={handleUpdateCart}
+              className="background-active items-center flex font-bold text-2xl text-white py-4 px-8 rounded-xl"
+            >
               <RxUpdate className="text-white text-3xl mr-3" />
               Cập nhật giỏ hàng
             </button>
@@ -98,6 +107,7 @@ export default function CartPage() {
             handleCheckById={handleCheckById}
             theadClassName={"bg-slate-100 rounded-2xl"}
             thClassName={"p-8 text-2xl text-gray-700"}
+            handleDeleteCart={handleDeleteCart}
           />
         </div>
         <div className="lg:col-span-1 col-span-3">
@@ -107,7 +117,7 @@ export default function CartPage() {
                 <div className=" flex justify-between p-4">
                   <h4 className="text-3xl font-semibold opacity-70">Đơn giá</h4>
                   <p className="text-4xl font-bold text-brand">
-                    {cartSubPrice.toLocaleString("it-IT", {
+                    {cartCheckedSubPrice.toLocaleString("it-IT", {
                       style: "currency",
                       currency: "VND",
                     })}
@@ -135,7 +145,7 @@ export default function CartPage() {
                     Thành tiền
                   </h4>
                   <p className="text-4xl font-bold text-brand">
-                    {cartPrice.toLocaleString("it-IT", {
+                    {cartCheckedPrice.toLocaleString("it-IT", {
                       style: "currency",
                       currency: "VND",
                     })}

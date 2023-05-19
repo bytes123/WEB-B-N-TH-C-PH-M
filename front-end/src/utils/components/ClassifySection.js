@@ -59,7 +59,9 @@ export default function ClassifySection({
                               transform: "translateY(-50%)",
                             }}
                           />
-                        ) : null}
+                        ) : (
+                          ""
+                        )}
                         <p className="ml-8">{i.value}</p>
                       </div>
                     ) : item.key == "sort" ? (
@@ -77,7 +79,9 @@ export default function ClassifySection({
                               transform: "translateY(-50%)",
                             }}
                           />
-                        ) : null}
+                        ) : (
+                          ""
+                        )}
                         <p className="ml-8">{i.value}</p>
                       </div>
                     ) : (

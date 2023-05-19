@@ -9,7 +9,7 @@ export default function MenuList({ data }) {
 
   return (
     <div className="menu_list-wrapper">
-      <ul className=" menu_list flex justify-center">
+      <ul className=" menu_list flex justify-center bg-green-500">
         {data.map((item) => {
           return (
             <li

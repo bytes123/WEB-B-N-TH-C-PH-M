@@ -21,6 +21,7 @@ export default function Table({
   handleDownQuantity,
   handleChangeInputNumber,
   handleCheckById,
+  handleDeleteCart,
 }) {
   return (
     <MainTable className={+" table"}>
@@ -52,12 +53,12 @@ export default function Table({
                 onChange={() => handleCheckById(item.id)}
               />
             </Td>
-            <Td className=" flex justify-center  m-10 items-center">
+            <Td className=" flex   m-10 items-center">
               <img
                 className="w-[100px] rounded-xl  border-1"
                 src={
                   item.image1 !== "default.jpg"
-                    ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
+                    ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
                     : `http://localhost:8000/resources/product/${item.image1}`
                 }
                 alt=""
@@ -102,8 +103,11 @@ export default function Table({
               </span>
             </Td>
             <Td className="text-center">
-              <button className="text-3xl">
-                <BsTrash className="opacity-60" />
+              <button
+                className="text-3xl hover:bg-red-500 p-5 rounded-xl hover:text-white transition-all"
+                onClick={() => handleDeleteCart(item.id)}
+              >
+                <BsTrash className="opacity-60 " />
               </button>
             </Td>
           </Tr>

@@ -34,6 +34,10 @@ const cartSlice = createSlice({
     resetUpdateCartStatus(state, action) {
       state.update_cart_status = "";
     },
+    addLocalCart(state, action) {
+      console.log(action);
+      state.cart = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -69,5 +73,6 @@ const cartSlice = createSlice({
 export const getCart = (state) => state.cart.cart;
 export const getAddCartStatus = (state) => state.cart.add_cart_status;
 export const getUpdateCartStatus = (state) => state.cart.update_cart_status;
-export const { resetAddCartStatus, resetUpdateCartStatus } = cartSlice.actions;
+export const { resetAddCartStatus, resetUpdateCartStatus, addLocalCart } =
+  cartSlice.actions;
 export default cartSlice.reducer;

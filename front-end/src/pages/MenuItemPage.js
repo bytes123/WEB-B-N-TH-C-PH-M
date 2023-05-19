@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuList from "../components/Home/MenuList";
-import BannerHighLand from "../components/Banner/BannerHighLand";
+import Banner1 from "../components/Banner/Banner1";
 import ClassifySection from "../utils/components/ClassifySection";
 import ItemList from "../components/Product/ItemList";
 
@@ -13,6 +13,7 @@ import MainLoading from "../utils/components/MainLoading";
 import useClassifySection from "../utils/hooks/useClassifySection";
 import { ProductData } from "../static/Data";
 import ClassifyItemSection from "../components/Product/ClassifyItemSection";
+import useProducts from "../utils/hooks/useProducts";
 
 export default function MenuItemPage() {
   const { menuid } = useParams();
@@ -82,6 +83,8 @@ export default function MenuItemPage() {
     },
   ]);
 
+  const { products } = useProducts();
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     const waitLoading = setTimeout(() => {
@@ -93,13 +96,13 @@ export default function MenuItemPage() {
     return () => clearTimeout(waitLoading);
   }, []);
 
-  const [currentItems, pageCount, handlePageClick] = usePagination(items, 2);
+  const [currentItems, pageCount, handlePageClick] = usePagination(products, 4);
 
   return (
     <>
       <MainLoading isLoading={isLoading} />
       <div className="menu_item-wrapper">
-        <BannerHighLand />
+        <Banner1 />
         <MenuList data={ProductData} />
 
         <div className="lg:grid lg:grid-cols-4 lg:px-10">
@@ -118,7 +121,7 @@ export default function MenuItemPage() {
               />
             </div>
             <div className="container mx-auto py-10">
-              <ItemList currentItems={currentItems} />
+              <ItemList currentItems={currentItems} gridCol={4} />
 
               <PaginatedItems
                 previousLabel={<BsArrowLeft />}

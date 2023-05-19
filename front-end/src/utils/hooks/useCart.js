@@ -9,9 +9,10 @@ import {
   getCart,
   getUpdateCartStatus,
   resetUpdateCartStatus,
+  addLocalCart,
 } from "../../features/cart/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { add } from "lodash";
+import { add, update } from "lodash";
 import { fetchProducts } from "../../features/product/productSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -22,37 +23,43 @@ export default function useCart() {
   const [cart, setCart] = useState([]);
   const [cartPrice, setCartPrice] = useState(0);
   const [cartSubPrice, setCartSubPrice] = useState(0);
+  const [cartCheckedPrice, setCheckedCartPrice] = useState(0);
+  const [cartCheckedSubPrice, setCheckedCartSubPrice] = useState(0);
   const [error, setError] = useState({});
   const [shipPrice, setShipPrice] = useState(30000);
-
   const navigate = useNavigate();
   const location = useLocation();
+  const [isChange, setIsChange] = useState(false);
+  const [deleteList, setDeleteList] = useState([]);
+  const [newCart, setNewCart] = useState([]);
 
   useEffect(() => {
-    let cartPrice = cart
-      .filter((item) => item?.checked)
-      .reduce((init, item) => init + item.quantity * item.newPrice, 0);
+    if (cart?.length) {
+      let cartPrice = cart.reduce(
+        (init, item) => init + item.quantity * item.newPrice,
+        0
+      );
 
-    setCartSubPrice(cartPrice);
-    setCartPrice(cartPrice + shipPrice);
+      let cartPriceChecked = cart
+        .filter((item) => item?.checked)
+        .reduce((init, item) => init + item.quantity * item.newPrice, 0);
+      setCheckedCartPrice(cartPriceChecked + shipPrice);
+      setCheckedCartSubPrice(cartPriceChecked);
+      setCartSubPrice(cartPrice);
+      setCartPrice(cartPrice + shipPrice);
+    }
   }, [cart]);
 
   useEffect(() => {
-    console.log(fetch_cart);
     if (fetch_cart.length) {
-      let cartPrice = fetch_cart
-        .filter((item) => item?.checked)
-        .reduce((init, item) => init + item.quantity * item.newPrice, 0);
-
-      setCartSubPrice(cartPrice);
-      setCartPrice(cartPrice + shipPrice);
-
       setCart(fetch_cart);
     }
   }, [fetch_cart]);
 
   useEffect(() => {
-    onFetchCart(loginedUser);
+    if (loginedUser) {
+      onFetchCart(loginedUser);
+    }
   }, [location]);
 
   const [isToast, setIsToast] = useState({
@@ -60,10 +67,6 @@ export default function useCart() {
     value: false,
     body: "",
   });
-
-  useEffect(() => {
-    console.log(isToast);
-  }, [isToast]);
 
   const resetToast = () => {
     setIsToast({
@@ -87,19 +90,16 @@ export default function useCart() {
 
   const updateSuccess = async () => {
     await onFetchCart(loginedUser);
+
     setIsToast({
       position: "top-center",
       style: "success",
       value: true,
-      body: "Cập nhật sản phẩm vào giỏ thành công",
+      body: "Cập nhật giỏ hàng thành công",
     });
   };
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(loginedUser);
-  }, [loginedUser]);
 
   useEffect(() => {
     if (add_cart_status == "succeeded") {
@@ -119,6 +119,7 @@ export default function useCart() {
 
     return () => {
       dispatch(resetUpdateCartStatus());
+      setIsChange(false);
       resetToast();
     };
   }, [update_cart_status]);
@@ -127,7 +128,15 @@ export default function useCart() {
     const cartChecked = cart.some((item) => item?.checked);
 
     if (cartChecked) {
-      await dispatch(updateCart(cart));
+      if (loginedUser) {
+        await dispatch(
+          updateCart({
+            cart: cart,
+          })
+        );
+      } else {
+        localStorage.setItem("cart", JSON.stringify(cart));
+      }
       setError({});
       navigate("/thanh-toan");
     } else {
@@ -173,9 +182,41 @@ export default function useCart() {
         window.location.href = "/";
       }
     } else {
-      window.location.href = "/";
+      let copyCart = [...cart];
+      const existingProductIndex = cart.findIndex(
+        (product) => product.id === item.id
+      );
+
+      if (existingProductIndex !== -1) {
+        const updatedCart = cart.map((item, index) => {
+          if (index == existingProductIndex) {
+            return {
+              ...item,
+              quantity: item.quantity + 1,
+            };
+          }
+          return item;
+        });
+
+        dispatch(addLocalCart(updatedCart));
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+      } else {
+        dispatch(addLocalCart([...cart, { ...item, quantity: 1 }]));
+        localStorage.setItem(
+          "cart",
+          JSON.stringify([...cart, { ...item, quantity: 1 }])
+        );
+      }
     }
   };
+
+  useEffect(() => {
+    if (!loginedUser) {
+      const savedCart = JSON.parse(localStorage.getItem("cart")) ?? [];
+
+      setCart(savedCart);
+    }
+  }, []);
 
   const handleUpQuantity = (id) => {
     const newCart = cart.map((value) => {
@@ -187,7 +228,8 @@ export default function useCart() {
       }
       return value;
     });
-
+    setIsChange(true);
+    setNewCart(newCart);
     setCart(newCart);
   };
 
@@ -201,7 +243,8 @@ export default function useCart() {
       }
       return value;
     });
-
+    setIsChange(true);
+    setNewCart(newCart);
     setCart(newCart);
   };
 
@@ -215,7 +258,8 @@ export default function useCart() {
       }
       return value;
     });
-
+    setIsChange(true);
+    setNewCart(newCart);
     setCart(newCart);
   };
 
@@ -226,7 +270,7 @@ export default function useCart() {
         checked: checked,
       };
     });
-
+    setNewCart(newCart);
     setCart(newCart);
   };
 
@@ -240,8 +284,68 @@ export default function useCart() {
       }
       return value;
     });
-
+    console.log(newCart);
+    setNewCart(newCart);
     setCart(newCart);
+  };
+
+  const handleUpdateCart = () => {
+    if (loginedUser) {
+      if (isChange) {
+        if (deleteList.length && newCart.length) {
+          dispatch(
+            updateCart({
+              cart: newCart,
+              deleteList: deleteList,
+            })
+          );
+        } else if (deleteList.length && !newCart.length) {
+          dispatch(
+            updateCart({
+              deleteList: deleteList,
+            })
+          );
+        } else if (!deleteList.length && newCart.length) {
+          dispatch(
+            updateCart({
+              cart: newCart,
+            })
+          );
+        }
+      } else {
+        setError({
+          msg: "Giỏ hàng không có thay đổi nào",
+        });
+      }
+    } else {
+      if (isChange) {
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        dispatch(addLocalCart(newCart));
+        setIsToast({
+          position: "top-center",
+          style: "success",
+          value: true,
+          body: "Cập nhật giỏ hàng thành công",
+        });
+      } else {
+        setError({
+          msg: "Giỏ hàng không có thay đổi nào",
+        });
+      }
+    }
+  };
+
+  const handleDeleteCart = (id) => {
+    setIsChange(true);
+    if (!deleteList.length) {
+      setDeleteList([id]);
+    } else {
+      if (!deleteList.includes(id)) {
+        setDeleteList([...deleteList, id]);
+      }
+    }
+    setNewCart(cart.filter((item) => item.id !== id));
+    setCart(cart.filter((item) => item.id !== id));
   };
 
   return {
@@ -258,5 +362,9 @@ export default function useCart() {
     handleAllCheck,
     handleCheckById,
     shipPrice,
+    cartCheckedPrice,
+    cartCheckedSubPrice,
+    handleUpdateCart,
+    handleDeleteCart,
   };
 }

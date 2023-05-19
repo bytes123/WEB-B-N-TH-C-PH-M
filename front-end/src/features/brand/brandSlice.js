@@ -5,6 +5,7 @@ import {
   ADD_BRAND_URL,
   UPDATE_BRAND_URL,
   DELETE_BRAND_URL,
+  SEARCH_BRAND_URL,
 } from "../../static/API";
 import axios from "axios";
 
@@ -14,6 +15,9 @@ const initialState = {
   add_status: "",
   update_status: "",
   delete_status: "",
+  search_status: "",
+  fetch_search_status: "",
+  search_brands: [],
 };
 
 export const fetchBrands = createAsyncThunk("brand/get_brand", async () => {
@@ -39,6 +43,25 @@ export const deleteBrand = createAsyncThunk("brand/delete", async (data) => {
   return response.data;
 });
 
+export const searchBrand = createAsyncThunk("brand/search", async (value) => {
+  const response = await axios.post(SEARCH_BRAND_URL, {
+    value: value,
+  });
+
+  return response.data;
+});
+
+export const fetchSearchBrand = createAsyncThunk(
+  "user/fetch_search",
+  async (value) => {
+    const response = await axios.post(SEARCH_BRAND_URL, {
+      value: value,
+    });
+
+    return response.data;
+  }
+);
+
 const brandSlice = createSlice({
   name: "brand",
   initialState,
@@ -58,6 +81,9 @@ const brandSlice = createSlice({
     resetError(state, action) {
       delete state.errors[action.payload];
     },
+    resetSearchStatus(state, action) {
+      state.search_status = "";
+    },
   },
   extraReducers(builder) {
     builder
@@ -74,8 +100,18 @@ const brandSlice = createSlice({
         state.add_status = "loading";
       })
       .addCase(addBrand.fulfilled, (state, action) => {
-        if (action.payload == "CATEGORY_EXISTS") {
-          state.errors.name = "Tên danh mục đã tồn tại";
+        if (action.payload.includes("BRAND_EXISTS")) {
+          state.errors.name = "Tên nhãn hàng đã tồn tại";
+          state.update_status = "failed";
+        }
+
+        if (action.payload.includes("EMAIL_EXISTS")) {
+          state.errors.email = "Email đã tồn tại";
+          state.add_status = "failed";
+        }
+
+        if (action.payload.includes("PHONENUMBER_EXISTS")) {
+          state.errors.phone_number = "Số điện thoại đã tồn tại";
           state.add_status = "failed";
         }
 
@@ -91,8 +127,18 @@ const brandSlice = createSlice({
         state.update_status = "loading";
       })
       .addCase(updateBrand.fulfilled, (state, action) => {
-        if (action.payload == "CATEGORY_EXISTS") {
-          state.errors.name = "Tên danh mục đã tồn tại";
+        if (action.payload.includes("BRAND_EXISTS")) {
+          state.errors.name = "Tên nhãn hàng đã tồn tại";
+          state.update_status = "failed";
+        }
+
+        if (action.payload.includes("EMAIL_EXISTS")) {
+          state.errors.email = "Email đã tồn tại";
+          state.update_status = "failed";
+        }
+
+        if (action.payload.includes("PHONENUMBER_EXISTS")) {
+          state.errors.phone_number = "Số điện thoại đã tồn tại";
           state.update_status = "failed";
         }
 
@@ -113,6 +159,26 @@ const brandSlice = createSlice({
       .addCase(deleteBrand.rejected, (state, action) => {
         state.delete_status = "failed";
         console.log(action.error);
+      })
+      .addCase(searchBrand.pending, (state, action) => {
+        state.search_status = "loading";
+      })
+      .addCase(searchBrand.fulfilled, (state, action) => {
+        state.search_status = "succeeded";
+        state.search_brands = action.payload;
+      })
+      .addCase(searchBrand.rejected, (state, action) => {
+        state.search_status = "failed";
+      })
+      .addCase(fetchSearchBrand.pending, (state, action) => {
+        state.fetch_search_status = "loading";
+      })
+      .addCase(fetchSearchBrand.fulfilled, (state, action) => {
+        state.fetch_search_status = "succeeded";
+        state.search_brands = action.payload;
+      })
+      .addCase(fetchSearchBrand.rejected, (state, action) => {
+        state.fetch_search_status = "failed";
       });
   },
 });
@@ -122,6 +188,9 @@ export const getAddStatus = (state) => state.brand.add_status;
 export const getUpdateStatus = (state) => state.brand.update_status;
 export const getDeleteStatus = (state) => state.brand.delete_status;
 export const getBrands = (state) => state.brand.brands;
+export const getSearchStatus = (state) => state.brand.search_status;
+export const getSearchBrand = (state) => state.brand.search_brands;
+export const getFetchSearchStatus = (state) => state.brand.fetch_search_status;
 
 export const {
   resetAddStatus,
@@ -129,5 +198,6 @@ export const {
   resetDeleteStatus,
   resetAllErrors,
   resetError,
+  resetSearchStatus,
 } = brandSlice.actions;
 export default brandSlice.reducer;

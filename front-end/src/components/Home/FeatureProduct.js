@@ -6,7 +6,7 @@ import {
   getTopProducts,
 } from "../../features/product/productSlice";
 import { useSelector, useDispatch } from "react-redux";
-export default function FeatureProduct({ type, title, categories, items }) {
+export default function FeatureProduct({ type, title, categories, gridCol }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const dispatch = useDispatch();
   const top_products = useSelector(getTopProducts);

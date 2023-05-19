@@ -17,7 +17,7 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
   return (
     <div className="header_cart-list p-5 border-1 rounded-xl bg-white absolute top-[100%] right-0 font-quicksand">
       <ul className="mt-2 pb-5 border-b-2 max-h-[300px] overflow-y-auto">
-        {cart.length
+        {cart?.length
           ? cart.map((item) => (
               <li className="mb-5">
                 <div className="flex">
@@ -25,7 +25,7 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
                     <img
                       src={
                         item.image1 !== "default.jpg"
-                          ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
+                          ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
                           : `http://localhost:8000/resources/product/${item.image1}`
                       }
                       alt=""

@@ -209,12 +209,6 @@ export default function MainCategory() {
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm danh mục</h3>
               <AddForm />
-              {/* <p className="admin_catalog-add-content m-5">
-            Chọn 1 tệp Excel bao gồm danh sách danh mục
-          </p>
-          <div className="catalog_upload-wrapper">
-            <UploadFileExcel dataCheck={catalogDataCheck} />
-          </div> */}
             </div>
           </Section>
         </>

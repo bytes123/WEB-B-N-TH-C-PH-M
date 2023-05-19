@@ -19,6 +19,13 @@ let categoryPlaceHolder = {
   name: "* Tên danh mục",
 };
 
+let brandPlaceHolder = {
+  name: "* Tên nhãn hàng",
+  phone_number: "* Số điện thoại",
+  email: "* Email",
+  address: "* Địa chỉ",
+};
+
 let productPlaceHolder = {
   name: "* Tên sản phẩm",
 };
@@ -36,6 +43,13 @@ const rulesCategory = {
   name: [{ required: true, message: "Vui lòng nhập tên danh mục!" }],
   category_id: [{ required: true, message: "Vui lòng chọn danh mục!" }],
   brand_id: [{ required: true, message: "Vui lòng chọn nhà sãn xuất!" }],
+};
+
+const rulesBrand = {
+  name: [{ required: true, message: "Vui lòng nhập tên nhãn hàng" }],
+  phone_number: [{ required: true, message: "Vui lòng nhập số điện thoại!" }],
+  email: [{ required: true, message: "Vui lòng nhập Email!" }],
+  address: [{ required: true, message: "Vui lòng nhập địa chỉ!" }],
 };
 
 const rulesArea = {
@@ -128,4 +142,6 @@ export {
   rulesArea,
   rulesDetailProduct,
   detailProductPlaceHolder,
+  rulesBrand,
+  brandPlaceHolder,
 };

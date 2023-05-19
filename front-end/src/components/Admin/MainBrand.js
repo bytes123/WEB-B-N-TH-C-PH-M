@@ -2,33 +2,34 @@ import React from "react";
 import Section from "../../utils/components/Section";
 import UploadFileExcel from "../../utils/components/UploadFileExcel";
 import useAdminController from "../../utils/hooks/Admin/useAdminController";
-import { Table } from "antd";
+import { Table, Button } from "antd";
 import ConfirmDialog from "../../utils/components/ConfirmDialog";
-import {
-  brandListData,
-  brandTemplateData,
-  brandDataCheck,
-} from "../../static/AdminData";
 import { Input } from "antd";
-import { FaExchangeAlt } from "react-icons/fa";
-
-import AU from "../Admin/AU";
 import useValidateForm from "../../utils/hooks/Admin/useValidateForm";
 import validateBrand from "../../utils/validates/validateBrand";
-import { brandForm } from "../../static/Admin/Forms";
+import AddForm from "./Brand/AddForm";
+import UpdateForm from "./Brand/UpdateForm";
+import useAdminBrand from "../../utils/hooks/Admin/UseAdminBrand";
+import Toast from "../../utils/components/Toast";
+import Time from "../../utils/components/Time";
+import { resetAllErrors } from "../../features/brand/brandSlice";
+import Spinner from "../../utils/components/Spinner";
+import { useDispatch } from "react-redux";
 
 export default function MainBrand() {
-  const brandData = React.useMemo(() => brandListData);
+  const dispatch = useDispatch();
+  const { Search } = Input;
   const addData = () => {};
-  const {
-    values,
-    handleChangeValue,
-    handleSetValue,
-    submit,
-    errors,
-    clearErrors,
-    clearValues,
-  } = useValidateForm(brandTemplateData, addData, validateBrand);
+  const { values, handleChangeValue, handleSetValue } =
+    useValidateForm(addData);
+
+  const clearUpdate = async () => {
+    dispatch(resetAllErrors());
+  };
+
+  const clearAdd = async () => {
+    dispatch(resetAllErrors());
+  };
 
   const {
     isDelete,
@@ -40,66 +41,97 @@ export default function MainBrand() {
     handleCloseDelete,
     handleOpenAdd,
     handleCloseAdd,
+    idDelete,
   } = useAdminController(
     handleChangeValue,
     handleSetValue,
-    clearErrors,
-    clearValues
+    clearUpdate,
+    clearAdd
   );
+
+  const {
+    brands,
+    onSearch,
+    isLoadingSearch,
+    isSearch,
+    isLoadingAllBrand,
+    handleOutSearch,
+    isToast,
+    handleConfirmDelete,
+    isLoading,
+  } = useAdminBrand(handleCloseAdd, handleCloseEdit, handleCloseDelete);
 
   const columns = [
     {
       title: "STT",
-      key: "brand_index",
+      key: "index",
       render: (data, arr, index) => index + 1,
     },
     {
-      title: "Tên hãng",
-      dataIndex: "brand_name",
-      key: "brand_name",
+      title: "Tên nhãn hàng",
+      dataIndex: "name",
+      key: "name",
       render: (data, arr, index) => <p>{data}</p>,
     },
     {
-      title: "Số điện thoại hãng",
-      dataIndex: "brand_phone_number",
-      key: "brand_phone_number",
+      title: "Số điện thoại ",
+      dataIndex: "phone_number",
+      key: "phone_number",
       render: (data, arr, index) => <p>{data}</p>,
     },
     {
-      title: "Email hãng",
-      dataIndex: "brand_email",
-      key: "brand_email",
+      title: "Email ",
+      dataIndex: "email",
+      key: "email",
       render: (data, arr, index) => <p>{data}</p>,
     },
     {
-      title: "Địa chỉ hãng",
-      dataIndex: "brand_address",
-      key: "brand_address",
+      title: "Địa chỉ ",
+      dataIndex: "address",
+      key: "address",
       render: (data, arr, index) => <p>{data}</p>,
     },
     {
       title: "Ngày tạo",
-      dataIndex: "brand_created_date",
-      key: "brand_created_date",
-      render: (data, arr, index) => <p>{data}</p>,
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (data, arr, index) => (data ? <Time timestamp={data} /> : ""),
+    },
+    {
+      title: "Ngày cập nhật",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (data, arr, index) =>
+        data ? <Time timestamp={data} /> : "Chưa cập nhật lần nào",
     },
 
     {
       title: "Hành động",
-      dataIndex: "action",
-      key: "action",
+      dataIndex: "id",
+      key: "id",
       render: (data, arr, index) => (
         <div className="flex">
           <button
             className="edit-btn mr-5"
             name="edit-btn"
-            onClick={() => handleOpenEdit(arr, index)}
+            onClick={() => handleOpenEdit(arr)}
           >
             Sửa
           </button>
-          <button className="delete-btn" onClick={() => handleOpenDelete(arr)}>
+          <button className="delete-btn" onClick={() => handleOpenDelete(data)}>
             Xóa
           </button>
+          {isDelete ? (
+            <ConfirmDialog
+              active={true}
+              onConfirm={() => handleConfirmDelete(idDelete)}
+              onClose={handleCloseDelete}
+              header={"Bạn có chắc muốn xóa cột này ?"}
+              content={"Bạn sẽ không thể phục hồi sau khi xóa cột!"}
+            />
+          ) : (
+            ""
+          )}
         </div>
       ),
     },
@@ -107,6 +139,13 @@ export default function MainBrand() {
 
   return (
     <div className="main_brand mx-2">
+      <Spinner isLoading={isLoading} />
+      <Toast
+        style={isToast?.style}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
+      />
+
       {isDelete ? (
         <ConfirmDialog
           active={true}
@@ -117,18 +156,7 @@ export default function MainBrand() {
       ) : (
         ""
       )}
-      <h1 className="text-4xl font-bold m-5">Quản lý hãng</h1>
-      {/* <Section span={24}>
-        <div className="wrapper p-8 ">
-          <h3 className="text-2xl font-bold">Thêm hãng</h3>
-          <p className="admin_catalog-add-content m-5">
-            Chọn 1 tệp Excel bao gồm danh sách hãng
-          </p>
-          <div className="catalog_upload-wrapper">
-            <UploadFileExcel dataCheck={brandDataCheck} />
-          </div>
-        </div>
-      </Section> */}
+      <h1 className="text-4xl font-bold m-5">Quản lý nhãn hàng</h1>
 
       {isAdd && (
         <>
@@ -142,16 +170,8 @@ export default function MainBrand() {
           </Section>
           <Section span={24}>
             <div className="wrapper p-8 ">
-              <h3 className="text-2xl font-bold">Thêm hãng</h3>
-              <AU
-                list={brandForm}
-                dataInput={values}
-                handleChangeDataInput={handleChangeValue}
-                errors={errors}
-                onSubmit={submit}
-                label="Thêm"
-                className={"confirm-btn"}
-              />
+              <h3 className="text-2xl font-bold">Thêm nhãn hàng</h3>
+              <AddForm />
             </div>
           </Section>
         </>
@@ -169,16 +189,8 @@ export default function MainBrand() {
           </Section>
           <Section span={24}>
             <div className="wrapper p-8 ">
-              <h3 className="text-2xl font-bold">Sửa hãng</h3>
-              <AU
-                list={brandForm}
-                dataInput={values}
-                handleChangeDataInput={handleChangeValue}
-                errors={errors}
-                onSubmit={submit}
-                label="Sửa"
-                className={"edit-btn"}
-              />
+              <h3 className="text-2xl font-bold">Cập nhật nhãn hàng</h3>
+              <UpdateForm updateValues={values} />
             </div>
           </Section>
         </>
@@ -191,17 +203,41 @@ export default function MainBrand() {
               className="form-btn confirm-btn p-4 mr-5 text-right "
               onClick={handleOpenAdd}
             >
-              Thêm tài khoản
+              Thêm nhãn hàng
             </button>
           </Section>
           <Section span={24}>
             <div className="wrapper p-8">
-              <h3 className="text-2xl font-bold mb-5">Danh sách hãng</h3>
+              <h3 className="text-2xl font-bold mb-5">Danh sách nhãn hàng</h3>
+              <Search
+                className="w-[400px]  my-5 "
+                placeholder="Nhập tên nhãn hàng để tìm kiếm"
+                enterButton="Tìm kiếm"
+                size="large"
+                onSearch={onSearch}
+                loading={isLoadingSearch}
+              />
+
+              {isSearch ? (
+                <div>
+                  <Button
+                    className="mb-5"
+                    type="primary"
+                    danger
+                    loading={isLoadingAllBrand}
+                    onClick={!isLoadingAllBrand && handleOutSearch}
+                  >
+                    Quay lại tất cả
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
               <div className="table-wrapper">
                 <Table
                   bordered={true}
                   columns={columns}
-                  dataSource={brandData}
+                  dataSource={brands}
                   className="text-sm"
                 />
               </div>

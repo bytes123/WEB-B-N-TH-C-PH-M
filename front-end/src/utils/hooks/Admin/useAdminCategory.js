@@ -126,7 +126,7 @@ export default function useAdminCategory(
         deleteSuccess();
       };
       reset();
-    } else if (currentSearch && update_status == "succeeded") {
+    } else if (currentSearch && delete_status == "succeeded") {
       const reset = async () => {
         await dispatch(fetchSearchCategory(currentSearch)).unwrap();
         updateSuccess();

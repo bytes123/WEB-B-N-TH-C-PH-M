@@ -214,12 +214,16 @@ export default function ChatForm({
                         >
                           {item.body}
                         </p>
-                        <Time
-                          className={
-                            "absolute bottom-[-6px] text-white text-sm font-semibold"
-                          }
-                          timestamp={item.create_date}
-                        />
+                        {item?.createdAt ? (
+                          <Time
+                            className={
+                              "absolute bottom-[-6px] text-white text-sm font-semibold"
+                            }
+                            timestamp={item.createdAt}
+                          />
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </li>
                   ))}

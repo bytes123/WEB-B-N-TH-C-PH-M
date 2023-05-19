@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "antd";
 export default function useAdminController(
-  handleChangeValue,
-  handleSetValue,
+  handleChangeValue = () => {},
+  handleSetValue = () => {},
   clearUpdate = () => {},
   clearAdd = () => {}
 ) {

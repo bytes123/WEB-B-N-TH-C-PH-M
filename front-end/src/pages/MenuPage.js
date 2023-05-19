@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MenuList from "../components/Home/MenuList";
-import BannerHighLand from "../components/Banner/BannerHighLand";
+import Banner1 from "../components/Banner/Banner1";
 import { useNavigate } from "react-router-dom";
 
 export default function MenuPage() {
@@ -13,7 +13,7 @@ export default function MenuPage() {
 
   return (
     <div className="">
-      <BannerHighLand />
+      <Banner1 />
       <MenuList />
     </div>
   );

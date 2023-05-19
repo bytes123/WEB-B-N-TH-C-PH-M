@@ -109,8 +109,9 @@ export default function useAdminDetailProduct(
   }, []);
 
   useEffect(() => {
-    if (add_status == "succeeded") {
+    if (add_status == "loading") {
       setIsLoading(true);
+    } else if (add_status == "succeeded") {
       const reset = async () => {
         await dispatch(fetchDetailProducts()).unwrap();
         setTimeout(() => {
@@ -121,7 +122,9 @@ export default function useAdminDetailProduct(
 
       reset();
     } else {
-      console.log("test");
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     }
 
     return () => {

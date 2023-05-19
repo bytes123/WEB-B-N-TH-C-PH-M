@@ -1,7 +1,7 @@
 .product_title-big {
   font-size: 3rem;
   font-weight: 700;
-  color: $header-selected-color;
+  color: $primary-color;
 }
 
 .product_img-single {
@@ -24,8 +24,8 @@
 }
 
 .product_size-box.active {
-  color: $header-active-color;
-  border-color: $header-active-color;
+  color: $primary-color;
+  border-color: $primary-color;
 }
 
 .current-price {

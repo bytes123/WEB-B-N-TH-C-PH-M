@@ -87,6 +87,7 @@ export default function Header({ className }) {
   }, [category_children]);
 
   useEffect(() => {
+    console.log(DesktopMenu);
     if (
       loginedUser &&
       loginedUser?.type_user?.some((item) => item.type_user_id == "admin")

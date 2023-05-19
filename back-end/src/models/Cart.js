@@ -22,11 +22,15 @@ var Cart = {
     return db.query(sql, [data], callback);
   },
   updateDetailCart: (data, callback) => {
-    console.log(data);
-
     let sql = "UPDATE detail_cart SET ? WHERE id = ?";
 
     return db.query(sql, [data, data.id], callback);
+  },
+  deleteDetailCart: (data, callback) => {
+    console.log(data);
+    let sql = "DELETE FROM detail_cart WHERE id = ?";
+
+    return db.query(sql, [data], callback);
   },
   updateQuantityDetailCart: (data, callback) => {
     let sql = "UPDATE detail_cart SET quantity = quantity + ? WHERE id = ?";
@@ -45,7 +49,7 @@ var Cart = {
     return db.query(sql, [data.detail_product_id, data.cart_id], callback);
   },
   getCart: (user_name, callback) => {
-    let sql = `SELECT dt.*,p.name,p.image1,FLOOR(dp.price-dp.price*dp.discount/100) as newPrice,ct.name category_name,dp.starpoint FROM cart c 
+    let sql = `SELECT dt.*,p.name,p.image1,FLOOR(dp.price-dp.price*dp.discount/100) as newPrice,ct.name category_name,p.id product_id,dp.starpoint FROM cart c 
       INNER JOIN detail_cart dt ON c.id = dt.cart_id 
       INNER JOIN detail_products dp ON dp.id = dt.detail_product_id 
       INNER JOIN products p ON p.id = dp.product_id 

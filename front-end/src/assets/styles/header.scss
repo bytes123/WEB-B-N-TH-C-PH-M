@@ -62,15 +62,15 @@
     color: $header-bar-color !important;
   }
   .ant-menu-submenu-active span {
-    color: $header-selected-color;
+    color: $primary-color;
   }
 
   .ant-menu-item-active span {
-    color: $header-active-color;
+    color: $primary-color;
   }
 
   .ant-menu-item.active span {
-    color: $header-active-color;
+    color: $primary-color;
   }
   .ant-menu {
     border-inline-end: 0 !important;
@@ -244,13 +244,13 @@
       }
 
       .menu_item-title:hover {
-        color: $header-menu-item-color;
+        color: $primary-color;
       }
       .menu_item-title {
         font-weight: 900;
         font-size: 20px;
         text-transform: uppercase;
-        color: $header-menu-item-color;
+        color: white;
       }
     }
 

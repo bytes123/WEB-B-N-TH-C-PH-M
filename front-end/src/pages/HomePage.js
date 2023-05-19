@@ -63,6 +63,7 @@ export default function HomePage() {
         title="Sản phẩm mới nhất"
         categories={categories}
         items={products}
+        gridCol={5}
       />
 
       <ContentSectionFirst />
@@ -70,6 +71,7 @@ export default function HomePage() {
         title="Sản phẩm bán chạy"
         categories={categories}
         items={products}
+        gridCol={5}
       />
     </div>
   );

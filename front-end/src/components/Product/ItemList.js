@@ -4,12 +4,17 @@ import { Link } from "react-router-dom";
 import StarpointSection from "../../components/Utils/StarpointSection";
 import useCart from "../../utils/hooks/useCart";
 
-export default function ItemList({ currentItems, isHiddenBtn, className }) {
+export default function ItemList({
+  currentItems,
+  isHiddenBtn,
+  className,
+  gridCol = 5,
+}) {
   const { handleAddCart } = useCart();
 
   return (
     <div className={`item_list-wrapper  ${className}`}>
-      <ul className="item_list grid lg:grid-cols-5 grid-cols-2 gap-10">
+      <ul className={`item_list grid lg:grid-cols-4 grid-cols-2 gap-10`}>
         {currentItems.map((item) => (
           <li className="item">
             <Link to={`/thuc-don/${item.category_id}/${item.product_id}`}>
@@ -18,10 +23,10 @@ export default function ItemList({ currentItems, isHiddenBtn, className }) {
               </div>
               <div className="item_img-wrapper ">
                 <img
-                  className="h-[300px]"
+                  className="w-[300px] h-[250px]"
                   src={
                     item.image1 !== "default.jpg"
-                      ? `http://localhost:8000/resources/${item.product_id}/${item.image1}`
+                      ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
                       : `http://localhost:8000/resources/product/${item.image1}`
                   }
                   alt=""

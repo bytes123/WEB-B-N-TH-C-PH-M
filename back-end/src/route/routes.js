@@ -93,6 +93,15 @@ module.exports = function (app) {
   // API BILL
   app.route("/get-bill").get(billCrtl.getBill);
   app.route("/update-statement-bill").post(billCrtl.updateStatementBill);
+  app.route("/search-bill").post(billCrtl.searchBill);
+  app.route("/get-bill-by-username").post(billCrtl.getBillByUserName);
+  app.route("/get-detail_bill").post(billCrtl.getDetailBill);
+  app.route("/update-payed-bill").post(billCrtl.updatePayedBill);
+  app.route("/sort-bill").post(billCrtl.getSortBill);
+
+  // API CHECKOUT
+
+  app.route("/checkout").post(billCrtl.checkout);
 
   // API DANH MỤC
   app.route("/category").get(categoryCtrl.get);
@@ -104,6 +113,10 @@ module.exports = function (app) {
 
   // API NHÀ SX
   app.route("/brand").get(brandCrtl.get);
+  app.route("/add-brand").post(brandCrtl.addBrand);
+  app.route("/update-brand").post(brandCrtl.updateBrand);
+  app.route("/delete-brand").post(brandCrtl.deleteBrand);
+  app.route("/search-brand").post(brandCrtl.searchBrand);
 
   // API USER
   app.route("/users").get(userCrtl.getAllUser);

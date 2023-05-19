@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useCart from "../../utils/hooks/useCart";
 import { AiOutlineHeart, AiOutlineShoppingCart } from "react-icons/ai";
 import HeaderCart from "./HeaderCart";
 export default function HeaderSection() {
-  const { cart, onFetchCart, cartPrice } = useCart();
+  const { cart, onFetchCart, cartSubPrice } = useCart();
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
 
   return (
     <div className="header_section flex mr-5  block ">
@@ -23,7 +27,7 @@ export default function HeaderSection() {
         <HeaderCart
           cart={cart}
           onFetchCart={onFetchCart}
-          cartPrice={cartPrice}
+          cartPrice={cartSubPrice}
         />
       </div>
     </div>

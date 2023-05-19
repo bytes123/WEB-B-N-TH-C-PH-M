@@ -41,6 +41,7 @@ const BRAND_URL = "http://localhost:8000/brand";
 const ADD_BRAND_URL = "http://localhost:8000/add-brand";
 const UPDATE_BRAND_URL = "http://localhost:8000/update-brand";
 const DELETE_BRAND_URL = "http://localhost:8000/delete-brand";
+const SEARCH_BRAND_URL = "http://localhost:8000/search-brand";
 
 const MYSQL_LOGIN_URL = "http://localhost:8000/mysql-login";
 const GET_TABLE_URL = "http://localhost:8000/get_table";
@@ -58,7 +59,12 @@ const GET_CART_URL = "http://localhost:8000/get-cart";
 
 const GET_BILL_URL = "http://localhost:8000/get-bill";
 const UPDATE_STATEMENT_BILL_URL = "http://localhost:8000/update-statement-bill";
-
+const UPDATE_PAYED_BILL_URL = "http://localhost:8000/update-payed-bill";
+const SEARCH_BILL_URL = "http://localhost:8000/search-bill";
+const CHECKOUT_URL = "http://localhost:8000/checkout";
+const GET_BILL_USER_NAME_URL = "http://localhost:8000/get-bill-by-username";
+const GET_DETAIL_BILL = "http://localhost:8000/get-detail_bill";
+const SORT_BILL_URL = "http://localhost:8000/sort-bill";
 export {
   LOGIN_URL,
   SIGNUP_URL,
@@ -109,4 +115,11 @@ export {
   UPDATE_CART_URL,
   GET_BILL_URL,
   UPDATE_STATEMENT_BILL_URL,
+  SEARCH_BILL_URL,
+  CHECKOUT_URL,
+  GET_BILL_USER_NAME_URL,
+  GET_DETAIL_BILL,
+  UPDATE_PAYED_BILL_URL,
+  SORT_BILL_URL,
+  SEARCH_BRAND_URL,
 };

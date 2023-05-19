@@ -38,7 +38,7 @@ export default function UpdateForm({ updateValues }) {
 
     if (e.target.value == updateValues.name) {
       setErrors({
-        name: "Vui lòng nhập danh mục khác tại khoản hiện tại",
+        name: "Vui lòng nhập danh mục khác danh mục hiện tại",
       });
     } else {
       setNewValues({
@@ -108,7 +108,7 @@ export default function UpdateForm({ updateValues }) {
                     : "bg-red-600 hover:bg-red-800"
                 }`}
               >
-                Cập nhật tài khoản
+                Cập nhật danh mục
               </Button>
             </Form.Item>
           </Form>

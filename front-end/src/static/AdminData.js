@@ -97,12 +97,12 @@ const sideBarList = [
         text: "Quản lý thống kê",
       },
 
-      {
-        key: 9,
-        link: "quan-ly-chi-nhanh",
-        icon: <TbBrandAirtable />,
-        text: "Phân tán chi nhánh",
-      },
+      // {
+      //   key: 9,
+      //   link: "quan-ly-chi-nhanh",
+      //   icon: <TbBrandAirtable />,
+      //   text: "Phân tán chi nhánh",
+      // },
     ],
   },
 ];

@@ -93,19 +93,28 @@ module.exports = {
   updateCart: (req, result) => {
     const data = req.body;
 
-    data.forEach((item) => {
-      const detail_cart = {
-        id: item.id,
-        cart_id: item.cart_id,
-        detail_product_id: item.detail_product_id,
-        quantity: item.quantity,
-        checked: item.checked,
-      };
+    if (data?.cart?.length) {
+      data.cart.forEach((item) => {
+        const detail_cart = {
+          id: item.id,
+          cart_id: item.cart_id,
+          detail_product_id: item.detail_product_id,
+          quantity: item.quantity,
+          checked: item.checked,
+        };
 
-      Cart.updateDetailCart(detail_cart, (err, res) => {
-        if (err) return result.status(500).json("UPDATE_FAILED");
+        Cart.updateDetailCart(detail_cart, (err, res) => {
+          if (err) return result.status(500).json("UPDATE_FAILED");
+        });
       });
-    });
+    }
+    if (data?.deleteList?.length) {
+      data.deleteList.forEach((item) => {
+        Cart.deleteDetailCart(item, (err, res) => {
+          if (err) return result.status(500).json("UPDATE_FAILED");
+        });
+      });
+    }
 
     return result.status(200).json("UPDATE_SUCCESS");
   },
