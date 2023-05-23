@@ -3,17 +3,20 @@ import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 
 export default function Quantity({
   disabled = false,
-  inputNumberValue,
+  value,
   handleChangeInputNumber,
   handleUpInputNumber,
   handleDownInputNumber,
+  className = "",
 }) {
   return (
-    <div className="m-auto flex items-center justify-center max-w-[80px] rounded-md  border-active">
+    <div
+      className={`${className} flex items-center max-w-[60px] rounded-md  border-active`}
+    >
       <input
         type="number"
-        className="outline-none text-center text-brand border-none w-[50px] rounded-md py-5 px-2 font-mono text-3xl"
-        value={inputNumberValue}
+        className="outline-none text-center  text-brand border-none w-full rounded-md py-5 font-mono text-3xl"
+        value={value}
         onChange={handleChangeInputNumber && handleChangeInputNumber}
       />
       {!disabled ? (

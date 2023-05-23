@@ -28,13 +28,13 @@ export default function useAdminBrand(
   const add_status = useSelector(getAddStatus);
   const update_status = useSelector(getUpdateStatus);
   const delete_status = useSelector(getDeleteStatus);
-  const [currentSearch, setCurrentSearch] = useState();
   const [brands, setBrands] = useState([]);
+  const [currentSearch, setCurrentSearch] = useState();
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
-  const location = useLocation();
   const [isLoadingAllBrand, setIsLoadingAllBrand] = useState(false);
+  const location = useLocation();
   const search_brand = useSelector(getSearchBrand);
   const search_status = useSelector(getSearchStatus);
   const fetch_search_status = useSelector(getFetchSearchStatus);

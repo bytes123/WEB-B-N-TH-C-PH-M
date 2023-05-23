@@ -38,7 +38,7 @@ export default function Table({
         </Tr>
       </Thead>
       <Tbody>
-        {list?.length &&
+        {list?.length ? (
           list.map((item) => (
             <Tr className="p-5">
               <Td className=" flex justify-center  m-10 items-center">
@@ -65,7 +65,7 @@ export default function Table({
                 </section>
               </Td>
               <Td className="text-center">
-                <span className="text-4xl font-bold text-gray-500">
+                <span className="text-3xl font-bold text-gray-500">
                   {item.newPrice.toLocaleString("it-IT", {
                     style: "currency",
                     currency: "VND",
@@ -73,7 +73,7 @@ export default function Table({
                 </span>
               </Td>
               <Td className="text-brand ">
-                <Quantity disabled={true} inputNumberValue={item.quantity} />
+                <Quantity disabled={true} value={item.quantity} />
               </Td>
               <Td className="text-center">
                 <span className="text-3xl font-bold text-brand">
@@ -84,7 +84,10 @@ export default function Table({
                 </span>
               </Td>
             </Tr>
-          ))}
+          ))
+        ) : (
+          <p className="font-quicksand text-2xl mt-5">Giỏ hàng rỗng</p>
+        )}
       </Tbody>
     </MainTable>
   );

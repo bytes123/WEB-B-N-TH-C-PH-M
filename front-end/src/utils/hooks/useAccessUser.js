@@ -20,6 +20,8 @@ const handleLogOut = async () => {
   if (Cookies.get("user")) {
     await Cookies.remove("user");
     window.location.href = "/";
+  } else {
+    window.location.href = "/";
   }
 };
 

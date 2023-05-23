@@ -28,6 +28,7 @@ let brandPlaceHolder = {
 
 let productPlaceHolder = {
   name: "* Tên sản phẩm",
+  introduction: "Lời giới thiệu",
 };
 
 const validateConfirmPassword = ({ getFieldValue }) => ({
@@ -59,6 +60,7 @@ const rulesArea = {
 
 const rulesProduct = {
   name: [{ required: true, message: "Vui lòng nhập tên sản phẩm!" }],
+  branch_id: [{ required: true, message: "Vui lòng chọn chi nhánh!" }],
   category_id: [{ required: true, message: "Vui lòng chọn danh mục!" }],
   brand_id: [{ required: true, message: "Vui lòng chọn nhà sãn xuất!" }],
 };
@@ -85,6 +87,20 @@ const rulesDetailProduct = {
         }
         if (value > 100) {
           return Promise.reject("Vui lòng nhập giảm giá tối đa là 100");
+        }
+        return Promise.resolve();
+      },
+    }),
+  ],
+  quantity: [
+    {
+      pattern: "^([-]?[1-9][0-9]*|0)$",
+      message: "Vui lòng nhập tồn kho là số hợp lệ!",
+    },
+    () => ({
+      validator(_, value) {
+        if (value < 0) {
+          return Promise.reject("Vui lòng nhập tồn kho tối thiểu là 0");
         }
         return Promise.resolve();
       },

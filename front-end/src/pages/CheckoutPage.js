@@ -8,8 +8,10 @@ import CheckoutInfor from "../components/Checkout/CheckoutInfor";
 import CheckoutBill from "../components/Checkout/CheckoutBill";
 import CheckoutCart from "../components/Checkout/CheckoutCart";
 import Toast from "../utils/components/Toast";
+import { useParams } from "react-router-dom";
 export default function CheckoutPage() {
   const { cart } = useCart();
+  const { select } = useParams();
 
   const {
     checkoutCart,
@@ -39,7 +41,9 @@ export default function CheckoutPage() {
           {isSuccessCheckout ? (
             <CheckoutDetailBill detail_bill={detail_bill} />
           ) : (
-            <CheckoutCart checkoutCart={checkoutCart} />
+            <CheckoutCart
+              checkoutCart={select == "check-all" ? cart : checkoutCart}
+            />
           )}
         </div>
         <div className="lg:col-span-1 col-span-2">

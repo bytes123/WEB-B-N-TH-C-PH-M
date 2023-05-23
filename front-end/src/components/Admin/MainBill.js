@@ -41,6 +41,14 @@ export default function MainBill() {
       value: "Chờ duyệt",
     },
     {
+      key: "payed_success",
+      value: "Đã thanh toán",
+    },
+    {
+      key: "payed_pending",
+      value: "Chưa thanh toán",
+    },
+    {
       key: "ship_success",
       value: "Đã giao",
     },
@@ -287,7 +295,7 @@ export default function MainBill() {
             ) : (
               ""
             )}
-            <div>
+            {/* <div>
               <button
                 className="delete-btn font-semibold ml-5 mb-5 inline"
                 onClick={() => handleOpenDelete(bill)}
@@ -306,7 +314,7 @@ export default function MainBill() {
               />
             ) : (
               ""
-            )}
+            )} */}
           </div>
         </div>
       ),

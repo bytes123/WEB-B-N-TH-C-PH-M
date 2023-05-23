@@ -105,6 +105,7 @@ const messageSlice = createSlice({
       })
       .addCase(fetchContactUser.fulfilled, (state, action) => {
         state.contact_user = action.payload[0];
+        console.log(action.payload[0]);
       })
       .addCase(fetchContactUser.rejected, (state, action) => {
         console.log("err");

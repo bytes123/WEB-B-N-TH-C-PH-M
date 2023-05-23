@@ -7,12 +7,15 @@ import {
   DELETE_PRODUCT_URL,
   SEARCH_PRODUCT_URL,
   TOP_PRODUCT_URL,
+  PRODUCT_BY_ID_URL,
+  MAIN_PRODUCT_URL,
 } from "../../static/API";
 import axios from "axios";
 import { v1 as uuidv1 } from "uuid";
 
 const initialState = {
   products: [],
+  main_products: [],
   errors: {},
   add_status: "",
   update_status: "",
@@ -21,12 +24,26 @@ const initialState = {
   fetch_search_status: "",
   search_products: [],
   top_products: [],
+  sellest_products: [],
+  fetch_product_status: "",
+  product: {},
+  detail_products: [],
+  rates: [],
 };
 
 export const fetchProducts = createAsyncThunk(
   "product/all_product",
   async () => {
     const response = await axios.get(PRODUCT_URL);
+    return response.data;
+  }
+);
+
+export const fetchMainProducts = createAsyncThunk(
+  "product/all_main_product",
+  async () => {
+    console.log(1);
+    const response = await axios.get(MAIN_PRODUCT_URL);
     return response.data;
   }
 );
@@ -39,6 +56,14 @@ export const fetchTopProducts = createAsyncThunk(
   }
 );
 
+export const fetchProductById = createAsyncThunk(
+  "product/product-by-id",
+  async (data) => {
+    const response = await axios.post(PRODUCT_BY_ID_URL, data);
+    return response.data;
+  }
+);
+
 function removeVietnameseAccents(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -47,7 +72,9 @@ export const addProduct = createAsyncThunk("product/add", async (data) => {
   const formData = new FormData();
   const id = uuidv1();
   const productId =
-    removeVietnameseAccents(data.name).replaceAll(" ", "-") + "-" + id;
+    id +
+    "-" +
+    removeVietnameseAccents(data.name.slice(-10)).replaceAll(" ", "-");
   data.id = productId;
   data?.images.length &&
     data.images.forEach((item) => {
@@ -74,7 +101,12 @@ export const updateProduct = createAsyncThunk(
       data.images.forEach((item, index) => {
         let filename = "";
         if (item?.name) {
-          filename = Date.now() + "-" + item?.name.replace(" ", "-");
+          const id = uuidv1();
+          const productId =
+            id +
+            "-" +
+            removeVietnameseAccents(item.name.slice(-10)).replaceAll(" ", "-");
+          filename = productId;
         }
         if (item?.default) {
           filename = item?.default;
@@ -150,6 +182,9 @@ const productSlice = createSlice({
     resetSearchStatus(state, action) {
       state.search_status = "";
     },
+    resetFetchProductStatus(state, action) {
+      state.fetch_product_status = "";
+    },
   },
   extraReducers(builder) {
     builder
@@ -162,11 +197,26 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         console.log("err");
       })
+      .addCase(fetchMainProducts.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchMainProducts.fulfilled, (state, action) => {
+        state.main_products = action.payload;
+      })
+      .addCase(fetchMainProducts.rejected, (state, action) => {
+        console.log("err");
+      })
       .addCase(fetchTopProducts.pending, (state, action) => {
         state.status = "loading";
       })
       .addCase(fetchTopProducts.fulfilled, (state, action) => {
-        state.top_products = action.payload;
+        console.log(action.payload);
+        if (action.payload.type == "newest") {
+          state.top_products = action.payload.products;
+        }
+        if (action.payload.type == "sellest") {
+          state.sellest_products = action.payload.products;
+        }
       })
       .addCase(fetchTopProducts.rejected, (state, action) => {
         console.log("err");
@@ -222,6 +272,18 @@ const productSlice = createSlice({
       })
       .addCase(fetchSearchProduct.rejected, (state, action) => {
         state.fetch_search_status = "failed";
+      })
+      .addCase(fetchProductById.pending, (state, action) => {
+        state.fetch_product_status = "loading";
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.fetch_product_status = "succeeded";
+        state.product = action.payload.product;
+        state.detail_products = action.payload.detail_products;
+        state.rates = action.payload.rates;
+      })
+      .addCase(fetchProductById.rejected, (state, action) => {
+        state.fetch_product_status = "failed";
       });
   },
 });
@@ -231,12 +293,18 @@ export const getAddStatus = (state) => state.product.add_status;
 export const getUpdateStatus = (state) => state.product.update_status;
 export const getDeleteStatus = (state) => state.product.delete_status;
 export const getProducts = (state) => state.product.products;
+export const getMainProducts = (state) => state.product.main_products;
 export const getSearchStatus = (state) => state.product.search_status;
 export const getSearchProducts = (state) => state.product.search_products;
 export const getFetchSearchStatus = (state) =>
   state.product.fetch_search_status;
 export const getTopProducts = (state) => state.product.top_products;
-
+export const getSellestProducts = (state) => state.product.sellest_products;
+export const getFetchProductStatus = (state) =>
+  state.product.fetch_product_status;
+export const getProduct = (state) => state.product.product;
+export const getDetailProduct = (state) => state.product.detail_products;
+export const getRates = (state) => state.product.rates;
 export const {
   resetAddStatus,
   resetUpdateStatus,

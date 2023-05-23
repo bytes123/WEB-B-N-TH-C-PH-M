@@ -53,16 +53,20 @@ export default function UserChatPage() {
   }, [socket, activeItem]);
 
   const sendMsg = async (currentMsg) => {
-    if (currentMsg !== "") {
-      const data = {
-        room_id: activeItem.roomid,
-        user_name: user,
-        body: currentMsg,
-      };
+    if (loginedUser) {
+      if (currentMsg !== "") {
+        const data = {
+          room_id: activeItem.roomid,
+          user_name: user,
+          body: currentMsg,
+        };
 
-      await socket.emit("send_message", data);
-      await dispatch(fetchMessageListByUser(user)).unwrap();
-      await dispatch(fetchMessagesByRoom(data.room_id)).unwrap();
+        await socket.emit("send_message", data);
+        await dispatch(fetchMessageListByUser(user)).unwrap();
+        await dispatch(fetchMessagesByRoom(data.room_id)).unwrap();
+      }
+    } else {
+      window.location("/");
     }
   };
 

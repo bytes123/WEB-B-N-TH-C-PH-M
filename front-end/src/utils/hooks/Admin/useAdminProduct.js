@@ -14,13 +14,15 @@ import {
   resetSearchStatus,
   getFetchSearchStatus,
   fetchSearchProduct,
+  fetchMainProducts,
+  getMainProducts,
 } from "../../../features/product/productSlice";
 import { useLocation } from "react-router-dom";
 import {
   fetchCategory,
   getCategories,
 } from "../../../features/category/categorySlice";
-
+import { fetchBranch, getBranch } from "../../../features/branch/branchSlice";
 import { fetchBrands, getBrands } from "../../../features/brand/brandSlice";
 
 export default function useAdminProduct(
@@ -31,10 +33,14 @@ export default function useAdminProduct(
 ) {
   const dispatch = useDispatch();
   const fetch_products = useSelector(getProducts);
+  const fetch_main_products = useSelector(getMainProducts);
   const fetch_category = useSelector(getCategories);
   const fetch_brands = useSelector(getBrands);
+  const fetch_branches = useSelector(getBranch);
   const [products, setProducts] = useState([]);
+  const [mainProducts, setMainProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [brands, setBrands] = useState([]);
   const add_status = useSelector(getAddStatus);
   const update_status = useSelector(getUpdateStatus);
@@ -94,8 +100,10 @@ export default function useAdminProduct(
   useEffect(() => {
     console.log(1);
     dispatch(fetchProducts()).unwrap();
+    dispatch(fetchMainProducts()).unwrap();
     dispatch(fetchCategory()).unwrap();
     dispatch(fetchBrands()).unwrap();
+    dispatch(fetchBranch()).unwrap();
   }, []);
 
   useEffect(() => {
@@ -113,10 +121,22 @@ export default function useAdminProduct(
   }, [fetch_category]);
 
   useEffect(() => {
+    if (fetch_main_products?.length) {
+      setMainProducts(fetch_main_products);
+    }
+  }, [fetch_main_products]);
+
+  useEffect(() => {
     if (fetch_brands?.length) {
       setBrands(fetch_brands);
     }
   }, [fetch_brands]);
+
+  useEffect(() => {
+    if (fetch_branches?.length) {
+      setBranches(fetch_branches);
+    }
+  }, [fetch_branches]);
 
   useEffect(() => {
     if (add_status == "succeeded") {
@@ -179,7 +199,9 @@ export default function useAdminProduct(
 
   return {
     products,
+    mainProducts,
     categories,
+    branches,
     brands,
     handleSearch,
     isLoadingSearch,

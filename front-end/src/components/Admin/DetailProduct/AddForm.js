@@ -52,7 +52,7 @@ export default function AddForm({ products }) {
             <Form.Item>
               <h3 className="font-quicksand font-semibold mb-2">Sản phẩm</h3>
               <Form.Item name="product_id" rules={rules.product_id}>
-                <Select placeholder="Chọn sản phẩm" allowClear>
+                <Select placeholder="Tìm kiếm sản phẩm" showSearch allowClear>
                   {products.length &&
                     products.map((item) => (
                       <Option value={item.id}>{item.name}</Option>
@@ -66,6 +66,19 @@ export default function AddForm({ products }) {
                   onFocus={() => handleFocusPlaceHolder("size")}
                   onBlur={handleBlurPlaceHolder}
                   placeholder={placeHolder.size}
+                  className="font-medium"
+                />
+              </Form.Item>
+
+              <h3 className="font-quicksand font-semibold mb-2">
+                Hàng tồn kho
+              </h3>
+              <Form.Item name="quantity" rules={rules.quantity}>
+                <Input
+                  defaultValue={0}
+                  onFocus={() => handleFocusPlaceHolder("quantity")}
+                  onBlur={handleBlurPlaceHolder}
+                  placeholder={placeHolder.quantity}
                   className="font-medium"
                 />
               </Form.Item>
@@ -96,7 +109,7 @@ export default function AddForm({ products }) {
                 htmlType="submit"
                 className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
               >
-                Thêm loại sản phẩm
+                Thêm chi tiết sản phẩm
               </Button>
             </Form.Item>
           </Form>

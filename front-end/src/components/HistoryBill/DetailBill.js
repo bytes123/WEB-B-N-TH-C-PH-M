@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { loginedUser } from "../../utils/hooks/useAccessUser";
+import useRate from "../../utils/hooks/useRate";
+import Modal from "../../utils/components/Modal";
+import MainRate from "../Rate/MainRate";
+import { Tag } from "antd";
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
+import Toast from "../../utils/components/Toast";
 export default function DetailBill({
   bill,
   detailBill,
@@ -9,10 +19,27 @@ export default function DetailBill({
   handleUpdateStatement,
   isAdmin = false,
 }) {
+  const {
+    isOpenRate,
+    activeStar,
+    activeItem,
+    handleOpenRateForm,
+    handleOpenRate,
+    handleCloseRate,
+    form,
+    handleChange,
+    isOpenRateForm,
+    handleSubmit,
+    isToast,
+  } = useRate();
   const [billShip, setBillShip] = useState(true);
-  console.log(detailBill);
   return (
     <div className="detail_bill py-5">
+      <Toast
+        style={isToast?.style}
+        body={isToast?.body}
+        isSuccess={isToast?.value}
+      />
       <div className="detail_bill-top">
         <div className="detail_bill-back mb-5" onClick={handleCloseDetailBill}>
           <p className="back text-uppercase text-3xl font-[600]">
@@ -31,7 +58,10 @@ export default function DetailBill({
         <h3 className="text-4xl mb-5">CHI TIẾT SẢN PHẨM</h3>
         <ul className="detail_bill-list">
           {detailBill.map((item) => (
-            <li className="mb-10 border-1 rounded-xl p-5">
+            <li
+              className="mb-10 border-1 rounded-xl p-5"
+              key={item.detail_bill_id}
+            >
               <div>
                 <div className="flex">
                   <div className="border-1 inline-block">
@@ -78,6 +108,80 @@ export default function DetailBill({
                     })}
                   </span>
                 </div>
+              </div>
+              <div>
+                {item?.bill_statement == "success" && !item?.rate_statement ? (
+                  <>
+                    <div className="text-right">
+                      <button
+                        className="background-active  p-4 text-white rounded-lg text-2xl font-quicksand"
+                        onClick={() => handleOpenRate(item)}
+                      >
+                        Đánh giá ngay
+                      </button>
+                    </div>
+                    <Modal
+                      active={isOpenRate}
+                      isClose={true}
+                      handleClose={handleCloseRate}
+                      className="top-0 flex items-center justify-center"
+                    >
+                      <MainRate
+                        activeItem={activeItem}
+                        activeStar={activeStar}
+                        handleOpenRateForm={handleOpenRateForm}
+                        form={form}
+                        handleSubmit={handleSubmit}
+                        handleChange={handleChange}
+                        isOpenRateForm={isOpenRateForm}
+                      />
+                    </Modal>
+                  </>
+                ) : (
+                  ""
+                )}
+
+                {item?.rate_statement == "pending" ? (
+                  <div className="text-right">
+                    <Tag
+                      icon={<ExclamationCircleOutlined />}
+                      className="flex max-w-[180px] items-center ml-auto p-3 text-xl"
+                      color="warning"
+                    >
+                      Đang chờ duyệt đánh giá
+                    </Tag>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {item?.rate_statement == "success" ? (
+                  <div className="text-right">
+                    <Tag
+                      icon={<CheckCircleOutlined />}
+                      className="flex max-w-[150px] items-center ml-auto p-3 text-xl"
+                      color="success"
+                    >
+                      Đánh giá thành công
+                    </Tag>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {item?.rate_statement == "canceled" ? (
+                  <div className="text-right">
+                    <Tag
+                      icon={<CloseCircleOutlined />}
+                      className="flex max-w-[150px] items-center ml-auto p-3 text-xl"
+                      color="error"
+                    >
+                      Đánh giá thất bại
+                    </Tag>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </li>
           ))}

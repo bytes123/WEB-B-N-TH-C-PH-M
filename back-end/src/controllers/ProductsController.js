@@ -5,6 +5,8 @@ const DetailProduct = require("../models/DetailProduct");
 
 var fs = require("fs");
 const { json } = require("express");
+const e = require("express");
+const Rate = require("../models/Rate");
 var filePath = "public/resources/product/";
 
 module.exports = {
@@ -14,17 +16,102 @@ module.exports = {
       res.status(200).json(response);
     });
   },
+  getAllMainProduct: (req, res) => {
+    console.log(1);
+    Products.getAllMainProduct((err, response) => {
+      if (err) throw err;
+      res.status(200).json(response);
+    });
+  },
   getTopProducts: (req, result) => {
-    const { type, quantity } = req.body;
-
+    const { type, quantity, category_id } = req.body;
+    console.log(type);
     if (type == "newest") {
-      DetailProduct.getTopProducts(quantity, (err, response) => {
-        if (err) result.status(500).json(err);
-        if (result) {
-          result.status(200).json(response);
-        }
-      });
+      if (category_id !== "all") {
+        DetailProduct.getTopProductsByCategory(
+          {
+            category_id: category_id,
+            quantity: quantity,
+          },
+          (err, response) => {
+            if (err) result.status(500).json(err);
+            if (result) {
+              result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
+      } else {
+        DetailProduct.getTopProducts(quantity, (err, response) => {
+          if (err) result.status(500).json(err);
+          if (result) {
+            result.status(200).json({
+              type: type,
+              products: response,
+            });
+          }
+        });
+      }
+    } else if (type == "sellest") {
+      if (category_id !== "all") {
+        console.log(category_id);
+        DetailProduct.getTopSellProductsByCategory(
+          {
+            category_id: category_id,
+            quantity: quantity,
+          },
+          (err, response) => {
+            if (err) result.status(500).json(err);
+            if (result) {
+              result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
+      } else {
+        DetailProduct.getTopSellProducts(quantity, (err, response) => {
+          if (err) result.status(500).json(err);
+          if (result) {
+            result.status(200).json({
+              type: type,
+              products: response,
+            });
+          }
+        });
+      }
     }
+  },
+  getProductById: (req, result) => {
+    const { product_id } = req.body;
+
+    Products.getProductById(product_id, (err, product) => {
+      if (err) result.status(500).json(err);
+      if (product[0]) {
+        DetailProduct.getDetailByProductId(
+          product_id,
+          (err, detail_products) => {
+            if (err) result.status(500).json(err);
+            if (detail_products) {
+              Rate.getRateByProductId(product_id, (err, rates) => {
+                console.log(err);
+                if (err) result.status(500).json(err);
+                if (rates) {
+                  return result.status(200).json({
+                    product: product[0],
+                    detail_products: detail_products,
+                    rates: rates,
+                  });
+                }
+              });
+            }
+          }
+        );
+      }
+    });
   },
   addProduct: (req, result) => {
     const images = req.files;
@@ -72,29 +159,23 @@ module.exports = {
     if (data.image3 == "") {
       delete data.image3;
     }
-
-    data.old_images = [];
-
-    if (data?.old_images.length) {
-      console.log(data.old_images);
-      data?.old_images
+    const id = data.id;
+    if (data?.old_images?.length) {
+      data.old_images = data.old_images
         .filter((item) => item.isDelete)
         .map((item) => item.file_name);
-    }
 
-    const id = data.id;
-    data?.old_images.length &&
       data.old_images.forEach((item) => {
-        if (item !== "default.jpg" || item !== null) {
+        if (item !== "default.jpg" && item !== null) {
           fs.stat(filePath + `/${id}/${item}`, function (err, stats) {
             if (err) return console.log(err);
-            console.log(1);
             fs.unlink(filePath + `/${id}/${item}`, function (err) {
               if (err) return console.log(err);
             });
           });
         }
       });
+    }
 
     data.updatedAt = new Date();
 

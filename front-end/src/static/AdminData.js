@@ -42,28 +42,28 @@ const sideBarList = [
     text: "TRANG QUẢN LÝ",
     list: [
       {
-        key: 0,
-        link: "quan-ly-tin-nhan",
-        icon: <FiMessageSquare />,
-        text: "Quản lý tin nhắn",
-      },
-      {
         key: 1,
         link: "quan-ly-danh-muc",
         icon: <BiCategoryAlt />,
         text: "Quản lý danh mục",
       },
       {
+        key: 7,
+        link: "quan-ly-nhan-hang",
+        icon: <TbBrandAirtable />,
+        text: "Quản lý nhãn hàng",
+      },
+      {
         key: 2,
         link: "quan-ly-san-pham",
         icon: <AiOutlineShoppingCart />,
-        text: "Quản lý sản phẩm",
+        text: "Quản lý loại sản phẩm",
       },
       {
         key: 3,
         link: "quan-ly-loai-san-pham",
         icon: <FiPackage />,
-        text: "Quản lý loại sản phẩm",
+        text: "Quản lý chi tiết sản phẩm",
       },
 
       {
@@ -79,17 +79,18 @@ const sideBarList = [
         text: "Quản lý tài khoản",
       },
       {
+        key: 0,
+        link: "quan-ly-tin-nhan",
+        icon: <FiMessageSquare />,
+        text: "Quản lý tin nhắn",
+      },
+      {
         key: 6,
         link: "quan-ly-danh-gia",
         icon: <MdOutlineRateReview />,
         text: "Quản lý đánh giá",
       },
-      {
-        key: 7,
-        link: "quan-ly-nhan-hang",
-        icon: <TbBrandAirtable />,
-        text: "Quản lý nhãn hàng",
-      },
+
       {
         key: 8,
         link: "quan-ly-thong-ke",

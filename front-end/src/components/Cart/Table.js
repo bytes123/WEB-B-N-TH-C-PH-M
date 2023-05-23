@@ -86,7 +86,8 @@ export default function Table({
             </Td>
             <Td className="text-brand ">
               <Quantity
-                inputNumberValue={item.quantity}
+                className="mx-auto"
+                value={item.quantity}
                 handleChangeInputNumber={(e) =>
                   handleChangeInputNumber(e.target.value, item.id)
                 }

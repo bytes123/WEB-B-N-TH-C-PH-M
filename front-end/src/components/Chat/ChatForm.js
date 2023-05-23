@@ -11,6 +11,7 @@ import {
   getContactUser,
   createCustomerRoom,
 } from "../../features/message/messageSlice";
+import { loginedUser } from "../../utils/hooks/useAccessUser";
 import { BiMessageRoundedAdd } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
@@ -57,12 +58,13 @@ export default function ChatForm({
   };
 
   const handleActiveItem = (item) => {
+    console.log(activeContactUser);
     setActiveItem(item);
     setIsSubmitting(true);
     dispatch(fetchMessagesByRoom(item.roomid)).unwrap();
     dispatch(
       fetchContactUser({
-        user_name: user,
+        user_name: item.partner_username,
         room_id: item.roomid,
       })
     ).unwrap();
@@ -76,7 +78,6 @@ export default function ChatForm({
 
   useEffect(() => {
     if (contact_user) {
-      console.log(contact_user);
       setActiveContactUser(contact_user);
     }
   }, [contact_user]);
@@ -132,13 +133,18 @@ export default function ChatForm({
                 </div>
               </li>
             ))
-          ) : (
+          ) : loginedUser &&
+            loginedUser.type_user.some(
+              (item) => item.type_user_id == "normal-customer"
+            ) ? (
             <li
               className="chat_item cursor-pointer white font-bold text-5xl text-white w-[100px] flex justify-center p-2 mb-2 bg-cyan-900 rounded-xl"
               onClick={handleCreateRoom && handleCreateRoom}
             >
               <BiMessageRoundedAdd />
             </li>
+          ) : (
+            ""
           )}
         </ul>
       </div>
@@ -157,7 +163,7 @@ export default function ChatForm({
               />
               <div className="ml-3">
                 <p className=" text-white text-semibold text-2xl ">
-                  {activeContactUser?.fullname ?? "Admin"}
+                  {activeContactUser?.user_name}
                 </p>
                 {activeContactUser?.online ? (
                   <div className="flex items-center mt-2">

@@ -25,11 +25,13 @@ const CATEGORY_CHILDREN_URL = "http://localhost:8000/category-children";
 const SEARCH_CATEGORY_URL = "http://localhost:8000/search-category";
 
 const PRODUCT_URL = "http://localhost:8000/product";
+const MAIN_PRODUCT_URL = "http://localhost:8000/main-product";
 const ADD_PRODUCT_URL = "http://localhost:8000/add-product";
 const UPDATE_PRODUCT_URL = "http://localhost:8000/update-product";
 const DELETE_PRODUCT_URL = "http://localhost:8000/delete-product";
 const SEARCH_PRODUCT_URL = "http://localhost:8000/search-product";
 const TOP_PRODUCT_URL = "http://localhost:8000/top-products";
+const PRODUCT_BY_ID_URL = "http://localhost:8000/product-by-id";
 
 const DETAIL_PRODUCT_URL = "http://localhost:8000/detail_product";
 const ADD_DETAIL_PRODUCT_URL = "http://localhost:8000/add-detail_product";
@@ -65,6 +67,11 @@ const CHECKOUT_URL = "http://localhost:8000/checkout";
 const GET_BILL_USER_NAME_URL = "http://localhost:8000/get-bill-by-username";
 const GET_DETAIL_BILL = "http://localhost:8000/get-detail_bill";
 const SORT_BILL_URL = "http://localhost:8000/sort-bill";
+
+const RATE_URL = "http://localhost:8000/get-rate";
+const ADD_RATE_URL = "http://localhost:8000/add-rate";
+const SEARCH_RATE_URL = "http://localhost:8000/search-rate";
+const UPDATE_RATE_URL = "http://localhost:8000/update-rate";
 export {
   LOGIN_URL,
   SIGNUP_URL,
@@ -122,4 +129,10 @@ export {
   UPDATE_PAYED_BILL_URL,
   SORT_BILL_URL,
   SEARCH_BRAND_URL,
+  PRODUCT_BY_ID_URL,
+  MAIN_PRODUCT_URL,
+  RATE_URL,
+  ADD_RATE_URL,
+  SEARCH_RATE_URL,
+  UPDATE_RATE_URL,
 };

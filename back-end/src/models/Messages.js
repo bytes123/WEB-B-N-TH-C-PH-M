@@ -10,6 +10,7 @@ var Messages = {
   getMsgListByUser: function (data, callback) {
     let sql = `SELECT messages.room_id as roomid, messages.body as lastest_msg, messages.user_name as lastest_user_name,
     (SELECT customers.fullname FROM customers INNER JOIN detail_room ON customers.user_name = detail_room.participant AND customers.user_name != ? AND detail_room.room_id = roomid ) as partner_fullname,
+    (SELECT users.user_name FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != ? AND detail_room.room_id = roomid ) as partner_username,
     (SELECT users.avatar FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != ? AND detail_room.room_id = roomid ) as partner_avatar
     FROM messages
     INNER JOIN (
@@ -21,19 +22,22 @@ var Messages = {
     INNER JOIN detail_room
     ON messages.room_id = detail_room.room_id
     WHERE detail_room.participant = ? 
+    GROUP BY messages.room_id
     ORDER BY messages.id DESC;
     `;
 
     return db.query(
       sql,
-      [data.user_name, data.user_name, data.user_name],
+      [data.user_name, data.user_name, data.user_name, data.user_name],
       callback
     );
   },
   getMsgList: function (callback) {
     let sql = `SELECT messages.room_id as roomid, messages.body as lastest_msg, messages.user_name as lastest_user_name,messages.createdAt as lastest_time,
+    
     (SELECT customers.fullname FROM customers INNER JOIN detail_room ON customers.user_name = detail_room.participant AND customers.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_fullname,
-    (SELECT users.avatar FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_avatar
+    (SELECT users.avatar FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_avatar,
+    (SELECT users.user_name FROM users INNER JOIN detail_room ON users.user_name = detail_room.participant AND users.user_name != 'admin' AND detail_room.room_id = roomid ) as partner_username
     FROM messages
     INNER JOIN (
         SELECT MAX(createdAt) AS max_date, room_id
@@ -44,15 +48,20 @@ var Messages = {
     INNER JOIN detail_room
     ON messages.room_id = detail_room.room_id
     WHERE detail_room.participant = 'admin'
-    ORDER BY messages.id DESC;
+    GROUP BY messages.room_id
+    ORDER BY messages.id DESC
+    
+    ;
   `;
 
     return db.query(sql, callback);
   },
   getContactUser: (data, callback) => {
-    let sql =
-      "SELECT c.fullname,u.avatar,u.online FROM detail_room as dt INNER JOIN users as u ON dt.participant = u.user_name AND  dt.participant != ? AND dt.room_id = ? INNER JOIN customers as c ON dt.participant = c.user_name";
-    return db.query(sql, [data.user_name, data.room_id], callback);
+    let sql = `SELECT c.fullname,u.user_name,u.avatar,u.online FROM  users as u INNER JOIN customers as c ON u.user_name = c.user_name  WHERE u.user_name = ?
+      UNION ALL
+      SELECT s.fullname,u.user_name,u.avatar,u.online FROM  users as u INNER JOIN staffs as s ON u.user_name = s.user_name WHERE u.user_name = ? 
+      `;
+    return db.query(sql, [data.user_name, data.user_name], callback);
   },
   insertMessage: (data, callback) => {
     console.log(data);
@@ -68,7 +77,7 @@ var Messages = {
     return db.query(sql, [data], callback);
   },
   dropRoom: (data, callback) => {
-    let sql = "DELETE FROM rooms WHERE room_id = ?";
+    let sql = "DELETE FROM rooms WHERE id = ?";
     return db.query(sql, [data.room_id], callback);
   },
 };

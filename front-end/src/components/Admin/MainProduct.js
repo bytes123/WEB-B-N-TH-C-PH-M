@@ -97,6 +97,7 @@ export default function MainProduct() {
   const {
     products,
     categories,
+    branches,
     brands,
     handleSearch,
     isLoadingSearch,
@@ -142,6 +143,28 @@ export default function MainProduct() {
       key: "name",
       render: (data, arr, index) => <p className="capitalize">{data}</p>,
     },
+    {
+      title: "Hình sản phẩm",
+      dataIndex: "image1",
+      key: "image1",
+      render: (data, arr, index) => (
+        <img
+          className="w-[80px] object-contain"
+          src={
+            arr.image1 !== "default.jpg"
+              ? `http://localhost:8000/resources/product/${arr.id}/${arr.image1}`
+              : `http://localhost:8000/resources/product/${arr.image1}`
+          }
+          alt=""
+        />
+      ),
+    },
+    // {
+    //   title: "Tên chi nhánh",
+    //   dataIndex: "branch_name",
+    //   key: "branch_name",
+    //   render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    // },
     {
       title: "Tên danh mục",
       dataIndex: "category_name",
@@ -207,7 +230,7 @@ export default function MainProduct() {
         body={isToast?.body}
         isSuccess={isToast?.value}
       />
-      <h1 className="text-4xl font-bold m-5">Quản lý sản phẩm</h1>
+      <h1 className="text-4xl font-bold m-5">Quản lý loại sản phẩm</h1>
 
       {isAdd && (
         <>
@@ -222,7 +245,11 @@ export default function MainProduct() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm sản phẩm</h3>
-              <AddForm categories={categories} brands={brands} />
+              <AddForm
+                categories={categories}
+                brands={brands}
+                branches={branches}
+              />
               {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách sản phẩm
           </p>

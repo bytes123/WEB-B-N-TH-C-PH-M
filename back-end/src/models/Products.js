@@ -1,15 +1,26 @@
 "use strict";
 const db = require("./../db");
 const { Sequelize } = require("sequelize");
+
 var Products = {
   getAllProduct: function (callback) {
     let sql =
-      "SELECT p.*,c.name as category_name,b.name as brand_name FROM PRODUCTS p INNER JOIN categories c ON p.category_id = c.id INNER JOIN brands b ON p.brand_id = b.id  ";
+      "SELECT p.*,c.name as category_name,b.name as brand_name FROM PRODUCTS p INNER JOIN categories c ON p.category_id = c.id INNER JOIN brands b ON p.brand_id = p.brand_id GROUP BY p.id ORDER BY p.createdAt DESC";
+    return db.query(sql, callback);
+  },
+  getAllMainProduct: function (callback) {
+    let sql =
+      "SELECT p.*,c.name as category_name,b.name as brand_name FROM PRODUCTS p INNER JOIN categories c ON p.category_id = c.id INNER JOIN brands b ON p.brand_id = b.id  GROUP BY p.id ORDER BY p.createdAt DESC";
     return db.query(sql, callback);
   },
   getProductsByCategory: (data, callback) => {
     let sql = "SELECT * FROM products WHERE category_id = ?";
     return db.query(sql, [data.id], callback);
+  },
+  getProductById: (product_id, callback) => {
+    let sql =
+      "SELECT p.*,c.name category_name,c.id category_id,b.name brand_name FROM products p INNER JOIN categories c ON p.category_id = c.id INNER JOIN brands b ON p.brand_id = b.id WHERE p.id = ? ";
+    return db.query(sql, [product_id], callback);
   },
   addProduct: (data, callback) => {
     let sql = "INSERT INTO PRODUCTS SET ?";
@@ -28,48 +39,6 @@ var Products = {
     let sql =
       "SELECT p.*,c.name as category_name,b.name as brand_name FROM PRODUCTS p INNER JOIN categories c ON p.category_id = c.id INNER JOIN brands b ON p.brand_id = b.id AND p.name LIKE ?";
     return db.query(sql, [`${data.value}%`], callback);
-  },
-  Products: () => {
-    const products = {
-      id: {
-        type: Sequelize.STRING(50),
-        primaryKey: true,
-      },
-      image1: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      image2: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      image3: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      category_id: {
-        type: Sequelize.STRING(50),
-        allowNull: false,
-      },
-      brand_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-    };
-
-    return products;
   },
 };
 

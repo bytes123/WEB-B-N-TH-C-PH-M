@@ -14,14 +14,19 @@ import { productPlaceHolder } from "../../../static/UserForm";
 import ImageUploading from "react-images-uploading";
 import { UploadOutlined } from "@ant-design/icons";
 import useProductImage from "../../../utils/hooks/Admin/useProductImage";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-export default function AddForm({ categories, brands }) {
+export default function AddForm({ categories, brands, branches }) {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
   const { images, onChange } = useProductImage();
+  const [description, setDescription] = useState("");
+
   const signUpSubmit = async (values) => {
     const fileList = images.length && images.map((item) => item.file);
     values.images = fileList;
+    values.description = description;
 
     await dispatch(addProduct(values)).unwrap();
   };
@@ -40,6 +45,10 @@ export default function AddForm({ categories, brands }) {
     handleFocusPlaceHolder,
     handleBlurPlaceHolder,
   } = useForm(signUpSubmit, getErrors, productPlaceHolder);
+
+  useEffect(() => {
+    console.log(description);
+  }, [description]);
 
   return (
     <>
@@ -90,10 +99,19 @@ export default function AddForm({ categories, brands }) {
               </>
             )}
 
+            {/* <h3 className="font-quicksand font-semibold mb-2">Chi nhánh</h3>
+            <Form.Item name="branch_id" rules={rules.branch_id}>
+              <Select placeholder="Chọn chi nhánh" allowClear>
+                {branches?.map((item) => (
+                  <Option value={item.id}>{item.name}</Option>
+                ))}
+              </Select>
+            </Form.Item> */}
+
             <h3 className="font-quicksand font-semibold mb-2">Danh mục</h3>
             <Form.Item name="category_id" rules={rules.category_id}>
-              <Select placeholder="Chọn danh mục" allowClear>
-                {categories.map((item) => (
+              <Select placeholder="Chọn danh mục" showSearch allowClear>
+                {categories?.map((item) => (
                   <Option value={item.id}>{item.name}</Option>
                 ))}
               </Select>
@@ -101,11 +119,34 @@ export default function AddForm({ categories, brands }) {
 
             <h3 className="font-quicksand font-semibold mb-2">Nhà sản xuất</h3>
             <Form.Item name="brand_id" rules={rules.brand_id}>
-              <Select placeholder="Chọn nhà sản xuất" allowClear>
-                {brands.map((item) => (
+              <Select placeholder="Chọn nhà sản xuất" showSearch allowClear>
+                {brands?.map((item) => (
                   <Option value={item.id}>{item.name}</Option>
                 ))}
               </Select>
+            </Form.Item>
+
+            <h3 className="font-quicksand font-semibold mb-2">
+              Giới thiệu sản phẩm
+            </h3>
+            <Form.Item name="introduction">
+              <Input
+                onFocus={() => handleFocusPlaceHolder("introduction")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.introduction}
+                className="font-medium"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <h3 className="font-quicksand font-semibold mb-2">
+                Mô tả sản phẩm
+              </h3>
+              <ReactQuill
+                theme="snow"
+                value={description}
+                onChange={setDescription}
+              />
             </Form.Item>
 
             <Form.Item>

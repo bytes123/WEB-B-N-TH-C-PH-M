@@ -12,7 +12,7 @@ var Auth = {
   },
   deleteTokenExpired: (callback) => {
     let sql =
-      "DELETE FROM authen WHERE created_date < DATE_SUB(NOW(), INTERVAL 30 MINUTE)";
+      "DELETE FROM authen WHERE createdAt < DATE_SUB(NOW(), INTERVAL 30 MINUTE)";
     return db.query(sql, callback);
   },
   deleteToken(data, callback) {

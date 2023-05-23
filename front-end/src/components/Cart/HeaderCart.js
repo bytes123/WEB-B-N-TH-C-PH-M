@@ -21,8 +21,9 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
           ? cart.map((item) => (
               <li className="mb-5">
                 <div className="flex">
-                  <div className="w-[100px]">
+                  <div>
                     <img
+                      className="w-[100px] object-contain"
                       src={
                         item.image1 !== "default.jpg"
                           ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
@@ -31,15 +32,17 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
                       alt=""
                     />
                   </div>
-                  <div className="mx-10 min-w-[120px]">
+                  <div className="mx-10 ">
                     <Link
                       to={`/thuc-don/${item.category_id}/${item.product_id}`}
-                      className="text-brand text-3xl "
+                      className="text-brand text-3xl mb-5"
                     >
                       {item.name}
                     </Link>
 
-                    <p className="text-2xl mt-5">
+                    <p className="text-2xl mb-5">Size: {item.size}</p>
+
+                    <p className="text-2xl mb-5">
                       {item.quantity} x{" "}
                       {item?.newPrice?.toLocaleString("it-IT", {
                         style: "currency",
@@ -71,7 +74,7 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
             </button>
           </Link>
 
-          <Link to="/thanh-toan">
+          <Link to="/thanh-toan/check-all">
             <button className="background-active p-3 rounded-xl text-white font-semibold">
               Thanh toán
             </button>

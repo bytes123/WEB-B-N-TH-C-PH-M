@@ -90,7 +90,9 @@ export default function Header({ className }) {
     console.log(DesktopMenu);
     if (
       loginedUser &&
-      loginedUser?.type_user?.some((item) => item.type_user_id == "admin")
+      loginedUser?.type_user?.some(
+        (item) => item.type_user_id == "admin" || item.type_user_id == "staff"
+      )
     ) {
       return setMenuList([
         ...DesktopMenu.filter(

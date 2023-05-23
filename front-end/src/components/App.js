@@ -104,6 +104,7 @@ const App = () => {
             </AdminPage>
           }
         />
+
         <Route
           path="admin/quan-ly-nguoi-dung"
           element={
@@ -222,7 +223,17 @@ const App = () => {
               <CheckoutPage />
             </Layout>
           }
-        />
+        >
+          <Route
+            path=":select"
+            element={
+              <Layout className="h-full bg-white">
+                <Header className="relative" />
+                <CheckoutPage />
+              </Layout>
+            }
+          />
+        </Route>
 
         <Route
           path="yeu-thich"

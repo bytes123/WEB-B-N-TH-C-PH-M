@@ -1,5 +1,5 @@
 "use strict";
-
+const { v1: uuidv1 } = require("uuid");
 var fs = require("fs");
 const multer = require("multer");
 
@@ -10,7 +10,7 @@ let storageAvatar = multer.diskStorage({
     callback(null, dir);
   },
   filename: function (req, file, callback) {
-    callback(null, Date.now() + "-" + file.originalname);
+    callback(null, uuidv1() + file.originalname.slice(-10).replace("-", " "));
   },
 });
 
@@ -47,12 +47,20 @@ module.exports = function (app) {
   let dbCrtl = require("../controllers/DBController");
   let cartCrtl = require("../controllers/CartController");
   let billCrtl = require("../controllers/BillController");
+  let rateCrtl = require("../controllers/RateController");
+
   //API PHÂN TÁN
   app.route("/mysql-login").post(dbCrtl.loginDB);
   app.route("/migrate").post(dbCrtl.migrate);
   app.route("/get_table").post(dbCrtl.getTable);
   app.route("/get_column").post(dbCrtl.getColumn);
 
+  // API RATE
+
+  app.route("/add-rate").post(rateCrtl.addRate);
+  app.route("/get-rate").get(rateCrtl.getRates);
+  app.route("/search-rate").post(rateCrtl.searchRate);
+  app.route("/update-rate").post(rateCrtl.updateStatement);
   // API KHO
   app.route("/branch").get(branchCrtl.get);
 
@@ -61,6 +69,7 @@ module.exports = function (app) {
 
   // API SẢN PHẨM
   app.route("/product").get(productsCtrl.get);
+  app.route("/main-product").get(productsCtrl.getAllMainProduct);
   app.route("/top-products").post(productsCtrl.getTopProducts);
   app
     .route("/add-product/:productId")
@@ -70,6 +79,7 @@ module.exports = function (app) {
     .post(uploadProduct.array("images"), productsCtrl.updateProduct);
   app.route("/delete-product").post(productsCtrl.deleteProduct);
   app.route("/search-product").post(productsCtrl.searchProduct);
+  app.route("/product-by-id").post(productsCtrl.getProductById);
 
   //API CT SP
   app.route("/detail_product").get(detailproductsCrtl.get);

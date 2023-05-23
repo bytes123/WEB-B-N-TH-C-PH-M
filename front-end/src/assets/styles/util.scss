@@ -8,10 +8,17 @@
   background-color: rgba(0, 0, 0, 0.1);
   z-index: 996;
   opacity: 1;
+  visibility: visible;
   transition: all 0.3s;
 }
 
 .modal-blur {
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  visibility: hidden;
   opacity: 0;
   transition: all 0.3s;
 }
@@ -200,6 +207,10 @@
 
 .text-brand {
   color: #3bb77e;
+}
+
+a.text-brand:hover {
+  color: #fdc040 !important;
 }
 
 .MuiSlider-thumb {

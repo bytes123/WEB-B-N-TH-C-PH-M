@@ -14,6 +14,8 @@ import { productPlaceHolder } from "../../../static/UserForm";
 import ImageUploading from "react-images-uploading";
 import { UploadOutlined } from "@ant-design/icons";
 import useProductImage from "../../../utils/hooks/Admin/useProductImage";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function AddForm({ categories, brands, updateValues }) {
   //   let newrules = useSelector(getErrors);
@@ -99,6 +101,13 @@ export default function AddForm({ categories, brands, updateValues }) {
     }
   };
 
+  const handleChangeDescription = (value) => {
+    setNewValues({
+      ...newValues,
+      description: value,
+    });
+  };
+
   const handleChangeCategory = (value) => {
     setNewValues({
       ...newValues,
@@ -174,7 +183,6 @@ export default function AddForm({ categories, brands, updateValues }) {
                     onFocus={() => handleFocusPlaceHolder("name")}
                     onBlur={handleBlurPlaceHolder}
                     placeholder={placeHolder.name}
-                    className="font-medium"
                   />
                 </Form.Item>
               </>
@@ -190,7 +198,6 @@ export default function AddForm({ categories, brands, updateValues }) {
                     onFocus={() => handleFocusPlaceHolder("name")}
                     onBlur={handleBlurPlaceHolder}
                     placeholder={placeHolder.name}
-                    className="font-medium"
                   />
                 </Form.Item>
               </>
@@ -199,6 +206,7 @@ export default function AddForm({ categories, brands, updateValues }) {
             <h3 className="font-quicksand font-semibold mb-2">Danh mục</h3>
             <Form.Item name="category_id" rules={rules.category_id}>
               <Select
+                showSearch
                 onChange={(value) => handleChangeCategory(value)}
                 placeholder="Chọn danh mục"
                 allowClear
@@ -212,6 +220,7 @@ export default function AddForm({ categories, brands, updateValues }) {
             <h3 className="font-quicksand font-semibold mb-2">Nhà sản xuất</h3>
             <Form.Item name="brand_id" rules={rules.brand_id}>
               <Select
+                showSearch
                 placeholder="Chọn nhà sản xuất"
                 allowClear
                 onChange={(value) => handleChangeBrand(value)}
@@ -220,6 +229,30 @@ export default function AddForm({ categories, brands, updateValues }) {
                   <Option value={item.id}>{item.name}</Option>
                 ))}
               </Select>
+            </Form.Item>
+
+            <h3 className="font-quicksand font-semibold mb-2">
+              Giới thiệu sản phẩm
+            </h3>
+            <Form.Item name="introduction">
+              <Input
+                name="introduction"
+                onChange={handleChangeInput}
+                onFocus={() => handleFocusPlaceHolder("introduction")}
+                onBlur={handleBlurPlaceHolder}
+                placeholder={placeHolder.introduction}
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <h3 className="font-quicksand font-semibold mb-2">
+                Mô tả sản phẩm
+              </h3>
+              <ReactQuill
+                theme="snow"
+                onChange={handleChangeDescription}
+                defaultValue={updateValues?.description}
+              />
             </Form.Item>
 
             <Form.Item>

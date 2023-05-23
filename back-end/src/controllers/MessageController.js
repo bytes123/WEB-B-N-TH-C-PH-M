@@ -30,10 +30,11 @@ module.exports = {
   },
   getContactUser: (req, res) => {
     const data = req.body;
-
+    console.log(data);
     Messages.getContactUser(data, (err, response) => {
       if (err) throw err;
-      res.json(response);
+      console.log(response);
+      return res.json(response);
     });
   },
   insertMessage: (req, res) => {

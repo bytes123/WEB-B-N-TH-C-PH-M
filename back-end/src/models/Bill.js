@@ -17,19 +17,24 @@ var Bill = {
 
     return db.query(sql, [statement], callback);
   },
+  getBillByPayedStatement: (statement, callback) => {
+    let sql = `SELECT * FROM bills WHERE bill_payed = ? ORDER BY createdAt DESC`;
+
+    return db.query(sql, [statement], callback);
+  },
   getBillByUserName: (id, callback) => {
-    let sql = `SELECT * FROM bills WHERE user_name = ?`;
+    let sql = `SELECT * FROM bills WHERE user_name = ? ORDER BY createdAt DESC`;
 
     return db.query(sql, [id], callback);
   },
   getBillById: (bill_id, callback) => {
-    let sql = `SELECT * FROM bills WHERE id = ?`;
+    let sql = `SELECT * FROM bills WHERE id = ? `;
 
     return db.query(sql, [bill_id], callback);
   },
 
   getDetailBill: (bill_id, callback) => {
-    let sql = `SELECT db.*,p.name,p.image1,dp.price,dp.size,FLOOR(dp.price-dp.price*dp.discount/100) currentPrice,FLOOR(dp.price-dp.price*dp.discount/100)*db.quantity newPrice,dp.discount FROM detail_bill db INNER JOIN detail_products dp ON db.detail_product_id = dp.id INNER JOIN products p ON p.id = dp.product_id WHERE bill_id = ?`;
+    let sql = `SELECT db.*,b.bill_statement,r.statement rate_statement,p.name,p.id product_id,p.image1,dp.price,dp.size,FLOOR(dp.price-dp.price*dp.discount/100) currentPrice,FLOOR(dp.price-dp.price*dp.discount/100)*db.quantity newPrice,dp.discount FROM detail_bill db INNER JOIN detail_products dp ON db.detail_product_id = dp.id INNER JOIN products p ON p.id = dp.product_id INNER JOIN bills b ON b.id = db.bill_id LEFT JOIN rates r ON db.detail_bill_id = r.detail_bill_id WHERE bill_id = ?`;
 
     return db.query(sql, [bill_id], callback);
   },

@@ -155,7 +155,14 @@ export default function useCheckout(cart) {
   }, [isReset]);
 
   const handleCheckout = (bill) => {
-    if (!bill.fullname.trim() || !bill.phone_number || !bill.address) {
+    if (!checkoutCart.length) {
+      setIsToast({
+        position: "top-center",
+        style: "failed",
+        value: true,
+        body: "Giỏ hàng rỗng!",
+      });
+    } else if (!bill.fullname.trim() || !bill.phone_number || !bill.address) {
       setIsReset(!isReset);
       setIsToast({
         position: "top-center",

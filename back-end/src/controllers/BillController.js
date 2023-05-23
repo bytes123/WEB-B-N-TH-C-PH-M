@@ -25,6 +25,16 @@ module.exports = {
         if (err) return result.status(500).json(err);
         return result.status(200).json(res);
       });
+    } else if (index == "payed_success") {
+      Bill.getBillByPayedStatement(1, (err, res) => {
+        if (err) return result.status(500).json(err);
+        return result.status(200).json(res);
+      });
+    } else if (index == "payed_pending") {
+      Bill.getBillByPayedStatement(0, (err, res) => {
+        if (err) return result.status(500).json(err);
+        return result.status(200).json(res);
+      });
     } else {
       Bill.getBillByStatement(index, (err, res) => {
         if (err) return result.status(500).json(err);
@@ -70,6 +80,7 @@ module.exports = {
       });
     } else {
       Bill.updateStatementBill(data, (err, res) => {
+        console.log(err);
         if (err) return result.status(500).json(err);
         console.log("Thành công");
         return result.status(200).json(data.bill_statement);

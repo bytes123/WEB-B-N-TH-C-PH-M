@@ -40,7 +40,7 @@ export default function ClassifySection({
                 style={{ boxShadow: "rgba(149, 157, 165, 0.2) 0px 4px 12px" }}
               >
                 <div
-                  className="value cursor-auto  font-semibold"
+                  className="value cursor-auto  font-semibold max-h-[300px] overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   {item.value.map((i, index) =>

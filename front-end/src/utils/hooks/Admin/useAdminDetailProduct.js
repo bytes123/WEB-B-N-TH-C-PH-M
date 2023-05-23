@@ -17,8 +17,8 @@ import {
   resetSearchDetailProduct,
 } from "../../../features/detail_product/detailProductSlice";
 import {
-  fetchProducts,
-  getProducts,
+  fetchMainProducts,
+  getMainProducts,
 } from "../../../features/product/productSlice";
 import { useLocation } from "react-router-dom";
 export default function useAdminDetailProduct(
@@ -29,7 +29,7 @@ export default function useAdminDetailProduct(
 ) {
   const dispatch = useDispatch();
   const fetch_detail_products = useSelector(getDetailProducts);
-  const fetch_products = useSelector(getProducts);
+  const fetch_products = useSelector(getMainProducts);
   const [detailProducts, setDetailProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const add_status = useSelector(getAddStatus);
@@ -105,7 +105,7 @@ export default function useAdminDetailProduct(
 
   useEffect(() => {
     dispatch(fetchDetailProducts()).unwrap();
-    dispatch(fetchProducts()).unwrap();
+    dispatch(fetchMainProducts()).unwrap();
   }, []);
 
   useEffect(() => {

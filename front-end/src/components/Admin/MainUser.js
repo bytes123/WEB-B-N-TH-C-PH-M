@@ -19,7 +19,7 @@ import useMainUser from "../../utils/hooks/useMainUser";
 import UpdateForm from "./User/UpdateForm";
 import useClassifySection from "../../utils/hooks/useClassifySection";
 import ClassifySection from "../../utils/components/ClassifySection";
-
+import { loginedUser } from "../../utils/hooks/useAccessUser";
 export default function MainUser() {
   const { Search } = Input;
   const dispatch = useDispatch();
@@ -269,19 +269,40 @@ export default function MainUser() {
       title: "Loại tài khoản",
       dataIndex: "detail_type_user",
       key: "detail_type_user",
-      render: (data, arr, index) =>
-        data.some((item) => item.type_user_id == "admin") ? (
-          <div>
-            <p className="font-bold text-red-700">Admin</p>
-          </div>
-        ) : data.some((item) => item.type_user_id == "admin-message") ? (
-          <p className="font-semibold text-red-700">Quản lý tin nhắn</p>
-        ) : data.some((item) => item.type_user_id == "normal-customer") ? (
-          <p className="font-semibold text-slate-900">Khách hàng</p>
-        ) : (
-          <p className="font-semibold text-slate-900">None</p>
-        ),
-      // <GreenSwitch label="Admin" disabled defaultChecked={data} />
+      render: (data, arr, index) => {
+        let renders = []; // Mảng lưu trữ các phần tử render cần hiển thị
+
+        if (data.some((item) => item.type_user_id == "admin")) {
+          renders.push(
+            <div key="admin">
+              <p className="font-bold text-red-700">Admin</p>
+            </div>
+          );
+        }
+
+        if (data.some((item) => item.type_user_id == "staff")) {
+          renders.push(
+            <p key="staff" className="font-semibold text-red-700">
+              Nhân viên
+            </p>
+          );
+        }
+
+        if (data.some((item) => item.type_user_id == "normal-customer")) {
+          renders.push(
+            <p key="normal-customer" className="font-semibold text-slate-900">
+              Khách hàng
+            </p>
+          );
+        }
+
+        if (renders.length > 0) {
+          // Kiểm tra nếu có ít nhất một phần tử trong mảng renders
+          return renders;
+        } else {
+          return <p className="font-semibold text-slate-900">None</p>;
+        }
+      },
     },
     {
       title: "Thời gian tạo tài khoản",
@@ -334,7 +355,8 @@ export default function MainUser() {
     },
   ];
 
-  return (
+  return loginedUser &&
+    loginedUser.type_user.some((item) => item.type_user_id == "admin") ? (
     <div className="main_user mx-2">
       <Toast
         style={isToast?.style}
@@ -455,5 +477,9 @@ export default function MainUser() {
         </>
       )}
     </div>
+  ) : (
+    <h1 className="font-semibold text-4xl text-center p-10">
+      Bạn không đủ quyền để truy cập trang này
+    </h1>
   );
 }

@@ -1,54 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import ItemList from "../Product/ItemList";
-import {
-  fetchTopProducts,
-  getTopProducts,
-} from "../../features/product/productSlice";
-import { useSelector, useDispatch } from "react-redux";
-export default function FeatureProduct({ type, title, categories, gridCol }) {
-  const [activeCategory, setActiveCategory] = useState(null);
-  const dispatch = useDispatch();
-  const top_products = useSelector(getTopProducts);
-  const [categoryList, setCategoryList] = useState([
-    {
-      id: "all",
-      name: "All",
-    },
-  ]);
 
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    if (type == "newest") {
-      dispatch(
-        fetchTopProducts({
-          type: type,
-          quantity: 10,
-        })
-      ).unwrap();
-    }
-  }, [type]);
-
-  useEffect(() => {
-    if (top_products.length) {
-      setProducts(top_products);
-    }
-  }, [top_products]);
-
-  useEffect(() => {
-    setCategoryList([
-      {
-        id: "all",
-        name: "All",
-      },
-      ...categories,
-    ]);
-  }, [categories]);
-
-  const handleActiveCategory = (id) => {
-    setActiveCategory(id);
-  };
+import useFilterProducts from "../../utils/hooks/useFilterProducts";
+export default function FeatureProduct({
+  type,
+  title,
+  gridCol,
+  quantity,
+  products,
+}) {
+  const { handleActiveCategory, activeCategory, categoryList } =
+    useFilterProducts(type, quantity);
 
   return (
     <div className="my-20 px-10">
@@ -76,7 +39,11 @@ export default function FeatureProduct({ type, title, categories, gridCol }) {
               : ""}
           </ul>
         </div>
-        <ItemList className={"my-20"} currentItems={products} />
+        <ItemList
+          className={"my-20"}
+          currentItems={products}
+          gridCol={gridCol}
+        />
       </div>
     </div>
   );

@@ -8,13 +8,14 @@ export default function ItemList({
   currentItems,
   isHiddenBtn,
   className,
-  gridCol = 5,
+  gridCol = "5",
 }) {
   const { handleAddCart } = useCart();
+  let col = gridCol;
 
   return (
     <div className={`item_list-wrapper  ${className}`}>
-      <ul className={`item_list grid lg:grid-cols-4 grid-cols-2 gap-10`}>
+      <ul className={`item_list grid lg:grid-cols-5 grid-cols-2 gap-10`}>
         {currentItems.map((item) => (
           <li className="item">
             <Link to={`/thuc-don/${item.category_id}/${item.product_id}`}>
@@ -23,7 +24,7 @@ export default function ItemList({
               </div>
               <div className="item_img-wrapper ">
                 <img
-                  className="w-[300px] h-[250px]"
+                  className="w-[300px] h-[250px] object-contain"
                   src={
                     item.image1 !== "default.jpg"
                       ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
@@ -33,16 +34,16 @@ export default function ItemList({
                 />
               </div>
               <div className="item_information mt-4">
-                <p className="item_category-label  my-5">
+                <p className="item_category-label  my-5  text-2xl">
                   {item.category_name}
                 </p>
                 <Link
-                  className="item_name block my-5 font-quicksand text-4xl"
+                  className="item_name block my-5 font-quicksand text-4xl min-h-[80px] flex items-center"
                   to={`/thuc-don/${item.category_id}/${item.product_id}`}
                 >
                   {item.name}
                 </Link>
-                <StarpointSection starpoint={item.starpoint + 5} />
+                <StarpointSection starpoint={item.starpoint} />
                 <div className="item_card flex-wrap mt-5 flex items-center">
                   <div className="item_price">
                     {item?.newPrice?.toLocaleString("it-IT", {
@@ -56,7 +57,7 @@ export default function ItemList({
                       currency: "VND",
                     })}
                   </div>
-                  {!isHiddenBtn ? (
+                  {/* {!isHiddenBtn ? (
                     <div className="btn-wrapper mt-5">
                       <button
                         className="item_btn "
@@ -68,7 +69,7 @@ export default function ItemList({
                     </div>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </div>
               </div>
             </Link>

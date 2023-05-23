@@ -74,6 +74,7 @@ export default function Update({ products, updateValues }) {
               <h3 className="font-quicksand font-semibold mb-2">Sản phẩm</h3>
               <Form.Item name="product_id" rules={rules.product_id}>
                 <Select
+                  showSearch
                   placeholder="Chọn sản phẩm"
                   allowClear
                   onChange={handleChangeProduct}
@@ -93,6 +94,18 @@ export default function Update({ products, updateValues }) {
                   onFocus={() => handleFocusPlaceHolder("size")}
                   onBlur={handleBlurPlaceHolder}
                   placeholder={placeHolder.size}
+                  className="font-medium"
+                />
+              </Form.Item>
+
+              <h3 className="font-quicksand font-semibold mb-2">
+                Hàng tồn kho
+              </h3>
+              <Form.Item name="quantity" rules={rules.quantity}>
+                <Input
+                  onFocus={() => handleFocusPlaceHolder("quantity")}
+                  onBlur={handleBlurPlaceHolder}
+                  placeholder={placeHolder.quantity}
                   className="font-medium"
                 />
               </Form.Item>
@@ -132,7 +145,7 @@ export default function Update({ products, updateValues }) {
                     : "bg-red-600 hover:bg-red-800"
                 }`}
               >
-                Cập nhật loại sản phẩm
+                Cập nhật chi tiết sản phẩm
               </Button>
             </Form.Item>
           </Form>

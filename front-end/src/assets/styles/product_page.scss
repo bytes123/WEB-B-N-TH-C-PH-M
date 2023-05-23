@@ -29,12 +29,10 @@
 }
 
 .current-price {
-  font-size: 48px;
   font-weight: 700;
 }
 
 .sale-price {
-  font-size: 12px;
   font-weight: 600;
   margin-bottom: 6px;
   display: block;
@@ -44,7 +42,7 @@
 .old-price {
   text-decoration: line-through;
   color: #b6b6b6;
-  font-size: 28px;
+
   font-weight: 700;
   display: block;
   line-height: 30px;
@@ -121,11 +119,14 @@
 .product_section {
   .visible-transition {
     opacity: 1;
+    visibility: visible;
     height: auto;
     transition: all 0.3s;
   }
 
   .hidden-transition {
+    visibility: hidden;
+    height: 0;
     opacity: 0;
     height: 0;
     transition: opacity 0.3s;
@@ -179,4 +180,25 @@
     transform: translateY(0px);
     transition: all 0.3s;
   }
+}
+.border-rate {
+  border-bottom-color: $star-color;
+}
+.star_select svg {
+  color: #fff !important;
+  stroke: $star-color;
+  font-size: 2.4rem;
+  margin: 0 1rem;
+}
+
+.star_select .star:hover {
+  cursor: pointer;
+}
+
+.star_select .star:hover svg {
+  color: $star-color !important;
+}
+
+.star.active svg {
+  color: $star-color !important;
 }

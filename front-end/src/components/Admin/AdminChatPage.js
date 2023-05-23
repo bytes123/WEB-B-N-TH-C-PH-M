@@ -122,7 +122,9 @@ export default function AdminChatPage() {
 
     if (
       loginedUser &&
-      loginedUser.type_user.some((item) => item.type_user_id == "admin-message")
+      loginedUser.type_user.some(
+        (item) => item.type_user_id == "admin" || item.type_user_id == "staff"
+      )
     ) {
       setPage(
         <ChatForm
@@ -146,5 +148,20 @@ export default function AdminChatPage() {
     }
   }, [loginedUser, location, fetch_chat_list, activeItem]);
 
-  return <div className="">{page}</div>;
+  return (
+    <div className="">
+      {" "}
+      <ChatForm
+        socket={socket}
+        list={fetch_chat_list}
+        user={user}
+        onSendMsg={sendMsg}
+        activeItem={activeItem}
+        setActiveItem={handleActiveItem}
+        onDropMsg={dropMsg}
+        isSubmitting={isSubmitting}
+        setIsSubmitting={setIsSubmitting}
+      />
+    </div>
+  );
 }

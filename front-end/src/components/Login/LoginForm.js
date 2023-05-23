@@ -77,7 +77,7 @@ export default function LoginForm() {
         ) : (
           ""
         )}
-        <div className="login_fb-btn">
+        {/* <div className="login_fb-btn">
           <GoogleLoginButton
             text="Đăng nhập bằng Google"
             className="h-[30px] text-xl my-0 mb-[1.2rem]"
@@ -94,8 +94,8 @@ export default function LoginForm() {
               iconSize="1.6rem"
             />
           </LoginSocialFacebook>
-        </div>
-        <p className="text-center py-4">Hoặc</p>
+        </div> */}
+        {/* <p className="text-center py-4">Hoặc</p> */}
         <Form form={form} onFinish={handleSubmit} initialValues={defaultUser}>
           <Form.Item name="user_name" rules={rules.user_name}>
             <Input

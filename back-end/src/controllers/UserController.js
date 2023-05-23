@@ -129,9 +129,11 @@ module.exports = {
                               console.log("Gửi mail thành công");
                             })
                             .catch((err) => {
+                              console.log(err);
                               return result.status(400).json(err);
                             });
                         } else {
+                          console.log(err);
                           return result.status(400).json(err);
                         }
                       });
