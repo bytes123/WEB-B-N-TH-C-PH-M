@@ -27,16 +27,42 @@ export default function AddressForm({
   const [selectedWard, setSelectedWard] = useState();
   const [selectedAddress, setSelectedAddress] = useState();
 
-  const [mockValues, setMockValues] = useState(values);
+  useEffect(() => {}, [status]);
+
+  const fetchDistrict = async (province) => {
+    try {
+      const response = await axios.get(
+        `https://vapi.vnappmob.com/api/province/district/${province.province_id}`
+      );
+      if (response.data.results.length > 0) {
+        setDistricts(response.data.results);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchWard = async (district) => {
+    try {
+      const response = await axios.get(
+        `https://vapi.vnappmob.com/api/province/ward/${district.district_id}`
+      );
+      if (response.data.results.length > 0) {
+        setWards(response.data.results);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    if (status == "succeeded") {
-      setSelectedProvince();
-      setSelectedDistrict();
-      setSelectedWard();
-      setSelectedAddress("");
+    if (values) {
+      setSelectedProvince(values);
+      setSelectedDistrict(values);
+      fetchDistrict(values);
+      fetchWard(values);
     }
-  }, [status]);
+  }, []);
 
   useEffect(() => {
     if (selectedProvince) {
@@ -153,44 +179,26 @@ export default function AddressForm({
   const handleProvinceChange = async (province) => {
     setSelectedProvince(province);
     setSelectedDistrict("");
-    setMockValues("");
+
     setSelectedWard("");
     setIsOpenProvinces(false);
     clearError();
 
     // Lấy dữ liệu quận/huyện từ API dựa trên tỉnh/thành phố đã chọn
     if (province) {
-      try {
-        const response = await axios.get(
-          `https://vapi.vnappmob.com/api/province/district/${province.province_id}`
-        );
-        if (response.data.results.length > 0) {
-          setDistricts(response.data.results);
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      fetchDistrict(province);
     }
   };
 
   const handleDistrictChange = async (district) => {
     setSelectedDistrict(district);
     setSelectedWard("");
-    setMockValues("");
+
     setIsOpenDistricts(false);
     clearError();
     // Lấy dữ liệu quận/huyện từ API dựa trên tỉnh/thành phố đã chọn
     if (district) {
-      try {
-        const response = await axios.get(
-          `https://vapi.vnappmob.com/api/province/ward/${district.district_id}`
-        );
-        if (response.data.results.length > 0) {
-          setWards(response.data.results);
-        }
-      } catch (error) {
-        console.error(error);
-      }
+      fetchWard(district);
     }
   };
 
@@ -211,7 +219,9 @@ export default function AddressForm({
 
   return (
     <>
-      <h4 className=" font-bold text-xl">Nơi ở & địa chỉ người dùng</h4>
+      <h3 className="font-quicksand font-semibold mb-2">
+        Nơi ở & địa chỉ người dùng
+      </h3>
       <div
         className={`checkout_profile-address-wrapper mb-10 mt-4 rounded-xl ${
           error?.address ? "error-input" : ""
@@ -227,7 +237,7 @@ export default function AddressForm({
           >
             <p>
               {selectedProvince?.province_name ??
-                mockValues?.user_province?.province_name ??
+                values?.province_name ??
                 "Chọn tỉnh,thành"}
             </p>
             <ArrowDropDownIcon />
@@ -270,7 +280,7 @@ export default function AddressForm({
           >
             <p>
               {selectedDistrict?.district_name ??
-                mockValues?.user_district?.district_name ??
+                values?.district_name ??
                 "Chọn Quận / huyện"}
             </p>
             <ArrowDropDownIcon />
@@ -311,7 +321,7 @@ export default function AddressForm({
           >
             <p>
               {selectedWard?.ward_name ??
-                mockValues?.user_ward?.ward_name ??
+                values?.ward_name ??
                 "Chọn Phường / Xã"}
             </p>
             <ArrowDropDownIcon />
@@ -350,7 +360,7 @@ export default function AddressForm({
             type="text"
             placeholder="Nhập địa chỉ"
             name="address"
-            value={selectedAddress ?? mockValues?.address ?? ""}
+            value={selectedAddress ?? values?.address ?? ""}
             onChange={handleAddressChange}
             className="checkout_profile-address h-full rounded-lg h-[33px] p-3 outline-none checkout_text-input w-100"
           />

@@ -11,12 +11,14 @@ import {
   createCustomerRoom,
 } from "../features/message/messageSlice";
 import { loginedUser } from "../utils/hooks/useAccessUser";
-
-const socket = io.connect("http://localhost:3001");
+import { host } from "../static/API";
+import useUser from "../utils/hooks/useUser";
+const socket = io.connect(`http://${host}:3001`);
 
 export default function UserChatPage() {
+  const { isLoading, isToast, user } = useUser(loginedUser);
   const dispatch = useDispatch();
-  const [user, setUser] = React.useState(loginedUser?.user_name);
+  const [fetch_user, setUser] = React.useState(loginedUser?.user_name);
   const [activeItem, setActiveItem] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,19 +33,19 @@ export default function UserChatPage() {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      dispatch(fetchMessageListByUser(user)).unwrap();
+    if (fetch_user) {
+      dispatch(fetchMessageListByUser(fetch_user)).unwrap();
     }
   }, [user]);
 
   useEffect(() => {
     socket.on("send_action", async () => {
-      await dispatch(fetchMessageListByUser(user)).unwrap();
+      await dispatch(fetchMessageListByUser(fetch_user)).unwrap();
       setIsSubmitting(false);
     });
     socket.on("receive_message", async (room) => {
-      if (user) {
-        await dispatch(fetchMessageListByUser(user)).unwrap();
+      if (fetch_user) {
+        await dispatch(fetchMessageListByUser(fetch_user)).unwrap();
       }
 
       if (activeItem && room == activeItem.roomid) {
@@ -53,16 +55,16 @@ export default function UserChatPage() {
   }, [socket, activeItem]);
 
   const sendMsg = async (currentMsg) => {
-    if (loginedUser) {
+    if (user) {
       if (currentMsg !== "") {
         const data = {
           room_id: activeItem.roomid,
-          user_name: user,
+          user_name: fetch_user,
           body: currentMsg,
         };
 
         await socket.emit("send_message", data);
-        await dispatch(fetchMessageListByUser(user)).unwrap();
+        await dispatch(fetchMessageListByUser(fetch_user)).unwrap();
         await dispatch(fetchMessagesByRoom(data.room_id)).unwrap();
       }
     } else {
@@ -73,20 +75,17 @@ export default function UserChatPage() {
   const handleCreateRoom = async () => {
     await dispatch(createCustomerRoom()).unwrap();
 
-    await dispatch(fetchMessageListByUser(user)).unwrap();
+    await dispatch(fetchMessageListByUser(fetch_user)).unwrap();
     await socket.emit("send_action");
   };
 
   return (
     <div className="">
-      {user &&
-      loginedUser.type_user.some(
-        (item) => item.type_user_id == "normal-customer"
-      ) ? (
+      {fetch_user && user?.type_user_id == "normal-customer" ? (
         <ChatForm
           socket={socket}
           list={fetch_chat_list}
-          user={user}
+          user={fetch_user}
           onSendMsg={sendMsg}
           activeItem={activeItem}
           setActiveItem={setActiveItem}
@@ -94,12 +93,14 @@ export default function UserChatPage() {
           setIsSubmitting={setIsSubmitting}
           handleCreateRoom={handleCreateRoom}
         />
-      ) : user && loginedUser?.type_user_id !== "normal-customer" ? (
-        <h1 className="font-semibold text-4xl p-10">
+      ) : fetch_user && user?.type_user_id != "normal-customer" ? (
+        <h1 className="font-semibold text-6xl font-quicksand text-center p-10">
           Trang tin nhắn này chỉ dành cho khách hàng
         </h1>
       ) : (
-        <h1 className="font-semibold text-4xl p-10">Vui lòng đăng nhập</h1>
+        <h1 className="font-semibold font-quicksand text-center text-6xl p-10">
+          Vui lòng đăng nhập
+        </h1>
       )}
     </div>
   );

@@ -12,6 +12,7 @@ import branchSlice from "../features/branch/branchSlice";
 import cartSlice from "../features/cart/cartSlice";
 import billSlice from "../features/bill/billSlice";
 import rateSlice from "../features/rate/rateSlice";
+import statisticSlice from "../features/statistic/statisticSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
     cart: cartSlice,
     bill: billSlice,
     rate: rateSlice,
+    statistic: statisticSlice,
   },
 });

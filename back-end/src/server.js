@@ -32,7 +32,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 
 const sendMsg = async (data) => {
-  await axios.post("http://localhost:8000/send_message", data);
+  await axios.post("http://113.182.61.208:8000/send_message", data);
 };
 
 const io = new Server(server, {

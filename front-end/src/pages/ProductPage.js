@@ -17,7 +17,7 @@ import useProducts from "../utils/hooks/useProducts";
 import MainLoading from "../utils/components/MainLoading";
 import useCart from "../utils/hooks/useCart";
 import Toast from "../utils/components/Toast";
-
+import { host } from "../static/API";
 export default function ProductPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const {
@@ -105,8 +105,8 @@ export default function ProductPage() {
                 className="product_img-single object-contain lg:max-h-[500px]  rounded-2xl"
                 src={
                   product?.image1 !== "default.jpg"
-                    ? `http://localhost:8000/resources/product/${product?.id}/${product?.image1}`
-                    : `http://localhost:8000/resources/product/${product?.image1}`
+                    ? `http://${host}:8000/resources/product/${product?.id}/${product?.image1}`
+                    : `http://${host}:8000/resources/product/${product?.image1}`
                 }
                 alt=""
               />

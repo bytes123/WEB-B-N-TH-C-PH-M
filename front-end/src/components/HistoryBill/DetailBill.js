@@ -10,6 +10,7 @@ import {
   ExclamationCircleOutlined,
   CloseCircleOutlined,
 } from "@ant-design/icons";
+import { host } from "../../static/API";
 import Toast from "../../utils/components/Toast";
 export default function DetailBill({
   bill,
@@ -69,8 +70,8 @@ export default function DetailBill({
                       className="w-[120px]"
                       src={
                         item.image1 !== "default.jpg"
-                          ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
-                          : `http://localhost:8000/resources/product/${item.image1}`
+                          ? `http://${host}:8000/resources/product/${item.product_id}/${item.image1}`
+                          : `http://${host}:8000/resources/product/${item.image1}`
                       }
                       alt=""
                     />

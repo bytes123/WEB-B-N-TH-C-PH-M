@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
-
+import { host } from "../../static/API";
 import { Swiper as Slider, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -20,14 +20,21 @@ export default function Swiper() {
       <SwiperSlide className="h-[380px]">
         <img
           className="object-cover w-100"
-          src="https://queenpack.com.vn/wp-content/uploads/2021/11/banner-queenpack-01.jpeg"
+          src={`http://${host}:8000/resources/images/mooncake-banner.jpg`}
           alt=""
         />
       </SwiperSlide>
       <SwiperSlide className="h-[380px]">
         <img
           className="object-cover w-100"
-          src="https://caylahoa.com/wp-content/uploads/2019/09/banner-banh-trung-thu-tiem-an-ba-zu.jpg"
+          src={`http://${host}:8000/resources/images/veg-banner.jpg`}
+          alt=""
+        />
+      </SwiperSlide>
+      <SwiperSlide className="h-[380px]">
+        <img
+          className="object-cover w-100"
+          src={`http://${host}:8000/resources/images/banner-traicay.jpg`}
           alt=""
         />
       </SwiperSlide>

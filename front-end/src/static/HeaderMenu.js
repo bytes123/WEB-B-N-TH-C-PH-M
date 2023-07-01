@@ -7,21 +7,21 @@ const DesktopMenu = [
     link: path.home,
     value: "Trang chủ",
   },
-  {
-    key: "introduce",
-    link: path.introduce,
-    value: "Giới thiệu",
-  },
+  // {
+  //   key: "introduce",
+  //   link: path.introduce,
+  //   value: "Giới thiệu",
+  // },
   {
     key: "menu",
-    link: path.menu + "/banh-ngot",
-    value: "Thực đơn",
+    link: path.menu,
+    value: "Danh mục",
   },
-  {
-    key: "gift",
-    link: path.gift,
-    value: "Quà tặng",
-  },
+  // {
+  //   key: "gift",
+  //   link: path.gift,
+  //   value: "Quà tặng",
+  // },
   {
     key: "history",
     link: path.history,
@@ -38,6 +38,11 @@ const DesktopMenu = [
     link: path.signup,
     value: "Đăng ký",
   },
+  // {
+  //   key: "message",
+  //   link: path.message,
+  //   value: "Tin nhắn",
+  // },
 ];
 
 const MobileMenu = [
@@ -46,15 +51,15 @@ const MobileMenu = [
     link: "/",
     value: "Trang chủ",
   },
-  {
-    key: "introduce",
-    link: path.introduce,
-    value: "Giới thiệu",
-  },
+  // {
+  //   key: "introduce",
+  //   link: path.introduce,
+  //   value: "Giới thiệu",
+  // },
   {
     key: "menu",
     link: path.menu + "/banh-ngot",
-    value: "Thực đơn",
+    value: "Danh mục",
     // children: [
     //   {
     //     key: "coffe",
@@ -92,11 +97,16 @@ const MobileMenu = [
     //   },
     // ],
   },
-  {
-    key: "gift",
-    link: path.gift,
-    value: "Quà tặng",
-  },
+  // {
+  //   key: "message",
+  //   link: path.message,
+  //   value: "Tin nhắn",
+  // },
+  // {
+  //   key: "gift",
+  //   link: path.gift,
+  //   value: "Quà tặng",
+  // },
   {
     key: "admin",
     link: path.admin,

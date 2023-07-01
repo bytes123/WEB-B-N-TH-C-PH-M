@@ -17,7 +17,6 @@ module.exports = {
     });
   },
   getAllMainProduct: (req, res) => {
-    console.log(1);
     Products.getAllMainProduct((err, response) => {
       if (err) throw err;
       res.status(200).json(response);
@@ -25,7 +24,7 @@ module.exports = {
   },
   getTopProducts: (req, result) => {
     const { type, quantity, category_id } = req.body;
-    console.log(type);
+    console.log(type, quantity, category_id);
     if (type == "newest") {
       if (category_id !== "all") {
         DetailProduct.getTopProductsByCategory(
@@ -36,7 +35,7 @@ module.exports = {
           (err, response) => {
             if (err) result.status(500).json(err);
             if (result) {
-              result.status(200).json({
+              return result.status(200).json({
                 type: type,
                 products: response,
               });
@@ -45,6 +44,7 @@ module.exports = {
         );
       } else {
         DetailProduct.getTopProducts(quantity, (err, response) => {
+          console.log(err);
           if (err) result.status(500).json(err);
           if (result) {
             result.status(200).json({
@@ -82,6 +82,80 @@ module.exports = {
             });
           }
         });
+      }
+    } else if (type == "DESC") {
+      if (category_id !== "all") {
+        DetailProduct.getProductsByCategoryDESC(
+          {
+            category_id: category_id,
+            quantity: quantity,
+            sort: "DESC",
+          },
+          (err, response) => {
+            if (err) result.status(500).json(err);
+            if (result) {
+              return result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
+      } else {
+        DetailProduct.getTopProductsSORT(
+          {
+            quantity: quantity,
+            sort: "DESC",
+          },
+          (err, response) => {
+            console.log(err);
+            if (err) result.status(500).json(err);
+            if (result) {
+              result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
+      }
+    } else if (type == "ASC") {
+      if (category_id !== "all") {
+        DetailProduct.getProductsByCategoryDESC(
+          {
+            category_id: category_id,
+            quantity: quantity,
+            sort: "ASC",
+          },
+          (err, response) => {
+            if (err) result.status(500).json(err);
+            if (result) {
+              console.log(response);
+              return result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
+      } else {
+        DetailProduct.getTopProductsSORT(
+          {
+            quantity: quantity,
+            sort: "ASC",
+          },
+          (err, response) => {
+            console.log(err);
+            if (err) result.status(500).json(err);
+            if (result) {
+              console.log(response);
+              result.status(200).json({
+                type: type,
+                products: response,
+              });
+            }
+          }
+        );
       }
     }
   },

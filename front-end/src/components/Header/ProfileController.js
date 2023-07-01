@@ -22,6 +22,15 @@ export default function ProfileController({ children, user, isAdmin }) {
             </Link>
           </li>
           <li className="profile-item p-3 mb-5 ">
+            <Link
+              to="/thong-tin-ca-nhan"
+              className="flex items-center h-[40px]"
+            >
+              <CgPassword className="text-5xl" />
+              <span className="ml-5 font-semibold">Thông tin cá nhân</span>
+            </Link>
+          </li>
+          <li className="profile-item p-3 mb-5 ">
             <Link to="/tin-nhan" className="flex items-center h-[40px]">
               <BiMessageRoundedDots className="text-5xl" />
               <span className="ml-5 font-semibold">Nhắn tin hỗ trợ</span>
@@ -31,12 +40,6 @@ export default function ProfileController({ children, user, isAdmin }) {
             <Link to="/lich-su" className="flex items-center h-[40px]">
               <FaMoneyBillWave className="text-5xl" />
               <span className="ml-5 font-semibold">Lịch sử đơn hàng</span>
-            </Link>
-          </li>
-          <li className="profile-item p-3 mb-5 ">
-            <Link to="/doi-mat-khau" className="flex items-center h-[40px]">
-              <CgPassword className="text-5xl" />
-              <span className="ml-5 font-semibold">Đổi mật khẩu</span>
             </Link>
           </li>
         </>

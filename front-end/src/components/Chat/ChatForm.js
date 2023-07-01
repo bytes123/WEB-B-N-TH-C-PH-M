@@ -16,6 +16,7 @@ import { BiMessageRoundedAdd } from "react-icons/bi";
 import { RiSendPlaneFill } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
 import Time from "../../utils/components/Time";
+import { host } from "../../static/API";
 
 export default function ChatForm({
   list,
@@ -115,8 +116,8 @@ export default function ChatForm({
                       className="rounded-full object-cover w-[50px] h-[40px]"
                       src={
                         item?.partner_avatar
-                          ? `http://localhost:8000/resources/avatar/${item.partner_avatar}`
-                          : "http://localhost:8000/resources/avatar/default.jpg"
+                          ? `http://${host}:8000/resources/avatar/${item.partner_avatar}`
+                          : `http://${host}:8000/resources/avatar/default.jpg`
                       }
                       alt=""
                     />
@@ -155,8 +156,8 @@ export default function ChatForm({
               <img
                 src={
                   activeContactUser?.avatar
-                    ? `http://localhost:8000/resources/avatar/${activeContactUser.avatar}`
-                    : "http://localhost:8000/resources/avatar/default.jpg"
+                    ? `http://${host}:8000/resources/avatar/${activeContactUser.avatar}`
+                    : `http://${host}:8000/resources/avatar/default.jpg`
                 }
                 className="w-[40px] rounded-full"
                 alt=""
@@ -204,8 +205,8 @@ export default function ChatForm({
                           <img
                             src={
                               item?.avatar
-                                ? `http://localhost:8000/resources/avatar/${item.avatar}`
-                                : "http://localhost:8000/resources/avatar/default.jpg"
+                                ? `http://${host}:8000/resources/avatar/${item.avatar}`
+                                : `http://${host}:8000/resources/avatar/default.jpg`
                             }
                             className="w-[30px] h-[30px] rounded-full"
                             alt=""

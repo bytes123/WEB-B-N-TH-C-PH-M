@@ -27,7 +27,7 @@ import {
 } from "../features/category/categorySlice";
 
 import HeaderSection from "../components/Cart/HeaderSection";
-
+import { host } from "../static/API";
 const { Header: AntdHeader } = Layout;
 
 const desktopMenuClass =
@@ -124,7 +124,7 @@ export default function Header({ className }) {
         <HeaderBarIcon active={isBarActive} onClick={handleMobileBar} />
         <div className="header_image-wrapper">
           <img
-            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
+            src={`http://${host}:8000/resources/images/logo.svg`}
             className="cursor-pointer w-[140px]"
             onClick={() => navigate("/")}
           />

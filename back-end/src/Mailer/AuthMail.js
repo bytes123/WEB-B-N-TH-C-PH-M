@@ -50,7 +50,7 @@ async function resetLink(email, id) {
                                           <p style="color:#455056; font-size:15px;line-height:24px; margin:0;">
                                          Một liên kết duy nhất để xác thực tài khoản của bạn đã được tạo cho bạn. Để xác thực tài khoản của bạn, nhấp vào liên kết sau và làm theo hướng dẫn.
                                           </p>
-                                          <a href="http://localhost:3000/xac-thuc-tai-khoan/${id}"
+                                          <a href="http://113.182.61.208/:3000/xac-thuc-tai-khoan/${id}"
                                               style="background:#20e277;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;">Xác thực tài khoản</a>
                                       </td>
                                   </tr>

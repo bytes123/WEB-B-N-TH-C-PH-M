@@ -13,6 +13,7 @@ export default function ClassifySection({
   activeSortIndex,
   onActiveDisplayIndex,
   onActiveSortIndex,
+  productLength,
 }) {
   return (
     <div
@@ -21,8 +22,8 @@ export default function ClassifySection({
       {text ? (
         <div className="search_section-label">
           <span className="font-bold opacity-60 text-2xl">
-            Hiện có <span className="text-lime-600 ">30</span> {text} dành cho
-            bạn
+            Hiện có <span className="text-lime-600 ">{productLength}</span>{" "}
+            {text} dành cho bạn
           </span>
         </div>
       ) : (

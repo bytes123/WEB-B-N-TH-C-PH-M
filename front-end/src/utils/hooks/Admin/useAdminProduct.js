@@ -14,33 +14,26 @@ import {
   resetSearchStatus,
   getFetchSearchStatus,
   fetchSearchProduct,
-  fetchMainProducts,
-  getMainProducts,
 } from "../../../features/product/productSlice";
 import { useLocation } from "react-router-dom";
 import {
   fetchCategory,
   getCategories,
 } from "../../../features/category/categorySlice";
-import { fetchBranch, getBranch } from "../../../features/branch/branchSlice";
 import { fetchBrands, getBrands } from "../../../features/brand/brandSlice";
 
 export default function useAdminProduct(
-  addSuccess,
-  updateSuccess,
-  deleteSuccess,
-  resetToast
+  handleCloseEdit,
+  handleCloseDelete,
+  handleCloseAdd
 ) {
   const dispatch = useDispatch();
   const fetch_products = useSelector(getProducts);
-  const fetch_main_products = useSelector(getMainProducts);
   const fetch_category = useSelector(getCategories);
   const fetch_brands = useSelector(getBrands);
-  const fetch_branches = useSelector(getBranch);
   const [products, setProducts] = useState([]);
-  const [mainProducts, setMainProducts] = useState([]);
+
   const [categories, setCategories] = useState([]);
-  const [branches, setBranches] = useState([]);
   const [brands, setBrands] = useState([]);
   const add_status = useSelector(getAddStatus);
   const update_status = useSelector(getUpdateStatus);
@@ -53,6 +46,51 @@ export default function useAdminProduct(
   const search_products = useSelector(getSearchProducts);
   const search_status = useSelector(getSearchStatus);
   const fetch_search_status = useSelector(getFetchSearchStatus);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isToast, setIsToast] = useState({
+    style: "",
+    value: false,
+    body: "",
+  });
+
+  const resetToast = () => {
+    setIsToast({
+      style: "",
+      value: false,
+      body: "",
+    });
+  };
+
+  const addSuccess = () => {
+    handleCloseAdd();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Thêm sản phẩm thành công",
+    });
+    setIsLoading(false);
+  };
+
+  const updateSuccess = () => {
+    handleCloseEdit();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Cập nhật sản phẩm thành công",
+    });
+    setIsLoading(false);
+  };
+
+  const deleteSuccess = () => {
+    handleCloseDelete();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Xóa sản phẩm thành công",
+    });
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     if (fetch_search_status == "succeeded") {
@@ -100,53 +138,32 @@ export default function useAdminProduct(
   useEffect(() => {
     console.log(1);
     dispatch(fetchProducts()).unwrap();
-    dispatch(fetchMainProducts()).unwrap();
     dispatch(fetchCategory()).unwrap();
     dispatch(fetchBrands()).unwrap();
-    dispatch(fetchBranch()).unwrap();
   }, []);
 
   useEffect(() => {
-    if (fetch_products?.length) {
-      console.log(fetch_products);
-      console.log(fetch_products);
-      setProducts(fetch_products);
-    }
+    setProducts(fetch_products);
   }, [fetch_products]);
 
   useEffect(() => {
-    if (fetch_category?.length) {
-      setCategories(fetch_category);
-    }
+    setCategories(fetch_category);
   }, [fetch_category]);
 
   useEffect(() => {
-    if (fetch_main_products?.length) {
-      setMainProducts(fetch_main_products);
-    }
-  }, [fetch_main_products]);
-
-  useEffect(() => {
-    if (fetch_brands?.length) {
-      setBrands(fetch_brands);
-    }
+    setBrands(fetch_brands);
   }, [fetch_brands]);
 
   useEffect(() => {
-    if (fetch_branches?.length) {
-      setBranches(fetch_branches);
-    }
-  }, [fetch_branches]);
-
-  useEffect(() => {
-    if (add_status == "succeeded") {
-      const reset = async () => {
+    if (add_status == "loading") {
+      setIsLoading(true);
+    } else if (add_status == "succeeded") {
+      setTimeout(async () => {
         await dispatch(fetchProducts()).unwrap();
         addSuccess();
-      };
-      reset();
-    } else {
-      console.log("test");
+      }, 2000);
+    } else if (add_status == "failed") {
+      setIsLoading(false);
     }
 
     return () => {
@@ -156,18 +173,19 @@ export default function useAdminProduct(
   }, [add_status]);
 
   useEffect(() => {
+    if (update_status == "loading") {
+      setIsLoading(true);
+    }
     if (!currentSearch && update_status == "succeeded") {
-      const reset = async () => {
+      setTimeout(async () => {
         await dispatch(fetchProducts()).unwrap();
         updateSuccess();
-      };
-      reset();
+      }, 2000);
     } else if (currentSearch && update_status == "succeeded") {
-      const reset = async () => {
+      setTimeout(async () => {
         await dispatch(fetchSearchProduct(currentSearch)).unwrap();
         updateSuccess();
-      };
-      reset();
+      }, 2000);
     }
 
     return () => {
@@ -177,18 +195,21 @@ export default function useAdminProduct(
   }, [update_status]);
 
   useEffect(() => {
+    if (delete_status == "loading") {
+      setIsLoading(true);
+    }
     if (!currentSearch && delete_status == "succeeded") {
-      const reset = async () => {
+      setTimeout(async () => {
         await dispatch(fetchProducts()).unwrap();
         deleteSuccess();
-      };
-      reset();
+        setIsLoading(false);
+      }, 2000);
     } else if (currentSearch && delete_status == "succeeded") {
-      const reset = async () => {
+      setTimeout(async () => {
         await dispatch(fetchSearchProduct(currentSearch)).unwrap();
-        updateSuccess();
-      };
-      reset();
+        deleteSuccess();
+        setIsLoading(false);
+      }, 2000);
     }
 
     return () => {
@@ -199,14 +220,15 @@ export default function useAdminProduct(
 
   return {
     products,
-    mainProducts,
     categories,
-    branches,
     brands,
     handleSearch,
     isLoadingSearch,
     isSearch,
     isLoadingAllProducts,
     handleOutSearch,
+    isLoading,
+    isToast,
+    setIsToast,
   };
 }

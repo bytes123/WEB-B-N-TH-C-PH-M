@@ -1,5 +1,5 @@
 import React from "react";
-
+import { host } from "../../static/API";
 export default function HeaderUser({ onPopup, className, user }) {
   return (
     <div className="relative bottom-1 block " onClick={onPopup}>
@@ -8,8 +8,8 @@ export default function HeaderUser({ onPopup, className, user }) {
           className={`rounded-full ${className}`}
           src={
             user?.avatar
-              ? `http://localhost:8000/resources/avatar/${user.avatar}`
-              : "http://localhost:8000/resources/avatar/default.jpg"
+              ? `http://${host}:8000/resources/avatar/${user.avatar}`
+              : `http://${host}:8000/resources/avatar/default.jpg`
           }
           alt=""
         />

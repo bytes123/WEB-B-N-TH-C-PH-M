@@ -3,18 +3,38 @@ const db = require("./../db");
 
 var User = {
   getUser: (data, callback) => {
-    let sql = "SELECT * FROM users WHERE user_name = ? ";
-    return db.query(sql, [data.user_name], callback);
+    let sql = `
+      SELECT * FROM (
+        SELECT dt.type_user_id,u.user_name,u.isLocked,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
+        FROM customers c 
+        INNER JOIN users u ON u.user_name = c.user_name 
+        INNER JOIN detail_type_user dt ON u.user_name = dt.user_name 
+        WHERE u.isAuth = 1 AND u.user_name = ? OR u.email = ?
+        UNION ALL 
+        SELECT dt.type_user_id,u.user_name,u.isLocked,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
+        FROM STAFFS s 
+        INNER JOIN users u ON u.user_name = s.user_name 
+        INNER JOIN detail_type_user dt ON u.user_name = dt.user_name 
+        WHERE u.isAuth = 1 AND u.user_name = ? OR u.email = ?
+      ) AS subquery
+      ORDER BY order_date DESC
+      `;
+    console.log(sql);
+    return db.query(
+      sql,
+      [data.user_name, data.email, data.user_name, data.email],
+      callback
+    );
   },
   getAllUser: (callback) => {
     let sql = `
     SELECT * FROM (
-      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
+      SELECT u.user_name,u.isLocked,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
       FROM customers c 
       INNER JOIN users u ON u.user_name = c.user_name 
       WHERE u.isAuth = 1 
       UNION ALL 
-      SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
+      SELECT u.user_name,u.isLocked,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
       FROM STAFFS s 
       INNER JOIN users u ON u.user_name = s.user_name 
       WHERE u.isAuth = 1 
@@ -54,13 +74,13 @@ var User = {
   getUserConfirmed: (data, callback) => {
     let sql = `SELECT combined.*
         FROM (
-          SELECT c.*, u.createdAt,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
+          SELECT c.*, u.createdAt,u.isLocked,u.invalidLoginNum,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
           FROM customers c
           LEFT JOIN staffs s ON c.user_name = s.user_name
           LEFT JOIN users u ON c.user_name = u.user_name
           WHERE c.user_name IS NOT NULL
           UNION ALL
-          SELECT s.*, u.createdAt,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
+          SELECT s.*, u.createdAt,u.isLocked,u.invalidLoginNum,u.password, u.isAuth, u.online, u.email, COALESCE(u.avatar, 'default.jpg') AS avatar
           FROM customers c
           RIGHT JOIN staffs s ON c.user_name = s.user_name
           LEFT JOIN users u ON s.user_name = u.user_name
@@ -73,6 +93,7 @@ var User = {
   },
   getUserByMail: (data, callback) => {
     let sql = "SELECT * FROM users WHERE email = ? AND isAuth = 1";
+    console.log(data.email);
     return db.query(sql, [data.email], callback);
   },
   getUserAuth: (data, callback) => {
@@ -106,6 +127,21 @@ var User = {
     let sql = "UPDATE users SET ? WHERE user_name = ?";
     db.query(sql, [data.user, data.current_user_name], callback);
   },
+  updateInvalidLogin: (username, callback) => {
+    let sql =
+      "UPDATE users SET invalidLoginNum = invalidLoginNum+1 WHERE user_name = ?";
+    db.query(sql, username, callback);
+  },
+  updateLocked: (data, callback) => {
+    if (data.isLocked == 1) {
+      let sql = "UPDATE users SET isLocked = ? WHERE user_name = ?";
+      db.query(sql, [data.isLocked, data.user_name], callback);
+    } else {
+      let sql =
+        "UPDATE users SET isLocked = ?,invalidLoginNum = 0 WHERE user_name = ?";
+      db.query(sql, [data.isLocked, data.user_name], callback);
+    }
+  },
   setCustomer: (data, callback) => {
     let sql = "INSERT INTO customers SET ?;";
     db.query(sql, [data], callback);
@@ -118,6 +154,10 @@ var User = {
     let sql = "UPDATE staffs SET ? WHERE user_name = ?";
     db.query(sql, [data.staff, data.current_user_name], callback);
   },
+  updateCustomer: (data, callback) => {
+    let sql = "UPDATE customers SET ? WHERE user_name = ?";
+    db.query(sql, [data.customer, data.current_user_name], callback);
+  },
   checkDetailTypeUser: (data, callback) => {
     let sql =
       "SELECT * FROM detail_type_user WHERE user_name = ? AND type_user_id = ?";
@@ -128,23 +168,27 @@ var User = {
     db.query(sql, [data], callback);
   },
   deleteDetailTypeUser: (data, callback) => {
-    let sql =
-      "DELETE FROM detail_type_user WHERE user_name = ? AND type_user_id = ? ";
-    db.query(sql, [data.user_name, data.type_user_id], callback);
+    let sql = "DELETE FROM detail_type_user WHERE user_name = ? ";
+
+    db.query(sql, [data.current_user_name], callback);
   },
   updateOnline: (data, callback) => {
     let sql = "UPDATE users SET online = ? WHERE user_name = ?";
     db.query(sql, [data.online, data.user_name], callback);
   },
+  changePassword: (data, callback) => {
+    let sql = "UPDATE users SET password = ? ,updatedAt = ? WHERE email = ?";
+    db.query(sql, [data.password, data.updatedAt, data.email], callback);
+  },
   searchUser: (data, callback) => {
     let sql = `
       SELECT * FROM (
-        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
+        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.isLocked,u.online,u.createdAt,u.updatedAt, c.fullname,c.gender, c.province_id,c.province_name, c.district_id,c.district_name, c.ward_id,c.ward_name, c.phone_number, c.address, u.createdAt as order_date 
         FROM customers c 
         INNER JOIN users u ON u.user_name = c.user_name 
         WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 
         UNION ALL 
-        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
+        SELECT u.user_name,u.avatar,u.email,u.isAuth,u.isLocked,u.online,u.createdAt,u.updatedAt, s.fullname,s.gender, s.province_id, s.province_name, s.district_id,s.district_name, s.ward_id,s.ward_name, s.phone_number, s.address, u.createdAt as order_date 
         FROM STAFFS s 
         INNER JOIN users u ON u.user_name = s.user_name 
         WHERE u.user_name LIKE ? OR u.email LIKE ? AND u.isAuth = 1 

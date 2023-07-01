@@ -18,7 +18,6 @@ import {
   HomePage,
   IntroducePage,
   GiftPage,
-  MenuPage,
   LoginPage,
   SignUpPage,
   ProductPage,
@@ -28,19 +27,17 @@ import {
   WishLishPage,
   CartPage,
   ProfilePage,
-  ChangePasswordPage,
   SuccessAuth,
+  UserChatPage,
+  AdminChatPage,
+  ForgotPasswordPage,
+  CheckoutPage,
 } from "../static/Pages";
 import "./../assets/styles/App.scss";
 import Header from "../layout/Header";
 import Footer from "../layout/Footer";
-import UserChatPage from "../pages/UserChatPage";
-import AdminChatPage from "./Admin/AdminChatPage";
-
 import { loginedUser } from "../utils/hooks/useAccessUser";
 import { updateOnline } from "../features/authen/authenSlice";
-import MainArea from "./Admin/MainArea";
-import CheckoutPage from "../pages/CheckoutPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -165,15 +162,6 @@ const App = () => {
           }
         />
 
-        <Route
-          path="admin/quan-ly-chi-nhanh"
-          element={
-            <AdminPage>
-              <MainArea />
-            </AdminPage>
-          }
-        />
-
         {Object.values(path).map((route) => (
           <Route
             key={route}
@@ -183,7 +171,7 @@ const App = () => {
                 <Header />
                 {route === path.home ? <HomePage /> : null}
                 {route === path.introduce ? <IntroducePage /> : null}
-                {route === path.menu ? <MenuPage /> : null}
+                {route === path.menu ? <MenuItemPage /> : null}
                 {route === path.gift ? <GiftPage /> : null}
                 {route === path.login ? <LoginPage /> : null}
                 {route === path.signup ? <SignUpPage /> : null}
@@ -199,7 +187,7 @@ const App = () => {
           element={
             <Layout className="h-full bg-white">
               <Header />
-              <MenuPage />
+              <MenuItemPage />
               <Footer />
             </Layout>
           }
@@ -209,8 +197,19 @@ const App = () => {
           path="tin-nhan"
           element={
             <Layout className="h-full bg-white">
-              <Header className="relative" />
+              <Header />
               <UserChatPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="reset-password"
+          element={
+            <Layout className="h-full bg-white">
+              <Header />
+              <ForgotPasswordPage />
+              <Footer />
             </Layout>
           }
         />
@@ -263,17 +262,6 @@ const App = () => {
             <Layout className="h-full bg-white">
               <Header />
               <ProfilePage />
-              <Footer />
-            </Layout>
-          }
-        />
-
-        <Route
-          path="doi-mat-khau"
-          element={
-            <Layout className="h-full bg-white">
-              <Header />
-              <ChangePasswordPage />
               <Footer />
             </Layout>
           }

@@ -6,7 +6,7 @@ import { commomBoxList } from "../../static/AdminData";
 export default function MainDashBoard() {
   return (
     <div className="main-dashboard container mx-auto">
-      <Row className="h-full">
+      {/* <Row className="h-full">
         <Section span={24} lg={8} xl={8} className="h-full">
           <div className="section-earning p-8 flex justify-between">
             <div>
@@ -40,7 +40,10 @@ export default function MainDashBoard() {
             <h2 className="font-bold text-3xl opacity-80">Revenue Updates</h2>
           </div>
         </Section>
-      </Row>
+      </Row> */}
+      <h1 className="font-quicksand text-semibold text-6xl text-center mt-20">
+        WEBSITE BÁN THỰC PHẨM
+      </h1>
     </div>
   );
 }

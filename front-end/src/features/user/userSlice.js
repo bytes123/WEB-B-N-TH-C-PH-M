@@ -8,6 +8,9 @@ import {
   UPDATE_STAFF_URL,
   SEARCH_USER_URL,
   LOGIN_FB_URL,
+  LOCK_USER_URL,
+  UPDATE_CUSTOMER_URL,
+  USER_URL,
 } from "../../static/API";
 import { handleLogIn } from "../../utils/hooks/useAccessUser";
 
@@ -26,6 +29,7 @@ const initialState = {
   search_status: "",
   fetch_search_status: "",
   search_users: [],
+  lock_status: "",
 };
 
 export const loginFB = createAsyncThunk("user/fb-login", async (data) => {
@@ -37,6 +41,12 @@ export const loginFB = createAsyncThunk("user/fb-login", async (data) => {
 
 export const loginRequest = createAsyncThunk("user/login", async (user) => {
   const response = await axios.post(LOGIN_URL, user);
+
+  return response.data;
+});
+
+export const fetchUser = createAsyncThunk("user/get-user", async (user) => {
+  const response = await axios.post(USER_URL, user);
 
   return response.data;
 });
@@ -57,6 +67,36 @@ export const updateStaff = createAsyncThunk(
       data: formData,
       headers: { "Content-Type": "multipart/form-data" },
     });
+
+    return response.data;
+  }
+);
+
+export const updateCustomer = createAsyncThunk(
+  "user/update-customer",
+  async (data) => {
+    const formData = new FormData();
+    if (data?.avatar) {
+      formData.append("avatar", data.avatar);
+      delete data.avatar;
+    }
+
+    formData.append("data", JSON.stringify(data));
+    const response = await axios({
+      method: "post",
+      url: UPDATE_CUSTOMER_URL,
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return response.data;
+  }
+);
+
+export const LockAccount = createAsyncThunk(
+  "user/lock_account",
+  async (data) => {
+    const response = await axios.post(LOCK_USER_URL, data);
 
     return response.data;
   }
@@ -115,8 +155,14 @@ const userSlice = createSlice({
     resetErrors(state, status) {
       state.errors = {};
     },
+    resetError(state, status) {
+      state.error = "";
+    },
     resetSearchStatus(state, action) {
       state.search_status = "";
+    },
+    resetLockStatus(state, action) {
+      state.lock_status = "";
     },
   },
   extraReducers(builder) {
@@ -125,14 +171,7 @@ const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(loginRequest.fulfilled, (state, action) => {
-        console.log(action.payload);
-        if (action.payload == "FAILED_LOGIN") {
-          return { ...state, error: action.payload }; // Tạo bản sao mới của trạng thái với error được cập nhật
-        }
-
-        if (action.payload == "USER_NOT_CONFIRMED") {
-          return { ...state, error: action.payload }; // Tạo bản sao mới của trạng thái với error được cập nhật
-        }
+        state.error = action.payload;
 
         if (typeof action.payload === "object") {
           console.log(action.payload);
@@ -143,6 +182,11 @@ const userSlice = createSlice({
       .addCase(loginRequest.rejected, (state, action) => {
         state.status = "failed";
       })
+      .addCase(fetchUser.pending, (state, action) => {})
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {})
       .addCase(fetchAllUser.pending, (state, action) => {
         state.get_users_status = "loading";
       })
@@ -170,7 +214,9 @@ const userSlice = createSlice({
         }
       })
       .addCase(fetchAdminTypeUser.rejected, (state, action) => {})
-      .addCase(updateStaff.pending, (state, action) => {})
+      .addCase(updateStaff.pending, (state, action) => {
+        state.update_status = "loading";
+      })
       .addCase(updateStaff.fulfilled, (state, action) => {
         console.log(action.payload);
         if (action.payload.includes("USER_EXISTS")) {
@@ -186,7 +232,30 @@ const userSlice = createSlice({
           state.update_status = "succeeded";
         }
       })
-      .addCase(updateStaff.rejected, (state, action) => {})
+      .addCase(updateStaff.rejected, (state, action) => {
+        state.update_status = "failed";
+      })
+      .addCase(updateCustomer.pending, (state, action) => {
+        state.update_status = "loading";
+      })
+      .addCase(updateCustomer.fulfilled, (state, action) => {
+        console.log(action.payload);
+        if (action.payload.includes("USER_EXISTS")) {
+          state.errors.user_name = "Tài khoản đã tồn tại";
+          state.update_status = "failed";
+        }
+
+        if (action.payload.includes("EMAIL_EXISTS")) {
+          state.errors.email = "Email đã tồn tại";
+          state.update_status = "failed";
+        }
+        if (action.payload == "SUCCESS_UPDATE") {
+          state.update_status = "succeeded";
+        }
+      })
+      .addCase(updateCustomer.rejected, (state, action) => {
+        state.update_status = "failed";
+      })
       .addCase(searchUser.pending, (state, action) => {
         state.search_status = "loading";
       })
@@ -206,6 +275,15 @@ const userSlice = createSlice({
       })
       .addCase(fetchSearchUser.rejected, (state, action) => {
         state.fetch_search_status = "failed";
+      })
+      .addCase(LockAccount.pending, (state, action) => {
+        state.lock_status = "loading";
+      })
+      .addCase(LockAccount.fulfilled, (state, action) => {
+        state.lock_status = action.payload;
+      })
+      .addCase(LockAccount.rejected, (state, action) => {
+        state.lock_status = "failed";
       });
   },
 });
@@ -224,12 +302,15 @@ export const getAdminType = (state) => state.user.admin_type_user;
 export const getSearchStatus = (state) => state.user.search_status;
 export const getFetchSearchStatus = (state) => state.user.fetch_search_status;
 export const getSearchUsers = (state) => state.user.search_users;
+export const getLockStatus = (state) => state.user.lock_status;
 export const {
   resetDeleteStatus,
   resetErrors,
   resetUpdateStatus,
   handleSearchUsers,
   resetSearchStatus,
+  resetError,
+  resetLockStatus,
 } = userSlice.actions;
 
 export default userSlice.reducer;

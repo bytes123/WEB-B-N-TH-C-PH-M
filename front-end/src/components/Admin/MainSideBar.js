@@ -3,7 +3,7 @@ import { ReactComponent as StarBucksIcon } from "../../assets/icons/starbucks.sv
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { sideBarList } from "../../static/AdminData";
-
+import { host } from "../../static/API";
 export default function MainSideBar({ isBarActive, onBarActive }) {
   let navigate = useNavigate();
   const location = useLocation();
@@ -18,15 +18,15 @@ export default function MainSideBar({ isBarActive, onBarActive }) {
         className="sidebar_close-wrapper hv p-3 absolute right-4 top-4"
         onClick={onBarActive}
       >
-        <AiOutlineCloseCircle className="sidebar_close-ico block cursor-pointer text-xl header_bar-color  text-sky-300 text-4xl" />
+        <AiOutlineCloseCircle className="sidebar_close-ico block cursor-pointer text-xl header_bar-color  text-green-300 text-4xl" />
       </div>
       <div
-        className="sidebar_icon inline-block cursor-pointer mb-12"
+        className="sidebar_icon block cursor-pointer mb-12"
         onClick={() => navigate("/")}
       >
-        <div className="flex items-center">
+        <div className="flex justify-center">
           <img
-            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/theme/logo.svg"
+            src={`http://${host}:8000/resources/images/logo.svg`}
             className="w-[150px]"
             alt=""
           />
@@ -42,7 +42,7 @@ export default function MainSideBar({ isBarActive, onBarActive }) {
                   key={item.key}
                   className={`sidebar_sub-item rounded-lg m-4 ${
                     location.pathname == "/admin/" + item.link
-                      ? "bg-sky-500 text-white active"
+                      ? "bg-green-500 text-white active"
                       : ""
                   }`}
                 >
@@ -51,7 +51,7 @@ export default function MainSideBar({ isBarActive, onBarActive }) {
                     className="flex p-5 items-center text-xl  "
                   >
                     <span>{item.icon}</span>
-                    <span className="ml-5">{item.text}</span>
+                    <span className="ml-5 font-semibold">{item.text}</span>
                   </Link>
                 </li>
               ))}

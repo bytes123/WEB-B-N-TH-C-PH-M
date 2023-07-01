@@ -133,11 +133,14 @@ export default function MainBill() {
       title: "Đơn giá",
       dataIndex: "bill_price",
       key: "bill_price",
-      render: (bill_price) =>
-        bill_price.toLocaleString("it-IT", {
-          style: "currency",
-          currency: "VND",
-        }),
+      render: (bill_price) => (
+        <p className="font-semibold">
+          {bill_price.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </p>
+      ),
     },
     {
       title: "Hình thức thanh toán",
@@ -159,7 +162,7 @@ export default function MainBill() {
       render: (data) => <Time timestamp={data} />,
     },
     {
-      title: "Thao tác",
+      title: "Chi tiết",
       dataIndex: "id",
       key: "watch",
       render: (bill_id) => (
@@ -168,7 +171,7 @@ export default function MainBill() {
             className="btn-dark font-semibold "
             onClick={() => handleOpenDetailBill(bill_id, true)}
           >
-            Xem chi tiết
+            Xem
           </button>
         </div>
       ),
@@ -177,53 +180,39 @@ export default function MainBill() {
       title: "Trạng thái đơn hàng",
       dataIndex: "bill_statement",
       key: "bill_statement",
-      render: (_, { bill_statement }) => {
+      render: (bill_statement, bill, index) => {
         let color = "";
-        if (bill_statement == "canceled") {
+        if (bill.bill_statement == "canceled") {
           color = "volcano";
-        } else if (bill_statement == "confirmed") {
+        } else if (bill.bill_statement == "confirmed") {
           color = "green";
-        } else if (bill_statement == "ship_success") {
+        } else if (bill.bill_statement == "ship_success") {
           color = "green";
-        } else if (bill_statement == "success") {
+        } else if (bill.bill_statement == "success") {
           color = "green";
-        } else if (bill_statement == "pending") {
+        } else if (bill.bill_statement == "pending") {
           color = "gold";
         }
         return (
-          <div className="flex justify-center">
-            <Tag color={color} key={bill_statement}>
-              {bill_statement == "ship_success"
+          <div className="text-center">
+            <Tag color={color} key={bill.bill_statement} className="mb-4">
+              {bill.bill_statement == "ship_success"
                 ? "Giao thành công".toUpperCase()
                 : ""}
-              {bill_statement == "success"
+              {bill.bill_statement == "success"
                 ? "Nhận hàng thành công".toUpperCase()
                 : ""}
-              {bill_statement == "confirmed" ? "Đã duyệt".toUpperCase() : ""}
-              {bill_statement == "canceled" ? "Đã hủy".toUpperCase() : ""}
-              {bill_statement == "pending"
+              {bill.bill_statement == "confirmed"
+                ? "Đã duyệt".toUpperCase()
+                : ""}
+              {bill.bill_statement == "canceled" ? "Đã hủy".toUpperCase() : ""}
+              {bill.bill_statement == "pending"
                 ? "Đang chờ duyệt".toUpperCase()
                 : ""}
             </Tag>
-          </div>
-        );
-      },
-    },
-    {
-      title: "Trạng thái thanh toán",
-      dataIndex: "bill_payed",
-      key: "bill_payed",
-      render: (_, { bill_payed }) => {
-        let color = "";
-        if (bill_payed) {
-          color = "green";
-        } else {
-          color = "gold";
-        }
-        return (
-          <div className="flex justify-center">
-            <Tag color={color} key={bill_payed}>
-              {bill_payed
+            <br />
+            <Tag color={color} key={bill.bill_payed}>
+              {bill.bill_payed
                 ? "ĐÃ THANH TOÁN".toUpperCase()
                 : "CHƯA THANH TOÁN".toUpperCase()}
             </Tag>
@@ -231,6 +220,7 @@ export default function MainBill() {
         );
       },
     },
+
     {
       title: "Hành động",
       dataIndex: "bill_statement",

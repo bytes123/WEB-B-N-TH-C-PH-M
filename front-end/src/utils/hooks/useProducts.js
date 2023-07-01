@@ -46,13 +46,13 @@ export default function useProducts() {
   useEffect(() => {
     if (fetch_product_status == "loading") {
       setIsLoading(true);
-      console.log(1);
     } else if (fetch_product_status == "succeeded") {
       if (fetch_product && fetch_detail_products && fetch_rates) {
         setProduct(fetch_product);
         setDetailProduct(fetch_detail_products);
         setRates(fetch_rates);
       }
+
       setTimeout(() => {
         setIsLoading(false);
       }, 2000);
@@ -64,9 +64,8 @@ export default function useProducts() {
   }, [fetch_product_status]);
 
   useEffect(() => {
-    if (top_products.length) {
-      setProducts(top_products);
-    }
+    console.log(top_products);
+    setProducts(top_products);
   }, [top_products]);
 
   return {

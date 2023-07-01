@@ -40,8 +40,8 @@ export default function AddForm() {
             boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
           }}
         >
-          <h3 className=" font-bold mb-5 text-3xl">Thông tin danh mục</h3>
           <Form form={form} onFinish={handleSubmit}>
+            <h3 className="font-quicksand font-semibold mb-2">Tên danh mục</h3>
             {errors?.name ? (
               <Form.Item
                 onChange={() => clearErrors("name")}
@@ -71,7 +71,7 @@ export default function AddForm() {
             <Form.Item>
               <Button
                 htmlType="submit"
-                className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
+                className="background-active border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
               >
                 Thêm danh mục
               </Button>

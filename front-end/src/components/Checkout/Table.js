@@ -1,6 +1,7 @@
 import React from "react";
 import StarPointSection from "../../utils/components/StarpointSection";
 import { BsTrash } from "react-icons/bs";
+import { host } from "../../static/API";
 import {
   Table as MainTable,
   Thead,
@@ -46,8 +47,8 @@ export default function Table({
                   className="w-[100px] rounded-xl  border-1"
                   src={
                     item.image1 !== "default.jpg"
-                      ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
-                      : `http://localhost:8000/resources/product/${item.image1}`
+                      ? `http://${host}:8000/resources/product/${item.product_id}/${item.image1}`
+                      : `http://${host}:8000/resources/product/${item.image1}`
                   }
                   alt=""
                 />

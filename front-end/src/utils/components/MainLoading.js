@@ -1,5 +1,5 @@
 import React from "react";
-
+import { host } from "../../static/API";
 export default function MainLoading({ isLoading }) {
   return (
     <div
@@ -9,7 +9,7 @@ export default function MainLoading({ isLoading }) {
     >
       <img
         className="w-[80px] h-[80px]"
-        src="http://localhost:8000/resources/images/loading.gif"
+        src={`http://${host}:8000/resources/images/loading.gif`}
         alt=""
       />
     </div>

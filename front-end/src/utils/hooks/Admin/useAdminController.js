@@ -10,6 +10,27 @@ export default function useAdminController(
   const [isEdit, setIsEdit] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [idDelete, setIdDelete] = useState();
+  const [userName, setUserName] = useState();
+  const [isLocked, setIsLocked] = useState(false);
+  const [isUnLocked, setIsUnlocked] = useState(false);
+
+  const handleLockUser = (user_name) => {
+    setUserName(user_name);
+    setIsLocked(true);
+  };
+
+  const handleUnLockUser = (user_name) => {
+    setUserName(user_name);
+    setIsUnlocked(true);
+  };
+
+  const handleCloseLockUser = () => {
+    setIsLocked(false);
+  };
+
+  const handleCloseUnLockUser = () => {
+    setIsUnlocked(false);
+  };
 
   const handleOpenAdd = () => {
     setIsAdd(true);
@@ -76,5 +97,12 @@ export default function useAdminController(
     handleCloseAdd,
     handleConfirmRate,
     idDelete,
+    handleLockUser,
+    handleUnLockUser,
+    handleCloseLockUser,
+    handleCloseUnLockUser,
+    userName,
+    isLocked,
+    isUnLocked,
   };
 }

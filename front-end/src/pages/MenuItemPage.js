@@ -4,7 +4,7 @@ import MenuList from "../components/Home/MenuList";
 import Banner1 from "../components/Banner/Banner1";
 import ClassifySection from "../utils/components/ClassifySection";
 import ItemList from "../components/Product/ItemList";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import { nanoid } from "nanoid";
 import PaginatedItems from "../utils/components/PaginatedItems";
 import usePagination from "../utils/hooks/usePagination";
@@ -14,34 +14,45 @@ import useClassifySection from "../utils/hooks/useClassifySection";
 import { ProductData } from "../static/Data";
 import ClassifyItemSection from "../components/Product/ClassifyItemSection";
 import useProducts from "../utils/hooks/useProducts";
+import {
+  fetchCategoryAndChildren,
+  getCategoryAndChildren,
+} from "../features/category/categorySlice";
+import useFilterProducts from "../utils/hooks/useFilterProducts";
+import { useDispatch } from "react-redux";
 
 export default function MenuItemPage() {
   const { menuid } = useParams();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-
-  const sortChildren = [
-    {
-      key: 1,
-      value: "50",
-    },
-    {
-      key: 2,
-      value: "100",
-    },
-  ];
+  const location = useLocation();
+  useEffect(() => {
+    dispatch(fetchCategoryAndChildren()).unwrap();
+  }, []);
 
   const displayChildren = [
     {
-      key: 1,
-      value: "Danh mục",
+      key: 20,
+      value: 20,
     },
     {
-      key: 2,
+      key: 40,
+      value: 40,
+    },
+  ];
+
+  const sortChildren = [
+    {
+      key: "newest",
+      value: "Mới nhất",
+    },
+    {
+      key: "DESC",
       value: "Giá: Từ thấp đến cao",
     },
     {
-      key: 3,
+      key: "ASC",
       value: "Giá: Từ cao đến thấp",
     },
   ];
@@ -54,7 +65,38 @@ export default function MenuItemPage() {
     activeSortIndex,
     handleActiveSortIndex,
     classifyMenu,
-  } = useClassifySection(sortChildren, displayChildren);
+  } = useClassifySection(displayChildren, sortChildren);
+
+  useEffect(() => {
+    console.log(location.pathname);
+    if (location.pathname == "/thuc-don") {
+      navigate("all");
+    }
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    const waitLoading = setTimeout(() => {
+      setIsLoading(false);
+
+      document.body.style.overflow = "auto";
+    }, 3000);
+
+    return () => clearTimeout(waitLoading);
+  }, []);
+
+  useEffect(() => {
+    handleActiveCategory(menuid);
+    console.log(menuid);
+  }, [menuid]);
+
+  const { handleActiveCategory, activeCategory, categoryList, topProducts } =
+    useFilterProducts(activeSortIndex, activeDisplayIndex);
+
+  const { currentItems, pageCount, handlePageClick } = usePagination(
+    topProducts,
+    activeDisplayIndex
+  );
 
   const [items, setItems] = useState([
     {
@@ -83,27 +125,12 @@ export default function MenuItemPage() {
     },
   ]);
 
-  const { products } = useProducts();
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    const waitLoading = setTimeout(() => {
-      setIsLoading(false);
-
-      document.body.style.overflow = "auto";
-    }, 3000);
-
-    return () => clearTimeout(waitLoading);
-  }, []);
-
-  const [currentItems, pageCount, handlePageClick] = usePagination(products, 4);
-
   return (
     <>
       <MainLoading isLoading={isLoading} />
       <div className="menu_item-wrapper">
         <Banner1 />
-        <MenuList data={ProductData} />
+        <MenuList data={categoryList} />
 
         <div className="lg:grid lg:grid-cols-4 lg:px-10">
           <div className="lg:col-span-3">
@@ -118,6 +145,7 @@ export default function MenuItemPage() {
                 onActiveDisplayIndex={handleActiveDisplayIndex}
                 activeSortIndex={activeSortIndex}
                 onActiveSortIndex={handleActiveSortIndex}
+                productLength={topProducts.length}
               />
             </div>
             <div className="container mx-auto py-10">

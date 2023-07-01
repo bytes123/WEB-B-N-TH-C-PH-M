@@ -26,9 +26,7 @@ import Avatar from "../../Utils/Avatar";
 import useUploadImage from "../../../utils/hooks/useUploadImage";
 import Toast from "../../../utils/components/Toast";
 
-export default function AddForm() {
-  const [isToast, setIsToast] = useState(false);
-
+export default function AddForm({ setIsLoading, setIsToast }) {
   let newrules = useSelector(getErrors);
   let status = useSelector(getSignUpStatus);
   let adminTypes = useSelector(getAdminType);
@@ -47,6 +45,11 @@ export default function AddForm() {
       setError({
         ...error,
         address: "Vui lòng nhập đầy đủ địa chỉ",
+      });
+    } else if (!values?.type_user.length) {
+      setError({
+        ...error,
+        permission: "Vui lòng cấp quyền",
       });
     } else {
       await dispatch(addStaff(values)).unwrap();
@@ -71,7 +74,7 @@ export default function AddForm() {
     handleFocusPlaceHolder,
     handleBlurPlaceHolder,
     handleChangeGender,
-  } = useSignUp(imgData, signUpSubmit);
+  } = useSignUp(imgData, signUpSubmit, false, setError);
 
   const handleChangeAvatar = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -88,18 +91,29 @@ export default function AddForm() {
   };
 
   useEffect(() => {
-    if (status == "succeeded") {
-      form.resetFields();
-      clearChecked();
-      clearUser();
-      clearImage();
-      setIsToast(true);
+    if (status == "loading") {
+      setIsLoading(true);
+    } else if (status == "succeeded") {
       setTimeout(() => {
-        setIsToast(false);
-      }, 5000);
+        form.resetFields();
+        clearChecked();
+        clearUser();
+        clearImage();
+        setIsToast({
+          style: "success",
+          value: true,
+          body: "Tạo tài khoản thành công",
+        });
+        setIsLoading(false);
+      }, 2000);
+    } else if (status == "failed") {
+      setIsLoading(false);
     }
 
-    return () => dispatch(resetSignUpStatus());
+    return () => {
+      setIsToast(false);
+      dispatch(resetSignUpStatus());
+    };
   }, [status]);
 
   const GreenSwitch = styled(Switch)(({ theme }) => ({
@@ -124,7 +138,6 @@ export default function AddForm() {
 
   return (
     <>
-      <Toast body="Thêm tài khoản thành công" isSuccess={isToast} />
       <div className="user_form mt-5">
         {/* <h3 className="text-2xl text-center mx-auto w-[400px] font-bold my-4">
       Tạo tài khoản
@@ -136,9 +149,6 @@ export default function AddForm() {
             boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
           }}
         >
-          <h3 className="text-lg font-bold mb-2 text-3xl">
-            Thông tin tài khoản
-          </h3>
           <Form form={form} onFinish={handleSubmit}>
             <Form.Item className="mt-5">
               <Avatar
@@ -146,6 +156,7 @@ export default function AddForm() {
                 handleChangeAvatar={handleChangeAvatar}
               />
             </Form.Item>
+            <h3 className="font-quicksand font-semibold mb-2">Tài khoản</h3>
             {error && error.user_name ? (
               <Form.Item
                 name="user_name"
@@ -172,7 +183,7 @@ export default function AddForm() {
                 />
               </Form.Item>
             )}
-
+            <h3 className="font-quicksand font-semibold mb-2">Họ và tên</h3>
             <Form.Item name="fullname" rules={rules.fullname}>
               <Input
                 onFocus={() => handleFocusPlaceHolder("fullname")}
@@ -181,6 +192,7 @@ export default function AddForm() {
                 className="font-medium"
               />
             </Form.Item>
+            <h3 className="font-quicksand font-semibold mb-2">Số điện thoại</h3>
             <Form.Item name="phone_number" rules={rules.phone_number}>
               <Input
                 onFocus={() => handleFocusPlaceHolder("phone_number")}
@@ -189,9 +201,10 @@ export default function AddForm() {
                 className="font-medium"
               />
             </Form.Item>
+
+            <h3 className="text-xl font-semibold mb-3">Giới tính</h3>
             <Form.Item>
-              <h3 className="text-xl font-semibold mb-3">Giới tính</h3>
-              <Radio.Group defaultValue={"Nam"} onChange={handleChangeGender}>
+              <Radio.Group defaultValue={"Nam"}>
                 <Radio value={"Nam"}>Nam</Radio>
                 <Radio value={"Nữ"}>Nữ</Radio>
                 <Radio value={"Khác"}>Khác</Radio>
@@ -203,7 +216,6 @@ export default function AddForm() {
               handleValues={setNewValues}
               error={error}
               clearError={clearError}
-              status={status}
             />
 
             <h3 className="text-lg font-bold mb-2">Cấp quyền admin</h3>
@@ -223,7 +235,15 @@ export default function AddForm() {
               </Form.Item>
             ))}
 
-            <h3 className="text-lg font-bold mb-2">Bảo mật tài khoản</h3>
+            {error?.permission ? (
+              <p className="error-text text-2xl mb-5">
+                Vui lòng cấp quyền tài khoản
+              </p>
+            ) : (
+              ""
+            )}
+
+            <h3 className="text-xl font-semibold mb-3">Email</h3>
             {error && error.email ? (
               <Form.Item
                 validateStatus={"error"}
@@ -251,6 +271,7 @@ export default function AddForm() {
               </Form.Item>
             )}
 
+            <h3 className="text-xl font-semibold mb-3">Mật khẩu</h3>
             <Form.Item name="password" rules={rules.password}>
               <Input.Password
                 onFocus={() => handleFocusPlaceHolder("password")}
@@ -259,6 +280,8 @@ export default function AddForm() {
                 className="font-medium"
               />
             </Form.Item>
+
+            <h3 className="text-xl font-semibold mb-3">Xác nhận mật khẩu</h3>
             <Form.Item
               name="confirmpassword"
               dependencies={["password"]}
@@ -274,7 +297,7 @@ export default function AddForm() {
             <Form.Item>
               <Button
                 htmlType="submit"
-                className="btn-primary border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
+                className="background-active border-none p-8 ml-auto text-2xl flex items-center justify-center font-bold"
               >
                 Thêm tài khoản
               </Button>

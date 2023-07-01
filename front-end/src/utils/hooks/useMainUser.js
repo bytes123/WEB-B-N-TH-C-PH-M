@@ -12,14 +12,19 @@ import {
   resetDeleteStatus,
   getDeleteStatus,
   fetchSearchUser,
+  getSignUpStatus,
+  LockAccount,
+  getLockStatus,
+  resetLockStatus,
 } from "../../features/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 export default function useMainUser(
-  onSuccessDelete,
-  onSuccessUpdate,
-  onClearToast,
+  handleCloseDelete,
+  handleCloseEdit,
   activeSortIndex,
-  activeDisplayIndex
+  activeDisplayIndex,
+  handleCloseLockUser,
+  handleCloseUnLockUser
 ) {
   const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
@@ -32,9 +37,88 @@ export default function useMainUser(
   const fetch_search_status = useSelector(getFetchSearchStatus);
   const fetchUsers = useSelector(getAllUser);
   const location = useLocation();
-
+  const [isLoading, setIsLoading] = useState(false);
   const update_status = useSelector(getUpdateStatus);
   const delete_status = useSelector(getDeleteStatus);
+
+  const [isToast, setIsToast] = useState({
+    style: "",
+    value: false,
+    body: "",
+  });
+  const [error, setError] = useState({});
+  const successDelete = () => {
+    handleCloseDelete();
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Xóa tài khoản thành công",
+    });
+  };
+
+  const lock_status = useSelector(getLockStatus);
+
+  const handleConfirmLock = async (user_name, isLocked) => {
+    dispatch(
+      LockAccount({
+        user_name: user_name,
+        isLocked: isLocked,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (lock_status == "loading") {
+      setIsLoading(true);
+    } else if (lock_status == "LOCK_SUCCESS") {
+      setTimeout(() => {
+        dispatch(fetchAllUser());
+        setIsLoading(false);
+        setIsToast({
+          style: "success",
+          value: true,
+          body: "Khóa tài khoản thành công",
+        });
+        handleCloseLockUser();
+      }, 2000);
+    } else if (lock_status == "UNLOCK_SUCCESS") {
+      setTimeout(() => {
+        dispatch(fetchAllUser());
+        setIsLoading(false);
+        setIsToast({
+          style: "success",
+          value: true,
+          body: "Mở khóa tài khoản thành công",
+        });
+        handleCloseUnLockUser();
+      }, 2000);
+    } else if (lock_status == "failed") {
+      setIsLoading(false);
+    }
+
+    return () => {
+      dispatch(resetLockStatus());
+      clearToast();
+    };
+  }, [lock_status]);
+
+  const successUpdate = () => {
+    handleCloseEdit();
+    setError({});
+
+    setIsToast({
+      style: "success",
+      value: true,
+      body: "Cập nhật tài khoản thành công",
+    });
+  };
+
+  const clearToast = () => {
+    setIsToast({
+      value: false,
+      body: "",
+    });
+  };
 
   useEffect(() => {
     setIsSearch(false);
@@ -48,20 +132,27 @@ export default function useMainUser(
   }, [activeSortIndex, activeDisplayIndex]);
 
   useEffect(() => {
-    if (delete_status == "succeeded") {
+    if (delete_status == "loading") {
+      setIsLoading(true);
+    } else if (delete_status == "succeeded") {
       const updateDelete = async () => {
         if (currentSearch) {
           await dispatch(fetchSearchUser(currentSearch)).unwrap();
         } else {
           await dispatch(fetchAllUser()).unwrap();
         }
-        onSuccessDelete();
+        successDelete();
+        setIsLoading(false);
       };
-      updateDelete();
+      setTimeout(() => {
+        updateDelete();
+      }, 2000);
+    } else if (delete_status == "failed") {
+      setIsLoading(false);
     }
 
     return () => {
-      onClearToast();
+      clearToast();
       dispatch(resetDeleteStatus());
     };
   }, [delete_status]);
@@ -71,7 +162,9 @@ export default function useMainUser(
   }, []);
 
   useEffect(() => {
-    if (update_status == "succeeded") {
+    if (update_status == "loading") {
+      setIsLoading(true);
+    } else if (update_status == "succeeded") {
       console.log(currentSearch);
       const updateEdit = async () => {
         if (currentSearch) {
@@ -80,12 +173,17 @@ export default function useMainUser(
         } else {
           await dispatch(fetchAllUser()).unwrap();
         }
-        onSuccessUpdate();
+        successUpdate();
+        setIsLoading(false);
       };
-      updateEdit();
+      setTimeout(() => {
+        updateEdit();
+      }, 2000);
+    } else if (update_status == "failed") {
+      setIsLoading(false);
     }
 
-    return () => onClearToast();
+    return () => clearToast();
   }, [update_status]);
 
   useEffect(() => {
@@ -145,5 +243,12 @@ export default function useMainUser(
     handleOutSearch,
     isLoadingAllUsers,
     currentSearch,
+    isToast,
+    setIsToast,
+    isLoading,
+    error,
+    setError,
+    setIsLoading,
+    handleConfirmLock,
   };
 }

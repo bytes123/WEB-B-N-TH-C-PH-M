@@ -3,6 +3,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { loginedUser } from "../../utils/hooks/useAccessUser";
 import Time from "../../utils/components/Time";
 import { Link } from "react-router-dom";
+import { host } from "../../static/API";
 export default function MessageBar({ handleClose, list }) {
   console.log(list);
   return (
@@ -20,7 +21,7 @@ export default function MessageBar({ handleClose, list }) {
               <div className="message-avatar w-[20%]">
                 <img
                   className="rounded-full w-[36px] h-[36px]"
-                  src={`http://localhost:8000/resources/avatar/${item?.partner_avatar}`}
+                  src={`http://${host}:8000/resources/avatar/${item?.partner_avatar}`}
                   alt=""
                 />
               </div>

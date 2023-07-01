@@ -10,13 +10,14 @@ import Time from "../../utils/components/Time";
 import AddForm from "./Product/AddForm";
 import UpdateForm from "./Product/UpdateForm";
 import useAdminProduct from "../../utils/hooks/Admin/useAdminProduct";
-// import { resetAllErrors } from "../../features/category/categorySlice";
+import { resetAllErrors } from "../../features/product/productSlice";
 import Toast from "../../utils/components/Toast";
 import {
   deleteProduct,
   searchProduct,
 } from "../../features/product/productSlice";
-
+import Spinner from "../../utils/components/Spinner";
+import { host } from "../../static/API";
 export default function MainProduct() {
   const { Search } = Input;
   const dispatch = useDispatch();
@@ -25,20 +26,14 @@ export default function MainProduct() {
     console.log(values);
   };
 
-  const [isToast, setIsToast] = useState({
-    style: "",
-    value: false,
-    body: "",
-  });
-
   const { values, handleChangeValue, handleSetValue } =
     useValidateForm(addData);
 
   const clearUpdate = async () => {
-    // dispatch(resetAllErrors());
+    dispatch(resetAllErrors());
   };
   const clearAdd = async () => {
-    // dispatch(resetAllErrors());
+    dispatch(resetAllErrors());
   };
 
   const {
@@ -47,10 +42,10 @@ export default function MainProduct() {
     isAdd,
     handleOpenEdit,
     handleCloseEdit,
-    handleOpenDelete,
     handleCloseDelete,
-    handleOpenAdd,
     handleCloseAdd,
+    handleOpenDelete,
+    handleOpenAdd,
     idDelete,
   } = useAdminController(
     handleChangeValue,
@@ -59,52 +54,19 @@ export default function MainProduct() {
     clearAdd
   );
 
-  const resetToast = () => {
-    setIsToast({
-      style: "",
-      value: false,
-      body: "",
-    });
-  };
-
-  const addSuccess = () => {
-    handleCloseAdd();
-    setIsToast({
-      style: "success",
-      value: true,
-      body: "Thêm sản phẩm thành công",
-    });
-  };
-
-  const updateSuccess = () => {
-    handleCloseEdit();
-    setIsToast({
-      style: "success",
-      value: true,
-      body: "Cập nhật sản phẩm thành công",
-    });
-  };
-
-  const deleteSuccess = () => {
-    handleCloseDelete();
-    setIsToast({
-      style: "success",
-      value: true,
-      body: "Xóa sản phẩm thành công",
-    });
-  };
-
   const {
     products,
     categories,
-    branches,
     brands,
     handleSearch,
     isLoadingSearch,
     isSearch,
     isLoadingAllProducts,
     handleOutSearch,
-  } = useAdminProduct(addSuccess, updateSuccess, deleteSuccess, resetToast);
+    isLoading,
+    isToast,
+    setIsToast,
+  } = useAdminProduct(handleCloseEdit, handleCloseDelete, handleCloseAdd);
 
   const handleConfirmDelete = async (id) => {
     try {
@@ -152,19 +114,19 @@ export default function MainProduct() {
           className="w-[80px] object-contain"
           src={
             arr.image1 !== "default.jpg"
-              ? `http://localhost:8000/resources/product/${arr.id}/${arr.image1}`
-              : `http://localhost:8000/resources/product/${arr.image1}`
+              ? `http://${host}:8000/resources/product/${arr.id}/${arr.image1}`
+              : `http://${host}:8000/resources/product/${arr.image1}`
           }
           alt=""
         />
       ),
     },
-    // {
-    //   title: "Tên chi nhánh",
-    //   dataIndex: "branch_name",
-    //   key: "branch_name",
-    //   render: (data, arr, index) => <p className="capitalize">{data}</p>,
-    // },
+    {
+      title: "Tên chi nhánh",
+      dataIndex: "branch_name",
+      key: "branch_name",
+      render: (data, arr, index) => <p className="capitalize">{data}</p>,
+    },
     {
       title: "Tên danh mục",
       dataIndex: "category_name",
@@ -225,6 +187,7 @@ export default function MainProduct() {
 
   return (
     <div className="main_catalog mx-2">
+      <Spinner isLoading={isLoading} />
       <Toast
         style={isToast?.style}
         body={isToast?.body}
@@ -245,11 +208,7 @@ export default function MainProduct() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm sản phẩm</h3>
-              <AddForm
-                categories={categories}
-                brands={brands}
-                branches={branches}
-              />
+              <AddForm categories={categories} brands={brands} />
               {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách sản phẩm
           </p>

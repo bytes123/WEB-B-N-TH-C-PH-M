@@ -13,6 +13,7 @@ module.exports = {
           ...item,
           price: item.price + "",
           discount: item.discount + "",
+          quantity: item.quantity + "",
         };
       });
       res.status(200).json(details_product);
@@ -64,6 +65,7 @@ module.exports = {
           ...item,
           price: item.price + "",
           discount: item.discount + "",
+          quantity: item.quantity + "",
         };
       });
       result.status(200).json(details_product);

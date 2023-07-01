@@ -105,7 +105,7 @@ export default function UpdateForm({ updateValues }) {
                 className={`ml-auto rounded-xl p-10 text-2xl flex items-center justify-center font-bold ${
                   !isChange
                     ? "bg-slate-500 pointer-events-none"
-                    : "bg-red-600 hover:bg-red-800"
+                    : "background-active"
                 }`}
               >
                 Cập nhật danh mục

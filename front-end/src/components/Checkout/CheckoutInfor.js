@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useCart from "../../utils/hooks/useCart";
 import useCheckout from "../../utils/hooks/useCheckout";
 import { Input } from "antd";
-
+import Paypal from "../Paypal/Paypal";
+import { FaPaypal } from "react-icons/fa";
+import { BiMoney } from "react-icons/bi";
+import { RiBankCardFill } from "react-icons/ri";
 export default function CheckoutInfor({ handleCheckout }) {
   const { cart } = useCart();
 
@@ -18,6 +21,7 @@ export default function CheckoutInfor({ handleCheckout }) {
     handleCancelChange,
     handleChangeNewBillInfor,
     handleSaveNewBillInfor,
+    isPaypal,
   } = useCheckout(cart);
 
   return (
@@ -219,7 +223,7 @@ export default function CheckoutInfor({ handleCheckout }) {
           </h3>
           <div className="border-1 rounded-xl mt-5 text-2xl font-medium font-quicksand">
             <div
-              className="border-b-2 p-10 cursor-pointer"
+              className="border-b-2 p-10 cursor-pointer flex items-center"
               onClick={() => handleCheckoutMethod("COD")}
             >
               <input
@@ -228,20 +232,28 @@ export default function CheckoutInfor({ handleCheckout }) {
                 value="COD"
                 checked={billInfor.checkout_method == "COD"}
               />
-               <label>Thanh toán khi giao hàng (COD) </label>
+               
+              <label className="cursor-pointer  ">
+                <BiMoney className="inline text-5xl mr-2" />
+                Thanh toán khi giao hàng (COD){" "}
+              </label>
             </div>
             <div
-              className={`border-b-2 p-10 cursor-pointer`}
+              className={`border-b-2 p-10 cursor-pointer flex items-center`}
               onClick={() => handleCheckoutMethod("ATM")}
             >
-              <div>
+              <div className="flex items-center">
                 <input
                   type="radio"
                   name="ATM"
                   value="ATM"
                   checked={billInfor.checkout_method == "ATM"}
                 />
-                 <label>Chuyển khoản qua ngân hàng </label>
+                 
+                <label className="cursor-pointer">
+                  <RiBankCardFill className="inline text-5xl  mr-2" />
+                  Chuyển khoản qua ngân hàng{" "}
+                </label>
               </div>
 
               {billInfor.checkout_method == "ATM" ? (
@@ -269,15 +281,24 @@ export default function CheckoutInfor({ handleCheckout }) {
                 value="PAYPAL"
                 checked={billInfor.checkout_method == "PAYPAL"}
               />
-               <label>Thanh toán PAYPAL </label>
+               
+              <label className="cursor-pointer">
+                <FaPaypal className="inline text-5xl" /> Thanh toán PAYPAL{" "}
+              </label>
             </div>
           </div>
-          <button
-            onClick={() => handleCheckout(billInfor)}
-            className="background-active text-white font-semibold text-3xl w-100 py-5 px-10 mt-10 rounded-lg flex justify-center items-center"
-          >
-            Thanh toán
-          </button>
+          {isPaypal ? (
+            <div className="mt-5">
+              <Paypal billInfor={billInfor} handleCheckout={handleCheckout} />
+            </div>
+          ) : (
+            <button
+              onClick={() => handleCheckout(billInfor)}
+              className="background-active text-white font-semibold text-3xl w-100 py-5 px-10 mt-10 rounded-lg flex justify-center items-center"
+            >
+              Thanh toán
+            </button>
+          )}
         </div>
       </div>
     </div>

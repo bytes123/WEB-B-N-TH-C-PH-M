@@ -154,6 +154,8 @@ export default function useCheckout(cart) {
     return () => resetToast();
   }, [isReset]);
 
+  const [isPaypal, setIsPaypal] = useState(false);
+
   const handleCheckout = (bill) => {
     if (!checkoutCart.length) {
       setIsToast({
@@ -181,6 +183,14 @@ export default function useCheckout(cart) {
     }
   };
 
+  useEffect(() => {
+    if (billInfor.checkout_method == "PAYPAL") {
+      setIsPaypal(true);
+    } else {
+      setIsPaypal(false);
+    }
+  }, [billInfor]);
+
   return {
     checkoutCart,
     checkoutCartPrice,
@@ -202,5 +212,6 @@ export default function useCheckout(cart) {
     isLoading,
     detail_bill,
     isToast,
+    isPaypal,
   };
 }

@@ -2,7 +2,7 @@ import React from "react";
 import StarpointSection from "../Utils/StarpointSection";
 import ShowMore from "react-show-more-list";
 import Time from "../../utils/components/Time";
-
+import { host } from "../../static/API";
 export default function ReviewSection({ className, rateList }) {
   return (
     <div className={`${className} product_review-wrapper`}>
@@ -18,7 +18,7 @@ export default function ReviewSection({ className, rateList }) {
                   <div className="flex" key={item.id}>
                     <div className="profile-infor mb-5 text-center">
                       <img
-                        src={`http://localhost:8000/resources/avatar/${
+                        src={`http://${host}:8000/resources/avatar/${
                           item?.avatar ?? "default.jpg"
                         }`}
                         alt=""

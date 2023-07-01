@@ -18,9 +18,11 @@ import {
   getLoginStatus,
   resetLoginStatus,
   loginFB,
+  resetError,
 } from "../../features/user/userSlice";
 import { getSignUpStatus } from "../../features/authen/authenSlice";
-
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 export default function LoginForm() {
   const [form] = Form.useForm();
   let status = useSelector(getSignUpStatus);
@@ -29,6 +31,12 @@ export default function LoginForm() {
   const [placeHolder, setPlaceHolder] = useState(userPlaceHolder);
   const [user, setUser] = useState(defaultUser);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(1);
+    dispatch(resetError());
+  }, [location.pathname]);
 
   useEffect(() => {
     console.log(status);
@@ -65,18 +73,11 @@ export default function LoginForm() {
 
       <Card
         style={{
-          width: "420px",
+          width: "520px",
           margin: "0 auto",
           boxShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
         }}
       >
-        {isAuthenticating ? (
-          <div className="authenticating mb-5 font-bold">
-            Vui lòng xác nhận tài khoản đã đăng ký qua mail
-          </div>
-        ) : (
-          ""
-        )}
         {/* <div className="login_fb-btn">
           <GoogleLoginButton
             text="Đăng nhập bằng Google"
@@ -97,6 +98,7 @@ export default function LoginForm() {
         </div> */}
         {/* <p className="text-center py-4">Hoặc</p> */}
         <Form form={form} onFinish={handleSubmit} initialValues={defaultUser}>
+          <h3 className="font-quicksand font-semibold mb-2">Tài khoản</h3>
           <Form.Item name="user_name" rules={rules.user_name}>
             <Input
               onFocus={() => handleFocusPlaceHolder("user_name")}
@@ -105,6 +107,7 @@ export default function LoginForm() {
               className="font-medium"
             />
           </Form.Item>
+          <h3 className="font-quicksand font-semibold mb-2">Mật khẩu</h3>
           <Form.Item name="password" rules={rules.password}>
             <Input.Password
               onFocus={() => handleFocusPlaceHolder("password")}
@@ -113,23 +116,33 @@ export default function LoginForm() {
               className="font-medium"
             />
           </Form.Item>
-          {error == "USER_NOT_CONFIRMED" ? (
-            <p className="error mb-5">
-              Vui lòng xác thực tài khoản qua mail đã đăng ký
-            </p>
-          ) : error == "FAILED_LOGIN" ? (
+          {error == "FAILED_LOGIN" ? (
             <p className="error mb-5">Tài khoản hoặc mật khẩu không hợp lệ !</p>
+          ) : error == "ACCOUNT_LOCKED" ? (
+            <p className="error mb-5">Tài khoản đã bị khóa!</p>
+          ) : error == "ACCOUNT_INVALID_LOCKED" ? (
+            <p className="error mb-5">
+              Tài khoản đã bị khóa do nhập sai quá 5 lần!
+            </p>
           ) : (
             ""
           )}
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="form_btn py-6 text-xl flex items-center justify-center"
-            >
-              Đăng nhập
-            </Button>
+            <div className="flex justify-between">
+              <Link
+                to="/reset-password"
+                className="font-semibold text-green-600"
+              >
+                Quên mật khẩu?
+              </Link>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="background-active   text-2xl flex items-center justify-center"
+              >
+                Đăng nhập
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </Card>

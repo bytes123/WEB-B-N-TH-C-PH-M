@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { loginedUser } from "../../utils/hooks/useAccessUser";
-
+import { host } from "../../static/API";
 export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
   useEffect(() => {
     if (loginedUser) {
@@ -26,8 +26,8 @@ export default function HeaderCart({ cart, onFetchCart, cartPrice }) {
                       className="w-[100px] object-contain"
                       src={
                         item.image1 !== "default.jpg"
-                          ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
-                          : `http://localhost:8000/resources/product/${item.image1}`
+                          ? `http://${host}:8000/resources/product/${item.product_id}/${item.image1}`
+                          : `http://${host}:8000/resources/product/${item.image1}`
                       }
                       alt=""
                     />

@@ -213,8 +213,11 @@ const productSlice = createSlice({
         console.log(action.payload);
         if (action.payload.type == "newest") {
           state.top_products = action.payload.products;
-        }
-        if (action.payload.type == "sellest") {
+        } else if (action.payload.type == "DESC") {
+          state.top_products = action.payload.products;
+        } else if (action.payload.type == "ASC") {
+          state.top_products = action.payload.products;
+        } else if (action.payload.type == "sellest") {
           state.sellest_products = action.payload.products;
         }
       })

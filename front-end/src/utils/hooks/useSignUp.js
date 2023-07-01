@@ -5,7 +5,7 @@ import {
   userSignUp as defaultUser,
 } from "../../static/UserForm";
 import { Form } from "antd";
-export default function useSignUp(imgData, callback, updateValues) {
+export default function useSignUp(imgData, callback, updateValues, setError) {
   const [form] = Form.useForm();
   const [checked, setChecked] = useState({});
   const [placeHolder, setPlaceHolder] = useState(userPlaceHolder);
@@ -25,11 +25,13 @@ export default function useSignUp(imgData, callback, updateValues) {
           gender: updateValues.gender,
         });
       }
-      setChecked(
-        ...updateValues.detail_type_user.map((item) => ({
-          [item.type_user_id]: true,
-        }))
-      );
+      if (updateValues.detail_type_user) {
+        setChecked(
+          ...updateValues?.detail_type_user.map((item) => ({
+            [item.type_user_id]: true,
+          }))
+        );
+      }
     }
   }, [updateValues]);
 
@@ -58,33 +60,26 @@ export default function useSignUp(imgData, callback, updateValues) {
 
   // cập nhật form khi thay đổi quyền
   const handlePermission = (type_user_id) => {
+    setError({});
     setChecked({
-      ...checked,
       [type_user_id]: !checked[type_user_id],
     });
   };
 
-  const handleUpdatePermission = (type_user_id, fetchChecked) => {
-    if (checked && checked[type_user_id]) {
-      setChecked({
-        ...checked,
-        [type_user_id]: !checked[type_user_id],
-      });
-      setNewValues({
-        ...newValues,
-        type_user: !checked[type_user_id],
-      });
-    } else {
-      setChecked({
-        ...checked,
-        [type_user_id]: !fetchChecked,
-      });
-      setNewValues({
-        ...newValues,
-        type_user: !fetchChecked,
-      });
-    }
+  const handleUpdatePermission = (type_user_id) => {
+    console.log(type_user_id);
+    setChecked({
+      [type_user_id]: !checked?.type_user_id,
+    });
+    setNewValues({
+      ...newValues,
+      type_user: type_user_id,
+    });
   };
+
+  useEffect(() => {
+    console.log(newValues);
+  }, [newValues]);
 
   const clearChecked = () => {
     setChecked({});

@@ -3,8 +3,10 @@ import { BiGridAlt, BiSort } from "react-icons/bi";
 export default function useClassifySection(displayChildren, sortChildren) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState();
-  const [activeDisplayIndex, setActiveDisplayIndex] = useState();
-  const [activeSortIndex, setActiveSortIndex] = useState();
+  const [activeDisplayIndex, setActiveDisplayIndex] = useState(
+    displayChildren[0].key
+  );
+  const [activeSortIndex, setActiveSortIndex] = useState(sortChildren[0].key);
 
   const classifyMenu = [
     {

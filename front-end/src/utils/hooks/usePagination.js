@@ -11,6 +11,7 @@ export default function usePagination(items, itemsPerPage) {
   const endOffset = itemOffset + itemsPerPage;
   console.log(`Loading items from ${itemOffset} to ${endOffset}`);
   const currentItems = items.slice(itemOffset, endOffset);
+
   const pageCount = Math.ceil(items.length / itemsPerPage);
 
   // Invoke when user click to request another page.
@@ -22,5 +23,5 @@ export default function usePagination(items, itemsPerPage) {
     setItemOffset(newOffset);
   };
 
-  return [currentItems, pageCount, handlePageClick];
+  return { currentItems, pageCount, handlePageClick };
 }

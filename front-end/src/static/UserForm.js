@@ -74,6 +74,34 @@ const rulesDetailProduct = {
       pattern: "^([-]?[1-9][0-9]*|0)$",
       message: "Vui lòng nhập giá sản phẩm là số hợp lệ!",
     },
+    () => ({
+      validator(_, value) {
+        if (Number(value) < 1000) {
+          return Promise.reject("Vui lòng nhập giá tối thiểu 1.000");
+        }
+        if (Number(value) > 100000000) {
+          return Promise.reject("Vui lòng nhập giá tối đa 100.000.000");
+        }
+        return Promise.resolve();
+      },
+    }),
+  ],
+  quantity: [
+    () => ({
+      validator(_, value) {
+        if (value < 0) {
+          return Promise.reject("Vui lòng nhập tồn kho tối thiểu là 0");
+        }
+        if (value > 1000) {
+          return Promise.reject("Vui lòng nhập tồn kho tối đa là 1000");
+        }
+        return Promise.resolve();
+      },
+    }),
+    {
+      pattern: "^([-]?[1-9][0-9]*|0)$",
+      message: "Vui lòng nhập tồn kho là số hợp lệ!",
+    },
   ],
   discount: [
     {
@@ -92,20 +120,6 @@ const rulesDetailProduct = {
       },
     }),
   ],
-  quantity: [
-    {
-      pattern: "^([-]?[1-9][0-9]*|0)$",
-      message: "Vui lòng nhập tồn kho là số hợp lệ!",
-    },
-    () => ({
-      validator(_, value) {
-        if (value < 0) {
-          return Promise.reject("Vui lòng nhập tồn kho tối thiểu là 0");
-        }
-        return Promise.resolve();
-      },
-    }),
-  ],
 };
 
 const rulesSignUp = {
@@ -114,7 +128,13 @@ const rulesSignUp = {
   email: [{ required: true, message: "Vui lòng nhập Email của bạn!" }],
   password: [
     { required: true, message: "Vui lòng nhập mật khẩu!" },
-    { min: 6, message: "Vui lòng nhập mật khẩu ít nhất 6 ký tự!" },
+    { min: 8, message: "Vui lòng nhập mật khẩu ít nhất 8 ký tự!" },
+    {
+      pattern:
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*.-]).{8,}$/,
+      message:
+        "Vui lòng mật khẩu ít nhất 8 ký tự một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt",
+    },
   ],
   confirmpassword: [
     { required: true, message: "Vui lòng nhập lại mật khẩu!" },
@@ -128,6 +148,30 @@ const rulesLogin = {
   password: [
     { required: true, message: "Vui lòng nhập mật khẩu!" },
     { min: 6, message: "Vui lòng nhập mật khẩu ít nhất 6 ký tự!" },
+  ],
+};
+
+const rulesForgetPassword = {
+  email: [
+    { required: true, message: "Vui lòng nhập Email của bạn!" },
+    {
+      pattern:
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      message: "Vui lòng nhập email hợp lệ!",
+    },
+  ],
+  forgot_code: [{ required: true, message: "Vui lòng nhập mã khôi phục" }],
+  password: [
+    {
+      pattern:
+        /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*.-]).{8,}$/,
+      message:
+        "Vui lòng mật khẩu ít nhất 8 ký tự một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt",
+    },
+  ],
+  confirmpassword: [
+    { required: true, message: "Vui lòng nhập lại mật khẩu!" },
+    validateConfirmPassword,
   ],
 };
 
@@ -160,4 +204,5 @@ export {
   detailProductPlaceHolder,
   rulesBrand,
   brandPlaceHolder,
+  rulesForgetPassword,
 };

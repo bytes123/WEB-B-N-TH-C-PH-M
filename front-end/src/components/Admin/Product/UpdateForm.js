@@ -16,7 +16,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import useProductImage from "../../../utils/hooks/Admin/useProductImage";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-
+import { host } from "../../../static/API";
 export default function AddForm({ categories, brands, updateValues }) {
   //   let newrules = useSelector(getErrors);
 
@@ -54,22 +54,22 @@ export default function AddForm({ categories, brands, updateValues }) {
         file_name: updateValues.image1,
         data_url:
           updateValues.image1 !== "default.jpg"
-            ? `http://localhost:8000/resources/product/${updateValues.id}/${updateValues.image1}`
-            : `http://localhost:8000/resources/product/${updateValues.image1}`,
+            ? `http://localhost:${host}/resources/product/${updateValues.id}/${updateValues.image1}`
+            : `http://localhost:${host}/resources/product/${updateValues.image1}`,
       },
       {
         file_name: updateValues.image2,
         data_url:
           updateValues.image2 !== "default.jpg"
-            ? `http://localhost:8000/resources/product/${updateValues.id}/${updateValues.image2}`
-            : `http://localhost:8000/resources/product/${updateValues.image2}`,
+            ? `http://localhost:${host}/resources/product/${updateValues.id}/${updateValues.image2}`
+            : `http://localhost:${host}/resources/product/${updateValues.image2}`,
       },
       {
         file_name: updateValues.image3,
         data_url:
           updateValues.image3 !== "default.jpg"
-            ? `http://localhost:8000/resources/product/${updateValues.id}/${updateValues.image3}`
-            : `http://localhost:8000/resources/product/${updateValues.image3}`,
+            ? `http://localhost:${host}/resources/product/${updateValues.id}/${updateValues.image3}`
+            : `http://localhost:${host}/resources/product/${updateValues.image3}`,
       },
     ];
     setNewImageList(newList);
@@ -126,7 +126,7 @@ export default function AddForm({ categories, brands, updateValues }) {
     const newList = newImageList.map((item, i) =>
       i == index
         ? {
-            data_url: `http://localhost:8000/resources/product/default.jpg`,
+            data_url: `http://localhost:${host}/resources/product/default.jpg`,
             file_name: item?.file_name,
             isDelete: true,
           }

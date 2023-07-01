@@ -2,7 +2,7 @@ import React from "react";
 import StarPoints from "./StarPoint";
 import MainRateForm from "./MainRateForm";
 import { Button } from "antd";
-
+import { host } from "../../static/API";
 export default function MainRate({
   activeItem,
   activeStar,
@@ -23,8 +23,8 @@ export default function MainRate({
             className="w-[120px] object-cover"
             src={
               activeItem.image1 !== "default.jpg"
-                ? `http://localhost:8000/resources/product/${activeItem.product_id}/${activeItem.image1}`
-                : `http://localhost:8000/resources/product/${activeItem.image1}`
+                ? `http://${host}:8000/resources/product/${activeItem.product_id}/${activeItem.image1}`
+                : `http://${host}:8000/resources/product/${activeItem.image1}`
             }
             alt=""
           />

@@ -4,12 +4,22 @@ const User = require("../models/User");
 const Auth = require("../models/Auth");
 const bcrypt = require("bcrypt");
 var uuidv1 = require("uuidv1");
-const sendAuthMail = require("./AuthMailController");
+const sendAuthMail = require("../Mailer/AuthMail");
+
 const MOMENT = require("moment");
 var fs = require("fs");
 var filePath = "public/resources/avatar/";
 
 module.exports = {
+  getUser: async (req, result) => {
+    const data = req.body;
+
+    User.getUser(data, (err, user) => {
+      if (err) return result.status(500).json(err);
+
+      return result.status(200).json(user[0]);
+    });
+  },
   getAllUser: async (req, result) => {
     User.getAllUser(async (req, users) => {
       if (users) {
@@ -90,7 +100,7 @@ module.exports = {
       },
     ];
 
-    User.getUserConfirmed(user, (err, res) => {
+    User.getUserByName(user, (err, res) => {
       if (res.length > 0) {
         notifications.push("USER_EXISTS");
       }
@@ -209,7 +219,7 @@ module.exports = {
         type_user_id: item,
       }));
 
-    User.getUserConfirmed(user, (err, res) => {
+    User.getUserByName(user, (err, res) => {
       if (res.length > 0) {
         notifications.push("USER_EXISTS");
       }
@@ -274,12 +284,7 @@ module.exports = {
       : null;
     let old_user_avatar = data?.old_user_avatar;
     let current_user_name = data?.current_user_name;
-    const type_user =
-      data?.type_user &&
-      Object.entries(data?.type_user).map(([key, value]) => ({
-        key,
-        value,
-      }));
+    const type_user = data?.type_user;
 
     let user = {
       user_name: data?.user_name ?? "",
@@ -347,55 +352,161 @@ module.exports = {
       }
 
       type_user &&
-        type_user.forEach((item) => {
-          // KIỂM TRA NẾU QUYỀN ĐÓ ĐC CẤP
-          if (item.value) {
-            User.checkDetailTypeUser(
-              {
-                current_user_name: current_user_name,
-                type_user_id: item.key,
-              },
-              (err, res) => {
-                if (err) throw err;
-                if (res.length) {
-                } else {
-                  User.setDetailTypeUser(
-                    { user_name: current_user_name, type_user_id: item.key },
-                    (err, res) => {
-                      if (err) throw err;
-                    }
-                  );
-                }
-              }
-            );
-          } else {
-            User.checkDetailTypeUser(
-              {
-                current_user_name: current_user_name,
-                type_user_id: item.key,
-              },
-              (err, res) => {
-                if (err) throw err;
-                if (res.length) {
-                  User.deleteDetailTypeUser(
-                    { user_name: current_user_name, type_user_id: item.key },
-                    (err, res) => {
-                      if (err) throw err;
-                      if (res) {
-                        console.log("Xóa quyền thành công");
-                      }
-                    }
-                  );
-                }
-              }
-            );
-          }
+        User.deleteDetailTypeUser(data, (err, res) => {
+          if (err) return result.status(400).json(err);
+          User.setDetailTypeUser(
+            { user_name: current_user_name, type_user_id: type_user },
+            (err, res) => {
+              if (err) return result.status(400).json(err);
+            }
+          );
         });
       return result.status(200).json("SUCCESS_UPDATE");
     };
 
     if (user.hasOwnProperty("user_name") && user.hasOwnProperty("email")) {
-      User.getUserConfirmed(
+      User.getUserByName(
+        {
+          user_name: user?.user_name,
+        },
+        (err, res) => {
+          if (res.length) {
+            notifications.push("USER_EXISTS");
+            User.getUserByMail({ email: user?.email }, (err, res) => {
+              if (res.length) {
+                notifications.push("EMAIL_EXISTS");
+              }
+            });
+
+            if (notifications.length) {
+              return result.send(notifications);
+            } else {
+              console.log(notifications);
+              handleUpdate();
+            }
+          } else {
+            handleUpdate();
+          }
+        }
+      );
+    } else if (
+      user.hasOwnProperty("user_name") &&
+      !user.hasOwnProperty("email")
+    ) {
+      User.getUserByName(
+        {
+          user_name: user.user_name,
+        },
+        (err, res) => {
+          if (res.length) {
+            notifications.push("USER_EXISTS");
+            return result.send(notifications);
+          } else {
+            handleUpdate();
+          }
+        }
+      );
+    } else if (
+      !user.hasOwnProperty("user_name") &&
+      user.hasOwnProperty("email")
+    ) {
+      User.getUserByMail({ email: user?.email }, (err, res) => {
+        if (res.length) {
+          notifications.push("EMAIL_EXISTS");
+          return result.send(notifications);
+        } else {
+          handleUpdate();
+        }
+      });
+    } else {
+      handleUpdate();
+    }
+  },
+  updateCustomer: async (req, result) => {
+    let avatar = null;
+    let notifications = [];
+    if (req.file) {
+      avatar = req.file.filename;
+    }
+    const data = JSON.parse(req.body.data);
+
+    const salt = await bcrypt.genSalt(10);
+    const password = data.password
+      ? await bcrypt.hash(data.password, salt)
+      : null;
+    let old_user_avatar = data?.old_user_avatar;
+    let current_user_name = data?.current_user_name;
+
+    let user = {
+      user_name: data?.user_name ?? "",
+      password: password ?? "",
+      avatar: avatar ?? "",
+      email: data?.email ?? "",
+      updatedAt: new Date(),
+    };
+
+    let customer = {
+      fullname: data?.fullname ?? "",
+      phone_number: data?.phone_number ?? "",
+      gender: data?.gender ?? "",
+      province_id: data?.user_province?.province_id ?? "",
+      province_name: data?.user_province?.province_name ?? "",
+      district_id: data?.user_district?.district_id ?? "",
+      district_name: data?.user_district?.district_name ?? "",
+      ward_id: data?.user_ward?.ward_id ?? "",
+      ward_name: data?.user_ward?.ward_name ?? "",
+      address: data?.address ?? "",
+    };
+
+    user = Object.fromEntries(
+      Object.entries(user).filter(function ([key, value]) {
+        return value !== "";
+      })
+    );
+    customer = Object.fromEntries(
+      Object.entries(customer).filter(function ([key, value]) {
+        return value !== "";
+      })
+    );
+
+    const handleUpdate = () => {
+      User.updateUser(
+        {
+          user: user,
+          current_user_name: current_user_name,
+        },
+        (err, res) => {
+          if (err) throw err;
+        }
+      );
+
+      if (Object.entries(customer).length) {
+        User.updateCustomer(
+          {
+            customer: customer,
+            current_user_name: current_user_name,
+          },
+          (err, res) => {
+            if (err) throw err;
+            if (res) {
+              if (avatar && old_user_avatar !== "default.jpg") {
+                fs.stat(filePath + old_user_avatar, function (err, stats) {
+                  if (err) return console.log(err);
+                  fs.unlink(filePath + old_user_avatar, function (err) {
+                    if (err) return console.log(err);
+                  });
+                });
+              }
+            }
+          }
+        );
+      }
+
+      return result.status(200).json("SUCCESS_UPDATE");
+    };
+
+    if (user.hasOwnProperty("user_name") && user.hasOwnProperty("email")) {
+      User.getUserByName(
         {
           user_name: user?.user_name,
         },
@@ -467,21 +578,36 @@ module.exports = {
               user[0].password
             );
 
+            if (user[0].isLocked && user[0].invalidLoginNum >= 5) {
+              return result.status(200).json("ACCOUNT_INVALID_LOCKED");
+            }
+
             if (validPassword) {
-              User.getDetailTypeUser(data, async (err, type_user) => {
-                if (err) throw err;
-                if (res.length) {
-                  const data = {
-                    user: user[0],
-                    type_user: type_user,
-                  };
-                  return result.send(data);
-                } else {
-                  const data = user[0];
-                  return result.send(data);
-                }
-              });
+              if (user[0].isLocked) {
+                return result.status(200).json("ACCOUNT_LOCKED");
+              } else {
+                User.getDetailTypeUser(data, async (err, type_user) => {
+                  if (err) throw err;
+                  if (res.length) {
+                    delete user[0].password;
+                    const data = {
+                      user: user[0],
+                      type_user: type_user,
+                    };
+                    return result.send(data);
+                  } else {
+                    const data = user[0];
+                    return result.send(data);
+                  }
+                });
+              }
             } else {
+              if (data.user_name != "admin") {
+                User.updateInvalidLogin(data.user_name, (err, res) => {
+                  console.log(err);
+                  if (err) return result.status(500).json(err);
+                });
+              }
               return result.status(200).json("FAILED_LOGIN");
             }
           } else {
@@ -507,6 +633,18 @@ module.exports = {
         return res.status(200).json("ONLINE");
       } else {
         return res.status(200).json("OFFLINE");
+      }
+    });
+  },
+  updateLocked: async (req, result) => {
+    const data = req.body;
+    User.updateLocked(data, (err, res) => {
+      console.log(err);
+      if (err) return result.status(400).json(err);
+      if (data.isLocked) {
+        return result.status(200).json("LOCK_SUCCESS");
+      } else {
+        return result.status(200).json("UNLOCK_SUCCESS");
       }
     });
   },
@@ -543,6 +681,18 @@ module.exports = {
           return result.status(200).json(merged);
         });
       }
+    });
+  },
+  changePassword: async (req, result) => {
+    const data = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(data.password, salt);
+    data.updatedAt = new Date();
+    data.password = password;
+    User.changePassword(data, (err, res) => {
+      if (err) return result.status(500).json(err);
+
+      return result.status(200).json("SUCCESS");
     });
   },
 };

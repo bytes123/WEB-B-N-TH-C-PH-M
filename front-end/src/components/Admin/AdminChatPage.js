@@ -12,8 +12,8 @@ import {
 } from "../../features/message/messageSlice";
 import { loginedUser } from "../../utils/hooks/useAccessUser";
 import { useParams, useLocation } from "react-router-dom";
-
-const socket = io.connect("http://localhost:3001");
+import { host } from "../../static/API";
+const socket = io.connect(`http://${host}:3001`);
 
 export default function AdminChatPage() {
   const dispatch = useDispatch();

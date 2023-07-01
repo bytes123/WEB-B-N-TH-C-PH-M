@@ -24,6 +24,18 @@ var Auth = {
       "UPDATE users SET isAuth = 1 WHERE user_name = (SELECT users.user_name from authen INNER JOIN users ON authen.auth_token = ? AND  authen.user_name = users.user_name)";
     return db.query(sql, [data.auth_token], callback);
   },
+  deleteForgotCode(data, callback) {
+    let sql = "DELETE FROM forgot_password WHERE email = ?";
+    return db.query(sql, [data.email], callback);
+  },
+  addForgotCode(data, callback) {
+    let sql = "INSERT INTO forgot_password SET ?";
+    return db.query(sql, [data], callback);
+  },
+  getForgotCode: function (data, callback) {
+    let sql = "SELECT * FROM forgot_password WHERE code = ? AND email = ?";
+    return db.query(sql, [data.forgot_code, data.email], callback);
+  },
 };
 
 module.exports = Auth;

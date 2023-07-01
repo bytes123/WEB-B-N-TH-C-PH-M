@@ -4,7 +4,11 @@ const { Sequelize } = require("sequelize");
 
 var Category = {
   getAllCategory: function (callback) {
-    let sql = "SELECT * FROM categories";
+    let sql = `SELECT c.*, COUNT(p.id) AS total_products
+    FROM categories c
+    LEFT JOIN products p ON p.category_id = c.id
+    GROUP BY c.id;
+    `;
     return db.query(sql, callback);
   },
   getCategoryExists: (data, callback) => {

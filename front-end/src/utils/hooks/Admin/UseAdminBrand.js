@@ -209,10 +209,7 @@ export default function useAdminBrand(
   }, [delete_status]);
 
   useEffect(() => {
-    console.log(fetch_brands);
-    if (fetch_brands?.length) {
-      setBrands(fetch_brands);
-    }
+    setBrands(fetch_brands);
   }, [fetch_brands]);
 
   const handleConfirmDelete = async (id) => {

@@ -11,6 +11,7 @@ import {
 } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import Quantity from "../../utils/components/Quantity";
+import { host } from "../../static/API";
 export default function Table({
   heading,
   list = [],
@@ -58,8 +59,8 @@ export default function Table({
                 className="w-[100px] rounded-xl  border-1"
                 src={
                   item.image1 !== "default.jpg"
-                    ? `http://localhost:8000/resources/product/${item.product_id}/${item.image1}`
-                    : `http://localhost:8000/resources/product/${item.image1}`
+                    ? `http://${host}:8000/resources/product/${item.product_id}/${item.image1}`
+                    : `http://${host}:8000/resources/product/${item.image1}`
                 }
                 alt=""
               />

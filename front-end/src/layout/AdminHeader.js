@@ -19,7 +19,8 @@ import usePopup from "../utils/hooks/usePopup";
 import ProfileController from "../components/Header/ProfileController";
 import HeaderUser from "../components/Header/HeaderUser";
 import { io } from "socket.io-client";
-const socket = io.connect("http://localhost:3001");
+import { host } from "../static/API";
+const socket = io.connect(`http://${host}:3001`);
 
 export default function AdminHeader({ onBarActive, isBarActive }) {
   const dispatch = useDispatch();
@@ -144,7 +145,7 @@ export default function AdminHeader({ onBarActive, isBarActive }) {
             <div className="admin_header-avatar mr-4">
               <img
                 className="w-[30px] rounded-full"
-                src={`http://localhost:8000/resources/avatar/${loginedUser?.avatar}`}
+                src={`http://${host}:8000/resources/avatar/${loginedUser?.avatar}`}
                 alt=""
               />
             </div>

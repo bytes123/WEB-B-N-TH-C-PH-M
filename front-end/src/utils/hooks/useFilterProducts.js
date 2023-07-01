@@ -31,16 +31,15 @@ export default function useFilterProducts(type, quantity) {
 
   useEffect(() => {
     if (type && activeCategory) {
-      console.log(type);
       dispatch(
         fetchTopProducts({
           category_id: activeCategory,
           type: type,
           quantity: quantity,
         })
-      ).unwrap();
+      );
     }
-  }, [type, activeCategory]);
+  }, [activeCategory, quantity, type]);
 
   useEffect(() => {
     setTopProducts(top_products);
@@ -71,5 +70,6 @@ export default function useFilterProducts(type, quantity) {
     categoryList,
     topProducts,
     sellestProducts,
+    topProducts,
   };
 }

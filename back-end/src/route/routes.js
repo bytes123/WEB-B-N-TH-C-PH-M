@@ -48,6 +48,7 @@ module.exports = function (app) {
   let cartCrtl = require("../controllers/CartController");
   let billCrtl = require("../controllers/BillController");
   let rateCrtl = require("../controllers/RateController");
+  let statisticCrtl = require("../controllers/StatisticController");
 
   //API PHÂN TÁN
   app.route("/mysql-login").post(dbCrtl.loginDB);
@@ -129,10 +130,12 @@ module.exports = function (app) {
   app.route("/search-brand").post(brandCrtl.searchBrand);
 
   // API USER
+  app.route("/get-user").post(userCrtl.getUser);
   app.route("/users").get(userCrtl.getAllUser);
   app.route("/delete-user").post(userCrtl.deleteUser);
   app.route("/admin_type_user").get(userCrtl.getAdminTypeUser);
   app.route("/search-user").post(userCrtl.searchUser);
+  app.route("/lock-user").post(userCrtl.updateLocked);
 
   //API ĐĂNG KÝ
   app
@@ -145,13 +148,19 @@ module.exports = function (app) {
   app
     .route("/update-staff")
     .post(uploadAvatar.single("avatar"), userCrtl.updateStaff);
-
+  app
+    .route("/update-customer")
+    .post(uploadAvatar.single("avatar"), userCrtl.updateCustomer);
   app.route("/login").post(userCrtl.login);
   app.route("/fb-login").post(userCrtl.fbLogin);
 
   app.route("/update_online").post(userCrtl.updateOnline);
 
   app.route("/authen").post(authCrtl.authen);
+
+  app.route("/forget-password").post(authCrtl.sendForgotCode);
+  app.route("/auth-forgot-code").post(authCrtl.authForgotCode);
+  app.route("/change-password").post(userCrtl.changePassword);
 
   // API TIN NHẮN
   app.route("/messages_by_room").post(messagesCtrl.getMsgByRoom);
@@ -161,4 +170,10 @@ module.exports = function (app) {
   app.route("/send_message").post(messagesCtrl.insertMessage);
   app.route("/customer_room").post(messagesCtrl.insertRoom);
   app.route("/drop_room").post(messagesCtrl.dropRoom);
+
+  // API QL THỐNG KÊ
+
+  app.route("/revenue-duration").post(statisticCrtl.getRevenueByDuration);
+  app.route("/revenue-month").post(statisticCrtl.getRevenueByMonth);
+  app.route("/products-year").post(statisticCrtl.getTopProductsByYear);
 };

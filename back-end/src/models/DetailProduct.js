@@ -7,10 +7,18 @@ var DetailProduct = {
       "SELECT dt.*,FLOOR(dt.price-dt.price*dt.discount/100) newPrice,p.name FROM detail_products dt INNER JOIN products p ON dt.product_id = p.id ORDER BY createdAt DESC";
     return db.query(sql, callback);
   },
+  getTopProductsSORT: function (data, callback) {
+    let sql = `SELECT dt.*,FLOOR(dt.price-dt.price*dt.discount/100) newPrice,p.name,p.image1,c.id as category_id,c.name as category_name,b.id as brand_id,b.name as brand_name FROM detail_products dt INNER JOIN products p ON dt.product_id = p.id INNER JOIN categories c ON c.id = p.category_id INNER JOIN brands b ON b.id = p.brand_id GROUP BY p.id ORDER BY newPrice ${data.sort} LIMIT ?`;
+    return db.query(sql, data.quantity, callback);
+  },
   getTopProducts: function (quantity, callback) {
     let sql =
       "SELECT dt.*,FLOOR(dt.price-dt.price*dt.discount/100) newPrice,p.name,p.image1,c.id as category_id,c.name as category_name,b.id as brand_id,b.name as brand_name FROM detail_products dt INNER JOIN products p ON dt.product_id = p.id INNER JOIN categories c ON c.id = p.category_id INNER JOIN brands b ON b.id = p.brand_id GROUP BY p.id ORDER BY p.createdAt DESC LIMIT ?";
     return db.query(sql, quantity, callback);
+  },
+  getTopProductsByCategorySORT: function (data, callback) {
+    let sql = `SELECT dt.*,FLOOR(dt.price-dt.price*dt.discount/100) newPrice,p.name,p.image1,c.id as category_id,c.name as category_name,b.id as brand_id,b.name as brand_name FROM detail_products dt INNER JOIN products p ON dt.product_id = p.id INNER JOIN categories c ON c.id = p.category_id INNER JOIN brands b ON b.id = p.brand_id WHERE c.id = ? GROUP BY p.id ORDER BY newPrice ${data.sort} LIMIT ?`;
+    return db.query(sql, [data.category_id, data.quantity], callback);
   },
   getTopProductsByCategory: function (data, callback) {
     let sql =

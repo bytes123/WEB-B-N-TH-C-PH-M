@@ -83,16 +83,8 @@ export default function useAdminBill(activeSortIndex) {
   }, [activeSortIndex]);
 
   useEffect(() => {
-    if (sort_bill_status == "loading") {
-      setIsLoading(true);
-    } else if (sort_bill_status == "succeeded") {
-      setTimeout(() => {
-        console.log(sort_bill);
-        setBills(sort_bill);
-        setIsLoading(false);
-      }, 2000);
-    } else if (sort_bill_status == "failed") {
-      setIsLoading(false);
+    if (sort_bill_status == "succeeded") {
+      setBills(sort_bill);
     }
 
     return () => dispatch(resetSortBillStatus());
@@ -124,9 +116,7 @@ export default function useAdminBill(activeSortIndex) {
   };
 
   useEffect(() => {
-    if (fetch_detail_bill?.length) {
-      setDetailBill(fetch_detail_bill);
-    }
+    setDetailBill(fetch_detail_bill);
   }, [fetch_detail_bill]);
 
   useEffect(() => {
@@ -169,9 +159,7 @@ export default function useAdminBill(activeSortIndex) {
   };
 
   useEffect(() => {
-    if (fetch_bills.length) {
-      setBills(fetch_bills);
-    }
+    setBills(fetch_bills);
   }, [fetch_bills]);
 
   const handleUpdateStatement = async (data) => {

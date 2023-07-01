@@ -20,18 +20,13 @@ import UpdateForm from "./User/UpdateForm";
 import useClassifySection from "../../utils/hooks/useClassifySection";
 import ClassifySection from "../../utils/components/ClassifySection";
 import { loginedUser } from "../../utils/hooks/useAccessUser";
+import Spinner from "../../utils/components/Spinner";
+import { host } from "../../static/API";
 export default function MainUser() {
   const { Search } = Input;
   const dispatch = useDispatch();
 
   const [pageSize, setPageSize] = useState(10);
-
-  const [isToast, setIsToast] = useState({
-    style: "",
-    value: false,
-    body: "",
-  });
-  const [error, setError] = useState({});
 
   const addData = (values) => {
     values.user_type = "admin";
@@ -39,32 +34,6 @@ export default function MainUser() {
   const clearUpdate = async () => {
     await dispatch(resetUpdateStatus());
     await dispatch(resetErrors());
-  };
-
-  const successDelete = () => {
-    handleCloseDelete();
-    setIsToast({
-      style: "success",
-      value: true,
-      body: "Xóa tài khoản thành công",
-    });
-  };
-
-  const successUpdate = () => {
-    handleCloseEdit();
-    setError({});
-    setIsToast({
-      style: "success",
-      value: true,
-      body: "Cập nhật tài khoản thành công",
-    });
-  };
-
-  const clearToast = () => {
-    setIsToast({
-      value: false,
-      body: "",
-    });
   };
 
   const { values, handleChangeValue, handleSetValue } =
@@ -81,6 +50,14 @@ export default function MainUser() {
     handleOpenAdd,
     handleCloseAdd,
     idDelete,
+    handleLockUser,
+    handleUnLockUser,
+    handleCloseLockUser,
+    handleCloseUnLockUser,
+    isLocked,
+
+    userName,
+    isUnLocked,
   } = useAdminController(handleChangeValue, handleSetValue, clearUpdate);
 
   const sortChildren = [
@@ -140,12 +117,20 @@ export default function MainUser() {
     handleOutSearch,
     isLoadingAllUsers,
     currentSearch,
+    error,
+    setError,
+    isToast,
+    setIsToast,
+    isLoading,
+    setIsLoading,
+    handleConfirmLock,
   } = useMainUser(
-    successDelete,
-    successUpdate,
-    clearToast,
+    handleCloseDelete,
+    handleCloseEdit,
     activeDisplayIndex,
-    activeSortIndex
+    activeSortIndex,
+    handleCloseLockUser,
+    handleCloseUnLockUser
   );
 
   useEffect(() => {
@@ -157,7 +142,7 @@ export default function MainUser() {
     handleCloseEdit();
   };
 
-  const handleConfirmDelete = async (user_name) => {
+  const handleConfirmDelete = async (user_name, isLocked) => {
     try {
       await dispatch(deleteUser({ user_name: user_name })).unwrap();
     } catch (error) {
@@ -199,7 +184,7 @@ export default function MainUser() {
       render: (data, arr, index) => (
         <img
           className="w-[40px] h-[40px] rounded-full"
-          src={`http://localhost:8000/resources/avatar/${data}`}
+          src={`http://${host}:8000/resources/avatar/${data}`}
           alt=""
         />
       ),
@@ -290,7 +275,7 @@ export default function MainUser() {
 
         if (data.some((item) => item.type_user_id == "normal-customer")) {
           renders.push(
-            <p key="normal-customer" className="font-semibold text-slate-900">
+            <p key="normal-customer" className="font-semibold text-green-600">
               Khách hàng
             </p>
           );
@@ -324,14 +309,15 @@ export default function MainUser() {
       key: "user_name",
       render: (data, arr, index) => (
         <>
-          <div className="flex">
+          <div>
             <button
-              className="edit-btn mr-5"
+              className="edit-btn mr-5 mb-5"
               name="edit-btn"
               onClick={() => handleOpenEdit(arr, index)}
             >
               Sửa
             </button>
+
             <button
               className="delete-btn"
               onClick={() => handleOpenDelete(data)}
@@ -353,11 +339,59 @@ export default function MainUser() {
         </>
       ),
     },
+    {
+      title: "Khóa acc",
+      dataIndex: "isLocked",
+      key: "isLocked",
+      render: (data, user, index) => (
+        <>
+          {data ? (
+            <button
+              className="confirm-btn mr-5 mb-5"
+              name="edit-btn"
+              onClick={() => handleUnLockUser(user.user_name)}
+            >
+              Mở khóa
+            </button>
+          ) : (
+            <button
+              className="delete-btn mr-5 mb-5"
+              name="edit-btn"
+              onClick={() => handleLockUser(user.user_name)}
+            >
+              Khóa
+            </button>
+          )}
+          {isLocked ? (
+            <ConfirmDialog
+              active={true}
+              onConfirm={() => handleConfirmLock(userName, true)}
+              onClose={handleCloseLockUser}
+              header={"Bạn có chắc muốn khóa tài khoản này này ?"}
+            />
+          ) : (
+            ""
+          )}
+
+          {isUnLocked ? (
+            <ConfirmDialog
+              active={true}
+              onConfirm={() => handleConfirmLock(userName, false)}
+              onClose={handleCloseUnLockUser}
+              header={"Bạn có chắc muốn mở khóa tài khoản này này ?"}
+            />
+          ) : (
+            ""
+          )}
+        </>
+      ),
+    },
   ];
 
   return loginedUser &&
     loginedUser.type_user.some((item) => item.type_user_id == "admin") ? (
     <div className="main_user mx-2">
+      <Spinner isLoading={isLoading} />
       <Toast
         style={isToast?.style}
         body={isToast?.body}
@@ -378,7 +412,7 @@ export default function MainUser() {
           <Section span={24}>
             <div className="wrapper p-8 ">
               <h3 className="text-2xl font-bold">Thêm tài khoản</h3>
-              <AddForm />
+              <AddForm setIsLoading={setIsLoading} setIsToast={setIsToast} />
               {/* <p className="admin_catalog-add-content m-5">
             Chọn 1 tệp Excel bao gồm danh sách tài khoản
           </p>
